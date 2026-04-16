@@ -44,6 +44,9 @@ dependencies:
   # Required for network interfaces
   network_info_plus: ^6.1.2
 
+  # Required for HTTP requests to cloud API
+  http: ^1.2.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
