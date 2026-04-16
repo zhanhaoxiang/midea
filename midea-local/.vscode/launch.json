@@ -1,0 +1,135 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python Debugger: Discover",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "midealocal.cli",
+      "args": ["discover", "-d", "--host", "${input:host}"]
+    },
+    {
+      "name": "Python Debugger: Decode message",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "midealocal.cli",
+      "args": ["decode", "-d", "${input:message}"]
+    },
+    {
+      "name": "Python Debugger: Save config",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "midealocal.cli",
+      "args": [
+        "save",
+        "-d",
+        "--cloud-name",
+        "${input:cloud-name}",
+        "--username",
+        "${input:username}",
+        "--password",
+        "${input:password}"
+      ]
+    },
+    {
+      "name": "Python Debugger: Download from host",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "midealocal.cli",
+      "args": ["download", "-d", "--host", "${input:host}"]
+    },
+    {
+      "name": "Python Debugger: Download from sn and type",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "midealocal.cli",
+      "args": [
+        "download",
+        "-d",
+        "--device-type",
+        "${input:device-type}",
+        "--device-sn",
+        "${input:device-sn}"
+      ]
+    },
+    {
+      "name": "Python Debugger: Set device attribute",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "midealocal.cli",
+      "args": [
+        "setattr",
+        "-d",
+        "${input:host}",
+        "${input:attribute}",
+        "${input:value}",
+        "--attr-type",
+        "${input:attr-type}"
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "host",
+      "type": "promptString",
+      "description": "Enter the host IP address (leave empty to broadcast on the network)",
+      "default": ""
+    },
+    {
+      "id": "device-type",
+      "type": "promptString",
+      "description": "Enter the device type ex. AC",
+      "default": ""
+    },
+    {
+      "id": "device-sn",
+      "type": "promptString",
+      "description": "Enter the device serial number.",
+      "default": ""
+    },
+    {
+      "id": "message",
+      "type": "promptString",
+      "description": "Enter hex message, including header and body."
+    },
+    {
+      "id": "cloud-name",
+      "type": "pickString",
+      "options": [
+        "美的美居",
+        "SmartHome",
+        "Midea Air",
+        "NetHome Plus",
+        "Ariston Clima"
+      ],
+      "description": "Choose one of the cloud servers."
+    },
+    {
+      "id": "username",
+      "type": "promptString",
+      "description": "Enter cloud username."
+    },
+    {
+      "id": "password",
+      "type": "promptString",
+      "password": true,
+      "description": "Enter cloud password."
+    },
+    {
+      "id": "attribute",
+      "type": "promptString",
+      "description": "Enter attribute name."
+    },
+    {
+      "id": "value",
+      "type": "promptString",
+      "description": "Enter attribute value."
+    },
+    {
+      "id": "attr-type",
+      "type": "pickString",
+      "options": ["bool", "int", "str"],
+      "description": "Choose attribute type."
+    }
+  ]
+}
