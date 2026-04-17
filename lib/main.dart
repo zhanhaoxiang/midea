@@ -60,7 +60,41 @@ Future<void> listDevices() async {
   }
 }
 
+Future<void> getCloudKey() async {
+  final preset = getPresetAccountCloud();
+  final cloudName = preset['cloud_name']!;
+  final account = preset['username']!;
+  final password = preset['password']!;
+
+  print('使用内置账号登录 $cloudName...');
+
+  final cloud = getMideaCloud(cloudName, account, password);
+
+  if (!await cloud.login()) {
+    print('$cloudName 云端登录失败');
+    exit(1);
+  }
+  print('$cloudName 云端登录成功！');
+
+  const applianceId = 210006722801783;
+  print('获取设备 token (appliance_id: $applianceId)...');
+
+  final keys = await cloud.getCloudKeys(applianceId);
+  if (keys.isEmpty) {
+    print('无法获取 token');
+    exit(0);
+  }
+
+  for (final entry in keys.entries) {
+    print('\n方法 ${entry.key} 的 token:');
+    print('  Token: ${entry.value['token']}');
+    print('  Key:   ${entry.value['key']}');
+  }
+}
+
+
+
 void main(List<String> args) async {
-  await listDevices();
+  await getCloudKey();
 }
 

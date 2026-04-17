@@ -97,10 +97,39 @@ class CloudSecurity {
   static String getDeviceId(String username) =>
       sha256.convert(utf8.encode('Hello, $username!')).toString().substring(0, 16);
 
+  /// Compute UDP ID used for token lookup.
+  /// method 0 = REVERSED_BIG (8 bytes little-endian)
+  /// method 1 = BIG (6 bytes big-endian)
+  /// method 2 = LITTLE (6 bytes little-endian)
+  static String? getUdpId(int applianceId, int method) {
+    List<int> bytesId;
+    switch (method) {
+      case 0:
+        // to_bytes(8,"big") then reversed == 8 bytes little-endian
+        bytesId = List.generate(8, (i) => (applianceId >> (i * 8)) & 0xFF);
+      case 1:
+        bytesId = List.generate(6, (i) => (applianceId >> ((5 - i) * 8)) & 0xFF);
+      case 2:
+        bytesId = List.generate(6, (i) => (applianceId >> (i * 8)) & 0xFF);
+      default:
+        return null;
+    }
+    final digest = List<int>.from(sha256.convert(bytesId).bytes);
+    for (var i = 0; i < 16; i++) {
+      digest[i] ^= digest[i + 16];
+    }
+    return digest
+        .sublist(0, 16)
+        .map((b) => b.toRadixString(16).padLeft(2, '0'))
+        .join();
+  }
+
   /// HMAC-SHA256(iot_key + data + random)
-  String? sign(String url, String data, String random) {
+  /// [data] is a JSON String for MeijuCloud.
+  String? sign(String url, dynamic data, String random) {
     if (_hmacKey == null) return null;
-    final msg = (_iotKey ?? '') + data + random;
+    final dataStr = data is String ? data : '';
+    final msg = (_iotKey ?? '') + dataStr + random;
     return Hmac(sha256, utf8.encode(_hmacKey!))
         .convert(utf8.encode(msg))
         .toString();
@@ -180,5 +209,26 @@ class MeijuCloudSecurity extends CloudSecurity {
   String encryptIamPassword(String loginId, String data) {
     final md1 = md5.convert(utf8.encode(data)).toString();
     return md5.convert(utf8.encode(md1)).toString();
+  }
+}
+
+/// Midea Air ("NetHome Plus" / "Midea Air") cloud security.
+/// sign = SHA256(url_path + sorted_form_params + login_key)
+class MideaAirSecurity extends CloudSecurity {
+  MideaAirSecurity({required String loginKey})
+      : super(loginKey: loginKey, iotKey: null, hmacKey: null);
+
+  /// Sign using sorted form-encoded params.
+  /// [data] must be a Map<String, dynamic>.
+  @override
+  String? sign(String url, dynamic data, String random) {
+    if (data is! Map<String, dynamic>) return null;
+    final sorted = data.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
+    // Python: unquote_plus(urlencode(sorted_items)) — for ASCII-only values
+    // this equals plain "key=value&..." concatenation.
+    final payload = sorted.map((e) => '${e.key}=${e.value}').join('&');
+    final urlPath = Uri.parse(url).path;
+    return sha256.convert(utf8.encode(urlPath + payload + _loginKey)).toString();
   }
 }

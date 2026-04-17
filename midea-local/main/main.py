@@ -1,10 +1,10 @@
-"""List Midea devices from Meiju Cloud."""
+"""Get token for Midea washing machine from NetHome Plus cloud."""
 
 import asyncio
 import ssl
 from aiohttp import ClientSession, TCPConnector
 
-from midealocal.cloud import get_midea_cloud
+from midealocal.cloud import get_midea_cloud, get_preset_account_cloud
 
 
 async def main():
@@ -14,26 +14,29 @@ async def main():
 
     connector = TCPConnector(ssl=ssl_context)
 
+    account = get_preset_account_cloud()
+    print(f"使用内置账号登录 NetHome Plus...")
+
     async with ClientSession(connector=connector) as session:
         cloud = get_midea_cloud(
-            cloud_name="美的美居",
+            cloud_name="NetHome Plus",
             session=session,
-            account="18028061491",
-            password="Aa.123456",
+            account=account["username"],
+            password=account["password"],
         )
 
         if await cloud.login():
-            print("云端登录成功！")
-            appliances = await cloud.list_appliances(None)
-            print(f"\n共发现 {len(appliances)} 个设备：\n")
-            for device_id, app in appliances.items():
-                print(f"  设备 ID: {device_id}")
-                print(f"  设备名称: {app.get('name', '未知')}")
-                print(f"  类型: {hex(app.get('type', 0))} ({app.get('type', 0)})")
-                print(f"  型号: {app.get('model', '未知')}")
-                print(f"  SN: {app.get('sn', '未知')}")
-                print(f"  在线状态: {'在线' if app.get('online') else '离线'}")
-                print("-" * 40)
+            print("NetHome Plus 云端登录成功！")
+            appliance_id = 210006722801783
+            print(f"获取设备 token (appliance_id: {appliance_id})...")
+            keys = await cloud.get_cloud_keys(appliance_id)
+            if keys:
+                for method, key_info in keys.items():
+                    print(f"\n方法 {method} 的 token:")
+                    print(f"  Token: {key_info['token']}")
+                    print(f"  Key: {key_info['key']}")
+            else:
+                print("无法获取 token")
         else:
             print("云端登录失败")
 
