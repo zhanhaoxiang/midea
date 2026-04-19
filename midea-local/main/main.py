@@ -63,6 +63,8 @@ async def get_token_and_key(session: ClientSession) -> tuple[str, str] | tuple[N
         print("  无法获取 token/key")
         return None, None
 
+    print(f' Token {keys}')
+
     # Try method 1 first, fall back to method 2
     key_info = keys.get(1) or keys.get(2) or next(iter(keys.values()))
     token = key_info["token"]
@@ -123,7 +125,19 @@ async def main():
         }
 
         # Step 2: Get token/key from NetHome Plus
-        token, key = await get_token_and_key(session)
+        # 美的toekn key
+        # {1: {
+        #     'token': '7269369097c64f4315b276dffcc5eca8b96bfc3f6e1e5c3c80af0323ed4775003f7aa2554f5c25805f4086f43e5f5026136cc2aa8a6d5c3cedc2674c981c11e9',
+        #     'key': 'b5c5b6cc787a4ce7ae8835f8b34051d2b2a8b27883ec4f71839f851227d32210'
+        # },
+        # 2: {
+        #       'token': '2db7f81afc06667b61911287a078ac177503f50bd05ba2567cfc2cbd34a5120caec97b9288627e9bc5bb7d8e785636fd857bb7c6a9df5421556ee9f82ab7f685',
+        #       'key': 'cc93a25bdd204f88b88fc876ba346408c6a4d402a1be4ae4af08edef82cbcec5'
+        # }
+        # }
+        # token, key = await get_token_and_key(session)
+        token = '7269369097c64f4315b276dffcc5eca8b96bfc3f6e1e5c3c80af0323ed4775003f7aa2554f5c25805f4086f43e5f5026136cc2aa8a6d5c3cedc2674c981c11e9'
+        key = 'b5c5b6cc787a4ce7ae8835f8b34051d2b2a8b27883ec4f71839f851227d32210'
         if token is None:
             return
 
