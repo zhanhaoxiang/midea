@@ -36,8 +36,19 @@ midea/
 
 ## 属性命名约定
 
-- 使用Dart常见的camelCase风格（驼峰命名）
-- 例如: `promptTone`, `targetTemperature`, `fanSpeed`, `swingVertical`
+- **DeviceAttributes常量值**: 使用Python原版的snake_case（与设备通信协议一致）
+  - 例如: `'prompt_tone'`, `'target_temperature'`, `'fan_speed'`
+- **Dart类属性名**: 使用Dart常见的camelCase风格（驼峰命名）
+  - 例如: `promptTone`, `targetTemperature`, `fanSpeed`
+
+```dart
+class DeviceAttributes {
+  // 常量值用snake_case（协议用）
+  static const String promptTone = 'prompt_tone';
+  static const String targetTemperature = 'target_temperature';
+  static const String fanSpeed = 'fan_speed';
+}
+```
 
 ## 常量映射表
 
