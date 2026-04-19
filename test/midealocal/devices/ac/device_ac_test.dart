@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:midea/midealocal/const.dart';
-import 'package:midea/midealocal/devices/ac/ac_device.dart';
+import 'package:midea/midealocal/devices/ac/midea_ac_device.dart';
 import 'package:midea/midealocal/devices/ac/message.dart';
 
 void main() {
