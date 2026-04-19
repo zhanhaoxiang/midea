@@ -14,11 +14,14 @@ abstract class MessageDBBase extends MessageRequest {
     required MessageType messageType,
     required int bodyType,
   }) : super(
-          deviceType: DeviceType.db,
-          protocolVersion: protocolVersion,
-          messageType: messageType,
-          bodyType: bodyType,
-        );
+         deviceType: DeviceType.db,
+         protocolVersion: protocolVersion,
+         messageType: messageType,
+         bodyType: bodyType,
+       );
+
+  @override
+  Uint8List buildBody();
 }
 
 // ---------------------------------------------------------------------------
@@ -27,11 +30,11 @@ abstract class MessageDBBase extends MessageRequest {
 
 class MessageQuery extends MessageDBBase {
   MessageQuery(int protocolVersion)
-      : super(
-          protocolVersion: protocolVersion,
-          messageType: MessageType.query,
-          bodyType: ListTypes.x03,
-        );
+    : super(
+        protocolVersion: protocolVersion,
+        messageType: MessageType.query,
+        bodyType: ListTypes.x03,
+      );
 
   @override
   Uint8List buildBody() => Uint8List(0);
@@ -43,11 +46,11 @@ class MessageQuery extends MessageDBBase {
 
 class MessagePower extends MessageDBBase {
   MessagePower(int protocolVersion)
-      : super(
-          protocolVersion: protocolVersion,
-          messageType: MessageType.set,
-          bodyType: ListTypes.x02,
-        );
+    : super(
+        protocolVersion: protocolVersion,
+        messageType: MessageType.set,
+        bodyType: ListTypes.x02,
+      );
 
   bool power = false;
 
@@ -56,8 +59,26 @@ class MessagePower extends MessageDBBase {
     final p = power ? 0x01 : 0x00;
     return Uint8List.fromList([
       p,
-      0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-      0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
     ]);
   }
 }
@@ -68,11 +89,11 @@ class MessagePower extends MessageDBBase {
 
 class MessageStart extends MessageDBBase {
   MessageStart(int protocolVersion)
-      : super(
-          protocolVersion: protocolVersion,
-          messageType: MessageType.set,
-          bodyType: ListTypes.x02,
-        );
+    : super(
+        protocolVersion: protocolVersion,
+        messageType: MessageType.set,
+        bodyType: ListTypes.x02,
+      );
 
   bool start = false;
   Uint8List washingData = Uint8List(0);

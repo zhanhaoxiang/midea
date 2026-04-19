@@ -130,162 +130,189 @@ class MideaDBDevice extends MideaDevice {
   ];
 
   MideaDBDevice({
-    required String name,
-    required int deviceId,
-    required String ipAddress,
-    required int port,
-    required String token,
-    required String key,
-    required ProtocolVersion deviceProtocol,
-    required String model,
-    required int subtype,
-  }) : super(
-          name: name,
-          deviceId: deviceId,
-          deviceType: DeviceType.db,
-          ipAddress: ipAddress,
-          port: port,
-          token: token,
-          key: key,
-          deviceProtocol: deviceProtocol,
-          model: model,
-          subtype: subtype,
-          attributes: {
-            DeviceAttributes.power: false,
-            DeviceAttributes.start: false,
-            DeviceAttributes.status: null,
-            DeviceAttributes.mode: null,
-            DeviceAttributes.program: null,
-            DeviceAttributes.waterLevel: null,
-            DeviceAttributes.temperature: null,
-            DeviceAttributes.dehydrationSpeed: null,
-            DeviceAttributes.washTime: null,
-            DeviceAttributes.dehydrationTime: null,
-            DeviceAttributes.detergent: null,
-            DeviceAttributes.softener: null,
-            DeviceAttributes.washingData: Uint8List(0),
-            DeviceAttributes.progress: null,
-            DeviceAttributes.stains: null,
-            DeviceAttributes.timeRemaining: null,
-            DeviceAttributes.washTimeValue: null,
-            DeviceAttributes.dehydrationTimeValue: null,
-            DeviceAttributes.dirtyDegree: null,
-          },
-        );
-
-  @override
-  List<MessageRequest> buildQuery() =>
-      [MessageQuery(messageProtocolVersion)];
-
-  @override
-  Map<String, dynamic> processMessage(Uint8List msg) {
-    final message = MessageDBResponse(msg);
-    final newStatus = <String, dynamic>{};
-
-    void setAttr(String attr, dynamic raw) {
-      attrs[attr] = raw;
-      newStatus[attr] = raw;
-    }
-
-    if (message.power != null) {
-      setAttr(DeviceAttributes.power, message.power);
-    }
-    if (message.start != null) {
-      setAttr(DeviceAttributes.start, message.start);
-    }
-    if (message.washingData != null) {
-      setAttr(DeviceAttributes.washingData, message.washingData);
-    }
-    if (message.status != null) {
-      setAttr(
-          DeviceAttributes.status, _statusMap[message.status] ?? message.status);
-    }
-    if (message.mode != null) {
-      setAttr(DeviceAttributes.mode, _modeMap[message.mode] ?? message.mode);
-    }
-    if (message.program != null) {
-      setAttr(
-          DeviceAttributes.program,
-          _programMap[message.program] ?? message.program);
-    }
-    if (message.waterLevel != null) {
-      setAttr(DeviceAttributes.waterLevel,
-          _waterLevelMap[message.waterLevel] ?? message.waterLevel);
-    }
-    if (message.temperature != null) {
-      setAttr(DeviceAttributes.temperature,
-          _temperatureMap[message.temperature] ?? message.temperature);
-    }
-    if (message.dehydrationSpeed != null) {
-      setAttr(DeviceAttributes.dehydrationSpeed,
-          _dehydrationSpeedMap[message.dehydrationSpeed] ?? message.dehydrationSpeed);
-    }
-    if (message.washTime != null) {
-      setAttr(DeviceAttributes.washTime, message.washTime);
-    }
-    if (message.dehydrationTime != null) {
-      setAttr(DeviceAttributes.dehydrationTime, message.dehydrationTime);
-    }
-    if (message.detergent != null) {
-      setAttr(DeviceAttributes.detergent, message.detergent);
-    }
-    if (message.softener != null) {
-      setAttr(DeviceAttributes.softener, message.softener);
-    }
-    if (message.progress != null) {
-      final idx = message.progress!;
-      setAttr(DeviceAttributes.progress,
-          idx < _progressList.length ? _progressList[idx] : 'Unknown');
-    }
-    if (message.stains != null) {
-      setAttr(DeviceAttributes.stains, message.stains);
-    }
-    if (message.washTimeValue != null) {
-      setAttr(DeviceAttributes.washTimeValue, message.washTimeValue);
-    }
-    if (message.dehydrationTimeValue != null) {
-      setAttr(DeviceAttributes.dehydrationTimeValue, message.dehydrationTimeValue);
-    }
-    if (message.dirtyDegree != null) {
-      setAttr(DeviceAttributes.dirtyDegree, message.dirtyDegree);
-    }
-    if (message.timeRemaining != null) {
-      setAttr(DeviceAttributes.timeRemaining, message.timeRemaining);
-    }
-
-    return newStatus;
-  }
-
-  @override
-  void setAttribute(String attr, dynamic value) {
-    if (value is! bool) throw ValueWrongType('[db] Expected bool');
-    if (attr == DeviceAttributes.power) {
-      final cmd = MessagePower(messageProtocolVersion);
-      cmd.power = value;
-      buildSend(cmd);
-    } else if (attr == DeviceAttributes.start) {
-      final cmd = MessageStart(messageProtocolVersion);
-      cmd.start = value;
-      cmd.washingData = (attrs[DeviceAttributes.washingData] as Uint8List?) ?? Uint8List(0);
-      buildSend(cmd);
-    }
-  }
-}
-
-// ---------------------------------------------------------------------------
-// MideaAppliance (alias, mirrors Python class)
-// ---------------------------------------------------------------------------
-
-class MideaAppliance extends MideaDBDevice {
-  MideaAppliance({
     required super.name,
     required super.deviceId,
     required super.ipAddress,
     required super.port,
     required super.token,
     required super.key,
-    required super.deviceProtocol,
+    required ProtocolVersion deviceProtocol,
     required super.model,
     required super.subtype,
-  });
+  }) : super(
+         deviceType: DeviceType.db,
+         deviceProtocol: deviceProtocol,
+         attributes: _defaultAttributes,
+       );
+
+  static final Map<String, dynamic> _defaultAttributes = {
+    DeviceAttributes.power: false,
+    DeviceAttributes.start: false,
+    DeviceAttributes.status: null,
+    DeviceAttributes.mode: null,
+    DeviceAttributes.program: null,
+    DeviceAttributes.waterLevel: null,
+    DeviceAttributes.temperature: null,
+    DeviceAttributes.dehydrationSpeed: null,
+    DeviceAttributes.washTime: null,
+    DeviceAttributes.washTimeValue: null,
+    DeviceAttributes.dehydrationTime: null,
+    DeviceAttributes.dehydrationTimeValue: null,
+    DeviceAttributes.detergent: null,
+    DeviceAttributes.softener: null,
+    DeviceAttributes.washingData: Uint8List(0),
+    DeviceAttributes.progress: null,
+    DeviceAttributes.stains: null,
+    DeviceAttributes.timeRemaining: null,
+    DeviceAttributes.dirtyDegree: null,
+  };
+
+  @override
+  List<MessageRequest> buildQuery() {
+    return [MessageQuery(messageProtocolVersion)];
+  }
+
+  @override
+  Map<String, dynamic> processMessage(Uint8List msg) {
+    final message = MessageDBResponse(msg);
+    final newStatus = <String, dynamic>{};
+
+    for (final attr in attrs.keys) {
+      if (_hasAttribute(message, attr)) {
+        var value = _getAttribute(message, attr);
+        if (attr == DeviceAttributes.mode) {
+          value = _modeMap[value] ?? value;
+        } else if (attr == DeviceAttributes.status) {
+          value = _statusMap[value] ?? value;
+        } else if (attr == DeviceAttributes.dehydrationSpeed) {
+          value = _dehydrationSpeedMap[value] ?? value;
+        } else if (attr == DeviceAttributes.waterLevel) {
+          value = _waterLevelMap[value] ?? value;
+        } else if (attr == DeviceAttributes.program) {
+          value = _programMap[value] ?? value;
+        } else if (attr == DeviceAttributes.temperature) {
+          value = _temperatureMap[value] ?? value;
+        } else if (attr == DeviceAttributes.progress && value != null) {
+          final idx = value as int;
+          value = idx >= 0 && idx < _progressList.length
+              ? _progressList[idx]
+              : _progressList.last;
+        }
+        attrs[attr] = value;
+        newStatus[attr] = value;
+      }
+    }
+    return newStatus;
+  }
+
+  bool _hasAttribute(MessageDBResponse msg, String attr) {
+    switch (attr) {
+      case DeviceAttributes.power:
+        return msg.power != null;
+      case DeviceAttributes.start:
+        return msg.start != null;
+      case DeviceAttributes.status:
+        return msg.status != null;
+      case DeviceAttributes.mode:
+        return msg.mode != null;
+      case DeviceAttributes.program:
+        return msg.program != null;
+      case DeviceAttributes.waterLevel:
+        return msg.waterLevel != null;
+      case DeviceAttributes.temperature:
+        return msg.temperature != null;
+      case DeviceAttributes.dehydrationSpeed:
+        return msg.dehydrationSpeed != null;
+      case DeviceAttributes.washTime:
+        return msg.washTime != null;
+      case DeviceAttributes.dehydrationTime:
+        return msg.dehydrationTime != null;
+      case DeviceAttributes.detergent:
+        return msg.detergent != null;
+      case DeviceAttributes.softener:
+        return msg.softener != null;
+      case DeviceAttributes.washingData:
+        return msg.washingData != null;
+      case DeviceAttributes.progress:
+        return msg.progress != null;
+      case DeviceAttributes.stains:
+        return msg.stains != null;
+      case DeviceAttributes.timeRemaining:
+        return msg.timeRemaining != null;
+      case DeviceAttributes.washTimeValue:
+        return msg.washTimeValue != null;
+      case DeviceAttributes.dehydrationTimeValue:
+        return msg.dehydrationTimeValue != null;
+      case DeviceAttributes.dirtyDegree:
+        return msg.dirtyDegree != null;
+      default:
+        return false;
+    }
+  }
+
+  dynamic _getAttribute(MessageDBResponse msg, String attr) {
+    switch (attr) {
+      case DeviceAttributes.power:
+        return msg.power;
+      case DeviceAttributes.start:
+        return msg.start;
+      case DeviceAttributes.status:
+        return msg.status;
+      case DeviceAttributes.mode:
+        return msg.mode;
+      case DeviceAttributes.program:
+        return msg.program;
+      case DeviceAttributes.waterLevel:
+        return msg.waterLevel;
+      case DeviceAttributes.temperature:
+        return msg.temperature;
+      case DeviceAttributes.dehydrationSpeed:
+        return msg.dehydrationSpeed;
+      case DeviceAttributes.washTime:
+        return msg.washTime;
+      case DeviceAttributes.dehydrationTime:
+        return msg.dehydrationTime;
+      case DeviceAttributes.detergent:
+        return msg.detergent;
+      case DeviceAttributes.softener:
+        return msg.softener;
+      case DeviceAttributes.washingData:
+        return msg.washingData;
+      case DeviceAttributes.progress:
+        return msg.progress;
+      case DeviceAttributes.stains:
+        return msg.stains;
+      case DeviceAttributes.timeRemaining:
+        return msg.timeRemaining;
+      case DeviceAttributes.washTimeValue:
+        return msg.washTimeValue;
+      case DeviceAttributes.dehydrationTimeValue:
+        return msg.dehydrationTimeValue;
+      case DeviceAttributes.dirtyDegree:
+        return msg.dirtyDegree;
+      default:
+        return null;
+    }
+  }
+
+  @override
+  void setAttribute(String attr, dynamic value) {
+    if (attr == DeviceAttributes.power) {
+      if (value is! bool) {
+        throw MideaLocalError('[db] Expected bool');
+      }
+      final message = MessagePower(messageProtocolVersion);
+      message.power = value;
+      buildSend(message);
+    } else if (attr == DeviceAttributes.start) {
+      if (value is! bool) {
+        throw MideaLocalError('[db] Expected bool');
+      }
+      final message = MessageStart(messageProtocolVersion);
+      message.start = value;
+      message.washingData =
+          attrs[DeviceAttributes.washingData] as Uint8List? ?? Uint8List(0);
+      buildSend(message);
+    }
+  }
 }
