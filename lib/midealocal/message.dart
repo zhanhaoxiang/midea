@@ -47,8 +47,27 @@ class ListTypes {
   static const int x02 = 0x02;
   static const int x03 = 0x03;
   static const int x04 = 0x04;
+  static const int x06 = 0x06;
+  static const int x08 = 0x08;
+  static const int x14 = 0x14;
+  static const int x16 = 0x16;
+  static const int x31 = 0x31;
+  static const int x3D = 0x3D;
+  static const int x52 = 0x52;
+  static const int x81 = 0x81;
+  static const int x83 = 0x83;
   static const int b1 = 0xB1;
   static const int b5 = 0xB5;
+  static const int x21 = 0x21;
+  static const int x24 = 0x24;
+  static const int x41 = 0x41;
+  static const int x48 = 0x48;
+  static const int xa0 = 0xA0;
+  static const int xa4 = 0xA4;
+  static const int x80 = 0x80;
+  static const int c3 = 0xC3;
+  static const int c8 = 0xC8;
+  static const int aa = 0xAA;
 }
 
 // ---------------------------------------------------------------------------
@@ -73,7 +92,8 @@ abstract class MessageBase {
   int bodyType = ListTypes.x00;
   int protocolVersion = 0;
 
-  static int checksum(List<int> data) => (~data.reduce((a, b) => a + b) + 1) & 0xFF;
+  static int checksum(List<int> data) =>
+      (~data.reduce((a, b) => a + b) + 1) & 0xFF;
 
   Uint8List get header;
   Uint8List get body;
@@ -139,12 +159,12 @@ abstract class MessageRequest extends MessageBase {
 
 class MessageQueryAppliance extends MessageRequest {
   MessageQueryAppliance(DeviceType deviceType)
-      : super(
-          deviceType: deviceType,
-          protocolVersion: 0,
-          messageType: MessageType.queryAppliance,
-          bodyType: ListTypes.x00,
-        );
+    : super(
+        deviceType: deviceType,
+        protocolVersion: 0,
+        messageType: MessageType.queryAppliance,
+        bodyType: ListTypes.x00,
+      );
 
   @override
   Uint8List buildBody() => Uint8List(0);
@@ -163,13 +183,13 @@ class MessageQuestCustom extends MessageRequest {
     required int protocolVersion,
     required MessageType cmdType,
     required Uint8List cmdBody,
-  })  : _cmdBody = cmdBody,
-        super(
-          deviceType: deviceType,
-          protocolVersion: protocolVersion,
-          messageType: cmdType,
-          bodyType: ListTypes.x00,
-        );
+  }) : _cmdBody = cmdBody,
+       super(
+         deviceType: deviceType,
+         protocolVersion: protocolVersion,
+         messageType: cmdType,
+         bodyType: ListTypes.x00,
+       );
 
   final Uint8List _cmdBody;
 
@@ -206,11 +226,13 @@ class MessageResponse extends MessageBase {
     if (message.length < MessageBase.headerLength + 1) throw MessageLenError();
     _header = Uint8List.fromList(message.sublist(0, MessageBase.headerLength));
     protocolVersion = _header[MessageBase.headerLength - 2];
-    messageType = MessageType.fromInt(_header[MessageBase.headerLength - 1]) ??
+    messageType =
+        MessageType.fromInt(_header[MessageBase.headerLength - 1]) ??
         MessageType.defaultType;
     deviceType = DeviceType.fromInt(_header[2]) ?? DeviceType.x00;
     final bodyData = Uint8List.fromList(
-        message.sublist(MessageBase.headerLength, message.length - 1));
+      message.sublist(MessageBase.headerLength, message.length - 1),
+    );
     _messageBody = MessageBody(bodyData);
     bodyType = bodyData.isNotEmpty ? bodyData[0] : 0;
   }

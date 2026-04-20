@@ -59,3 +59,5 @@ enum ProtocolVersion {
   const ProtocolVersion(this.value);
   final int value;
 }
+
+const int maxByteValue = 0xFF;
