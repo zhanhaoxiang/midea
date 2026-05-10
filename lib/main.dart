@@ -85,7 +85,7 @@ Future<void> main() async {
     // Step 4: power on
     print('\n[4] 尝试控制：开机...');
     try {
-      device.setAttribute(DeviceAttributes.power, true);
+      device.setAttribute(DeviceAttributes.start, true);
       print('  已发送开机指令');
       await Future<void>.delayed(const Duration(seconds: 2));
       // device.setAttribute(DeviceAttributes.start, true);
