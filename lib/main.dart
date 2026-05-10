@@ -3,7 +3,9 @@
 import 'dart:io';
 
 import 'midealocal/const.dart';
+import 'midealocal/device.dart';
 import 'midealocal/devices/db/midea_db_device.dart';
+import 'midealocal/devices/device_selector.dart';
 
 Future<void> main() async {
   // 1：扫描局域网的设备, 把打印的信息中想要控制的设备的信息copy到localInfo中
@@ -48,7 +50,8 @@ Future<void> main() async {
     String token = tk['token']!;
     String key = tk['key']!;
 
-    final device = MideaDBDevice(
+    MideaDevice? device = selectDevice(
+      deviceType: DeviceType.fromInt(localInfo['type'] as int) ?? DeviceType.x00,
       name: DeviceType.fromInt(localInfo['type'] as int)?.name ?? '未知设备',
       deviceId: localInfo['device_id'] as int,
       ipAddress: localInfo['ip_address'] as String,
@@ -59,6 +62,10 @@ Future<void> main() async {
       model: (localInfo['model'] as String?) ?? '',
       subtype: 0,
     );
+    if (device == null) {
+      print('  无法创建设备实例');
+      continue;
+    }
 
     final connected = await device.connect(checkProtocol: true);
     if (!connected) {
