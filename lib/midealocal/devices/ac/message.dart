@@ -68,12 +68,13 @@ abstract class MessageACBase extends MessageRequest {
     for (final b in data) {
       crc ^= b;
       for (var i = 0; i < 8; i++) {
-        if (crc & 0x80 != 0) {
-          crc = (crc << 1) ^ 0x31;
+        if ((crc & 0x01) != 0) {
+          crc = (crc >> 1) ^ 0x8C;
         } else {
-          crc <<= 1;
+          crc >>= 1;
         }
       }
+      crc &= 0xFF;
     }
     return crc & 0xFF;
   }
@@ -253,8 +254,33 @@ class MessageSubProtocol extends MessageACBase {
 
   final int subprotocolQueryType;
 
+  Uint8List get subprotocolBody => Uint8List(0);
+
   @override
-  Uint8List buildBody() => Uint8List(0);
+  Map<String, dynamic> get debugAttributes => {
+    'subprotocol_query_type': subprotocolQueryType,
+  };
+
+  @override
+  Uint8List buildBody() {
+    final subBody = subprotocolBody;
+    return Uint8List.fromList([
+      6 + 2 + subBody.length,
+      0x00,
+      0xFF,
+      0xFF,
+      subprotocolQueryType,
+      ...subBody,
+    ]);
+  }
+
+  @override
+  Uint8List get body {
+    final result = <int>[bodyType, ...buildBody()];
+    result.add(MessageACBase._crc8(result));
+    result.add(MessageBase.checksum(result));
+    return Uint8List.fromList(result);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -296,7 +322,24 @@ class MessageSubProtocolSet extends MessageSubProtocol {
   bool promptTone = false;
 
   @override
-  Uint8List buildBody() {
+  Map<String, dynamic> get debugAttributes => {
+    ...super.debugAttributes,
+    'power': power,
+    'mode': mode,
+    'target_temperature': targetTemperature,
+    'fan_speed': fanSpeed,
+    'boost_mode': boostMode,
+    'aux_heating': auxHeating,
+    'dry': dry,
+    'eco_mode': ecoMode,
+    'sleep_mode': sleepMode,
+    'sn8_flag': sn8Flag,
+    'timer': timer,
+    'prompt_tone': promptTone,
+  };
+
+  @override
+  Uint8List get subprotocolBody {
     final powerB = power ? 0x01 : 0;
     final dryB = power && dry ? 0x10 : 0;
     final boostB = boostMode ? 0x20 : 0;
@@ -352,7 +395,6 @@ class MessageSubProtocolSet extends MessageSubProtocol {
       0x00,
       0x00,
       0x00,
-      0x00,
       0x08,
     ]);
   }
@@ -387,6 +429,27 @@ class MessageGeneralSet extends MessageACBase {
   bool naturalWind = false;
   bool frostProtect = false;
   bool comfortMode = false;
+
+  @override
+  Map<String, dynamic> get debugAttributes => {
+    'power': power,
+    'prompt_tone': promptTone,
+    'mode': mode,
+    'target_temperature': targetTemperature,
+    'fan_speed': fanSpeed,
+    'swing_vertical': swingVertical,
+    'swing_horizontal': swingHorizontal,
+    'boost_mode': boostMode,
+    'smart_eye': smartEye,
+    'dry': dry,
+    'aux_heating': auxHeating,
+    'eco_mode': ecoMode,
+    'temp_fahrenheit': tempFahrenheit,
+    'sleep_mode': sleepMode,
+    'natural_wind': naturalWind,
+    'frost_protect': frostProtect,
+    'comfort_mode': comfortMode,
+  };
 
   @override
   Uint8List buildBody() {

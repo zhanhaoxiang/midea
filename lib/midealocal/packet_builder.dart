@@ -57,16 +57,19 @@ class PacketBuilder {
   }
 
   /// Build a time bytes array matching Python's packet_time().
-  /// Format: reverse pairs of "YYMMDDHHmmSSuuuu" where uuuu = microseconds/100
+  /// Format: reverse pairs of "YYYYMMDDHHmmSSff" where ff is the first
+  /// two digits of the six-digit microsecond field.
   static Uint8List _packetTime() {
     final now = DateTime.now().toUtc();
-    final t = now.year.toString().padLeft(4, '0').substring(2) +
+    final microseconds = now.millisecond * 1000 + now.microsecond;
+    final t =
+        now.year.toString().padLeft(4, '0') +
         now.month.toString().padLeft(2, '0') +
         now.day.toString().padLeft(2, '0') +
         now.hour.toString().padLeft(2, '0') +
         now.minute.toString().padLeft(2, '0') +
         now.second.toString().padLeft(2, '0') +
-        (now.millisecond * 10).toString().padLeft(4, '0');
+        microseconds.toString().padLeft(6, '0').substring(0, 2);
     // build reversed like Python
     final b = <int>[];
     for (var i = 0; i < 16; i += 2) {

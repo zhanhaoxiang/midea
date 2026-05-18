@@ -97,6 +97,33 @@ abstract class MessageBase {
 
   Uint8List get header;
   Uint8List get body;
+
+  Map<String, dynamic> get debugAttributes => {};
+
+  static String _hex(List<int> data) =>
+      data.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+
+  static dynamic _formatDebugValue(dynamic value) {
+    if (value is Uint8List) return _hex(value);
+    if (value is List<int>) return _hex(value);
+    return value;
+  }
+
+  @override
+  String toString() {
+    final attrs = <String, dynamic>{
+      ...debugAttributes,
+      'header': header,
+      'body': body,
+      'message_type': MessageType.getKeyFromValue(messageType.value),
+      'body_type': bodyType.toRadixString(16).padLeft(2, '0'),
+      'protocol_version': protocolVersion,
+    };
+    final formatted = attrs.map(
+      (key, value) => MapEntry(key, _formatDebugValue(value)),
+    );
+    return '${runtimeType.toString()} $formatted';
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -179,17 +206,12 @@ class MessageQueryAppliance extends MessageRequest {
 
 class MessageQuestCustom extends MessageRequest {
   MessageQuestCustom({
-    required DeviceType deviceType,
-    required int protocolVersion,
+    required super.deviceType,
+    required super.protocolVersion,
     required MessageType cmdType,
     required Uint8List cmdBody,
   }) : _cmdBody = cmdBody,
-       super(
-         deviceType: deviceType,
-         protocolVersion: protocolVersion,
-         messageType: cmdType,
-         bodyType: ListTypes.x00,
-       );
+       super(messageType: cmdType, bodyType: ListTypes.x00);
 
   final Uint8List _cmdBody;
 
