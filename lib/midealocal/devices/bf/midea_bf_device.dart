@@ -8,10 +8,10 @@ import '../../message.dart';
 import 'message.dart';
 
 // ---------------------------------------------------------------------------
-// DeviceAttributes
+// BfDeviceAttributes
 // ---------------------------------------------------------------------------
 
-class DeviceAttributes {
+class BfDeviceAttributes {
   static const String door = 'door';
   static const String status = 'status';
   static const String timeRemaining = 'time_remaining';
@@ -54,14 +54,14 @@ class MideaBFDevice extends MideaDevice {
   };
 
   static const Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.door: null,
-    DeviceAttributes.status: null,
-    DeviceAttributes.timeRemaining: null,
-    DeviceAttributes.currentTemperature: null,
-    DeviceAttributes.tankEjected: null,
-    DeviceAttributes.waterChangeReminder: null,
-    DeviceAttributes.waterShortage: null,
-    DeviceAttributes.childLock: null,
+    BfDeviceAttributes.door: null,
+    BfDeviceAttributes.status: null,
+    BfDeviceAttributes.timeRemaining: null,
+    BfDeviceAttributes.currentTemperature: null,
+    BfDeviceAttributes.tankEjected: null,
+    BfDeviceAttributes.waterChangeReminder: null,
+    BfDeviceAttributes.waterShortage: null,
+    BfDeviceAttributes.childLock: null,
   };
 
   @override
@@ -77,7 +77,7 @@ class MideaBFDevice extends MideaDevice {
     for (final statusKey in attrs.keys) {
       final value = _getMessageAttribute(message, statusKey);
       if (value != null) {
-        if (statusKey == DeviceAttributes.status) {
+        if (statusKey == BfDeviceAttributes.status) {
           attrs[statusKey] = _statusMap[value] ?? 'Unknown';
         } else {
           attrs[statusKey] = value;
@@ -90,21 +90,21 @@ class MideaBFDevice extends MideaDevice {
 
   dynamic _getMessageAttribute(MessageBFResponse message, String attr) {
     switch (attr) {
-      case DeviceAttributes.status:
+      case BfDeviceAttributes.status:
         return message.status;
-      case DeviceAttributes.timeRemaining:
+      case BfDeviceAttributes.timeRemaining:
         return message.timeRemaining;
-      case DeviceAttributes.currentTemperature:
+      case BfDeviceAttributes.currentTemperature:
         return message.currentTemperature;
-      case DeviceAttributes.childLock:
+      case BfDeviceAttributes.childLock:
         return message.childLock;
-      case DeviceAttributes.door:
+      case BfDeviceAttributes.door:
         return message.door;
-      case DeviceAttributes.tankEjected:
+      case BfDeviceAttributes.tankEjected:
         return message.tankEjected;
-      case DeviceAttributes.waterShortage:
+      case BfDeviceAttributes.waterShortage:
         return message.waterShortage;
-      case DeviceAttributes.waterChangeReminder:
+      case BfDeviceAttributes.waterChangeReminder:
         return message.waterChangeReminder;
       default:
         return null;

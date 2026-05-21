@@ -9,10 +9,10 @@ import '../../message.dart';
 import 'message.dart';
 
 // ---------------------------------------------------------------------------
-// DeviceAttributes
+// DcDeviceAttributes
 // ---------------------------------------------------------------------------
 
-class DeviceAttributes {
+class DcDeviceAttributes {
   static const String power = 'power';
   static const String start = 'start';
   static const String status = 'status';
@@ -129,21 +129,21 @@ class MideaDCDevice extends MideaDevice {
        );
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.power: false,
-    DeviceAttributes.start: false,
-    DeviceAttributes.status: null,
-    DeviceAttributes.program: null,
-    DeviceAttributes.intensity: null,
-    DeviceAttributes.drynessLevel: null,
-    DeviceAttributes.dryTemperature: null,
-    DeviceAttributes.errorCode: null,
-    DeviceAttributes.doorWarn: null,
-    DeviceAttributes.aiSwitch: null,
-    DeviceAttributes.material: null,
-    DeviceAttributes.waterBox: null,
-    DeviceAttributes.washingData: Uint8List(0),
-    DeviceAttributes.progress: null,
-    DeviceAttributes.timeRemaining: null,
+    DcDeviceAttributes.power: false,
+    DcDeviceAttributes.start: false,
+    DcDeviceAttributes.status: null,
+    DcDeviceAttributes.program: null,
+    DcDeviceAttributes.intensity: null,
+    DcDeviceAttributes.drynessLevel: null,
+    DcDeviceAttributes.dryTemperature: null,
+    DcDeviceAttributes.errorCode: null,
+    DcDeviceAttributes.doorWarn: null,
+    DcDeviceAttributes.aiSwitch: null,
+    DcDeviceAttributes.material: null,
+    DcDeviceAttributes.waterBox: null,
+    DcDeviceAttributes.washingData: Uint8List(0),
+    DcDeviceAttributes.progress: null,
+    DcDeviceAttributes.timeRemaining: null,
   };
 
   @override
@@ -159,14 +159,14 @@ class MideaDCDevice extends MideaDevice {
     for (final attr in attrs.keys) {
       if (_hasAttribute(message, attr)) {
         var value = _getAttribute(message, attr);
-        if (attr == DeviceAttributes.progress && value != null) {
+        if (attr == DcDeviceAttributes.progress && value != null) {
           final idx = value as int;
           value = idx >= 0 && idx < _progressList.length
               ? _progressList[idx]
               : null;
-        } else if (attr == DeviceAttributes.status) {
+        } else if (attr == DcDeviceAttributes.status) {
           value = _statusMap[value] ?? value;
-        } else if (attr == DeviceAttributes.program) {
+        } else if (attr == DcDeviceAttributes.program) {
           value = _programMap[value] ?? value;
         }
         attrs[attr] = value;
@@ -178,35 +178,35 @@ class MideaDCDevice extends MideaDevice {
 
   bool _hasAttribute(MessageDCResponse msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case DcDeviceAttributes.power:
         return msg.power != null;
-      case DeviceAttributes.start:
+      case DcDeviceAttributes.start:
         return msg.start != null;
-      case DeviceAttributes.status:
+      case DcDeviceAttributes.status:
         return msg.status != null;
-      case DeviceAttributes.program:
+      case DcDeviceAttributes.program:
         return msg.program != null;
-      case DeviceAttributes.intensity:
+      case DcDeviceAttributes.intensity:
         return msg.intensity != null;
-      case DeviceAttributes.drynessLevel:
+      case DcDeviceAttributes.drynessLevel:
         return msg.drynessLevel != null;
-      case DeviceAttributes.dryTemperature:
+      case DcDeviceAttributes.dryTemperature:
         return msg.dryTemperature != null;
-      case DeviceAttributes.errorCode:
+      case DcDeviceAttributes.errorCode:
         return msg.errorCode != null;
-      case DeviceAttributes.doorWarn:
+      case DcDeviceAttributes.doorWarn:
         return msg.doorWarn != null;
-      case DeviceAttributes.aiSwitch:
+      case DcDeviceAttributes.aiSwitch:
         return msg.aiSwitch != null;
-      case DeviceAttributes.material:
+      case DcDeviceAttributes.material:
         return msg.material != null;
-      case DeviceAttributes.waterBox:
+      case DcDeviceAttributes.waterBox:
         return msg.waterBox != null;
-      case DeviceAttributes.washingData:
+      case DcDeviceAttributes.washingData:
         return msg.washingData != null;
-      case DeviceAttributes.progress:
+      case DcDeviceAttributes.progress:
         return msg.progress != null;
-      case DeviceAttributes.timeRemaining:
+      case DcDeviceAttributes.timeRemaining:
         return msg.timeRemaining != null;
       default:
         return false;
@@ -215,35 +215,35 @@ class MideaDCDevice extends MideaDevice {
 
   dynamic _getAttribute(MessageDCResponse msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case DcDeviceAttributes.power:
         return msg.power;
-      case DeviceAttributes.start:
+      case DcDeviceAttributes.start:
         return msg.start;
-      case DeviceAttributes.status:
+      case DcDeviceAttributes.status:
         return msg.status;
-      case DeviceAttributes.program:
+      case DcDeviceAttributes.program:
         return msg.program;
-      case DeviceAttributes.intensity:
+      case DcDeviceAttributes.intensity:
         return msg.intensity;
-      case DeviceAttributes.drynessLevel:
+      case DcDeviceAttributes.drynessLevel:
         return msg.drynessLevel;
-      case DeviceAttributes.dryTemperature:
+      case DcDeviceAttributes.dryTemperature:
         return msg.dryTemperature;
-      case DeviceAttributes.errorCode:
+      case DcDeviceAttributes.errorCode:
         return msg.errorCode;
-      case DeviceAttributes.doorWarn:
+      case DcDeviceAttributes.doorWarn:
         return msg.doorWarn;
-      case DeviceAttributes.aiSwitch:
+      case DcDeviceAttributes.aiSwitch:
         return msg.aiSwitch;
-      case DeviceAttributes.material:
+      case DcDeviceAttributes.material:
         return msg.material;
-      case DeviceAttributes.waterBox:
+      case DcDeviceAttributes.waterBox:
         return msg.waterBox;
-      case DeviceAttributes.washingData:
+      case DcDeviceAttributes.washingData:
         return msg.washingData;
-      case DeviceAttributes.progress:
+      case DcDeviceAttributes.progress:
         return msg.progress;
-      case DeviceAttributes.timeRemaining:
+      case DcDeviceAttributes.timeRemaining:
         return msg.timeRemaining;
       default:
         return null;
@@ -252,21 +252,21 @@ class MideaDCDevice extends MideaDevice {
 
   @override
   void setAttribute(String attr, dynamic value) {
-    if (attr == DeviceAttributes.power) {
+    if (attr == DcDeviceAttributes.power) {
       if (value is! bool) {
         throw MideaLocalError('[dc] Expected bool');
       }
       final message = MessagePower(messageProtocolVersion);
       message.power = value;
       buildSend(message);
-    } else if (attr == DeviceAttributes.start) {
+    } else if (attr == DcDeviceAttributes.start) {
       if (value is! bool) {
         throw MideaLocalError('[dc] Expected bool');
       }
       final message = MessageStart(messageProtocolVersion);
       message.start = value;
       message.washingData =
-          attrs[DeviceAttributes.washingData] as Uint8List? ?? Uint8List(0);
+          attrs[DcDeviceAttributes.washingData] as Uint8List? ?? Uint8List(0);
       buildSend(message);
     }
   }

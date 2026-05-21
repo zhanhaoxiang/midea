@@ -8,7 +8,7 @@ import '../../device.dart';
 import '../../message.dart';
 import 'message.dart';
 
-class DeviceAttributes {
+class E2DeviceAttributes {
   static const String power = 'power';
   static const String heating = 'heating';
   static const String keepWarm = 'keep_warm';
@@ -107,46 +107,46 @@ class MideaE2Device extends MideaDevice {
   double? get temperatureStep => _temperatureStep;
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.power: false,
-    DeviceAttributes.heating: false,
-    DeviceAttributes.keepWarm: false,
-    DeviceAttributes.protection: false,
-    DeviceAttributes.currentTemperature: null,
-    DeviceAttributes.targetTemperature: 40.0,
-    DeviceAttributes.wholeTankHeating: false,
-    DeviceAttributes.variableHeating: false,
-    DeviceAttributes.heatingTimeRemaining: 0,
-    DeviceAttributes.waterConsumption: null,
-    DeviceAttributes.heatingPower: null,
-    DeviceAttributes.fastHotPower: null,
-    DeviceAttributes.waterFlow: null,
-    DeviceAttributes.sterilization: null,
-    DeviceAttributes.heatWaterLevel: null,
-    DeviceAttributes.eplus: null,
-    DeviceAttributes.fastWash: null,
-    DeviceAttributes.halfHeat: null,
-    DeviceAttributes.summer: null,
-    DeviceAttributes.winter: null,
-    DeviceAttributes.efficient: null,
-    DeviceAttributes.night: null,
-    DeviceAttributes.screenOff: null,
-    DeviceAttributes.sleep: null,
-    DeviceAttributes.cloud: null,
-    DeviceAttributes.appointWash: null,
-    DeviceAttributes.nowWash: null,
-    DeviceAttributes.smartSterilize: null,
-    DeviceAttributes.sterilizeHighTemp: null,
-    DeviceAttributes.uvSterilize: null,
-    DeviceAttributes.dischargeStatus: null,
-    DeviceAttributes.topTemp: null,
-    DeviceAttributes.bottomHeat: null,
-    DeviceAttributes.topHeat: null,
-    DeviceAttributes.waterCyclic: null,
-    DeviceAttributes.waterSystem: null,
-    DeviceAttributes.inTemperature: null,
-    DeviceAttributes.dayWaterConsumption: null,
-    DeviceAttributes.volume: null,
-    DeviceAttributes.rate: null,
+    E2DeviceAttributes.power: false,
+    E2DeviceAttributes.heating: false,
+    E2DeviceAttributes.keepWarm: false,
+    E2DeviceAttributes.protection: false,
+    E2DeviceAttributes.currentTemperature: null,
+    E2DeviceAttributes.targetTemperature: 40.0,
+    E2DeviceAttributes.wholeTankHeating: false,
+    E2DeviceAttributes.variableHeating: false,
+    E2DeviceAttributes.heatingTimeRemaining: 0,
+    E2DeviceAttributes.waterConsumption: null,
+    E2DeviceAttributes.heatingPower: null,
+    E2DeviceAttributes.fastHotPower: null,
+    E2DeviceAttributes.waterFlow: null,
+    E2DeviceAttributes.sterilization: null,
+    E2DeviceAttributes.heatWaterLevel: null,
+    E2DeviceAttributes.eplus: null,
+    E2DeviceAttributes.fastWash: null,
+    E2DeviceAttributes.halfHeat: null,
+    E2DeviceAttributes.summer: null,
+    E2DeviceAttributes.winter: null,
+    E2DeviceAttributes.efficient: null,
+    E2DeviceAttributes.night: null,
+    E2DeviceAttributes.screenOff: null,
+    E2DeviceAttributes.sleep: null,
+    E2DeviceAttributes.cloud: null,
+    E2DeviceAttributes.appointWash: null,
+    E2DeviceAttributes.nowWash: null,
+    E2DeviceAttributes.smartSterilize: null,
+    E2DeviceAttributes.sterilizeHighTemp: null,
+    E2DeviceAttributes.uvSterilize: null,
+    E2DeviceAttributes.dischargeStatus: null,
+    E2DeviceAttributes.topTemp: null,
+    E2DeviceAttributes.bottomHeat: null,
+    E2DeviceAttributes.topHeat: null,
+    E2DeviceAttributes.waterCyclic: null,
+    E2DeviceAttributes.waterSystem: null,
+    E2DeviceAttributes.inTemperature: null,
+    E2DeviceAttributes.dayWaterConsumption: null,
+    E2DeviceAttributes.volume: null,
+    E2DeviceAttributes.rate: null,
   };
 
   OldProtocol _normalizeOldProtocol(dynamic value) {
@@ -188,33 +188,33 @@ class MideaE2Device extends MideaDevice {
 
   MessageSet makeMessageSet() {
     final message = MessageSet(messageProtocolVersion);
-    message.protection = attrs[DeviceAttributes.protection] as bool? ?? false;
+    message.protection = attrs[E2DeviceAttributes.protection] as bool? ?? false;
     message.wholeTankHeating =
-        attrs[DeviceAttributes.wholeTankHeating] as bool? ?? false;
+        attrs[E2DeviceAttributes.wholeTankHeating] as bool? ?? false;
     message.targetTemperature =
-        (attrs[DeviceAttributes.targetTemperature] as num?)?.toDouble() ?? 40.0;
+        (attrs[E2DeviceAttributes.targetTemperature] as num?)?.toDouble() ?? 40.0;
     message.variableHeating =
-        attrs[DeviceAttributes.variableHeating] as bool? ?? false;
+        attrs[E2DeviceAttributes.variableHeating] as bool? ?? false;
     return message;
   }
 
   @override
   void setAttribute(String attr, dynamic value) {
     final readOnlyAttrs = <String>[
-      DeviceAttributes.heating,
-      DeviceAttributes.keepWarm,
-      DeviceAttributes.currentTemperature,
+      E2DeviceAttributes.heating,
+      E2DeviceAttributes.keepWarm,
+      E2DeviceAttributes.currentTemperature,
     ];
     if (readOnlyAttrs.contains(attr)) {
       return;
     }
 
     final oldProtocol = _normalizeOldProtocol(_oldProtocol);
-    if (attr == DeviceAttributes.targetTemperature) {
+    if (attr == E2DeviceAttributes.targetTemperature) {
       value = _precisionHalves == true ? value : (value as num) * 2;
     }
 
-    if (attr == DeviceAttributes.power) {
+    if (attr == E2DeviceAttributes.power) {
       final message = MessagePower(messageProtocolVersion);
       message.power = value as bool;
       buildSend(message);
@@ -223,35 +223,35 @@ class MideaE2Device extends MideaDevice {
 
     if (oldProtocol == OldProtocol.myTrue) {
       final message = makeMessageSet();
-      if (attr == DeviceAttributes.targetTemperature) {
+      if (attr == E2DeviceAttributes.targetTemperature) {
         message.targetTemperature = (value as num).toDouble();
-      } else if (attr == DeviceAttributes.wholeTankHeating) {
+      } else if (attr == E2DeviceAttributes.wholeTankHeating) {
         message.wholeTankHeating = value as bool;
-      } else if (attr == DeviceAttributes.variableHeating) {
+      } else if (attr == E2DeviceAttributes.variableHeating) {
         message.variableHeating = value as bool;
-      } else if (attr == DeviceAttributes.protection) {
+      } else if (attr == E2DeviceAttributes.protection) {
         message.protection = value as bool;
       }
       buildSend(message);
     } else {
       final message = MessageNewProtocolSet(messageProtocolVersion);
-      if (attr == DeviceAttributes.targetTemperature) {
+      if (attr == E2DeviceAttributes.targetTemperature) {
         message.targetTemperature = (value as num).toDouble();
-      } else if (attr == DeviceAttributes.wholeTankHeating) {
+      } else if (attr == E2DeviceAttributes.wholeTankHeating) {
         message.wholeTankHeating = value as bool;
-      } else if (attr == DeviceAttributes.variableHeating) {
+      } else if (attr == E2DeviceAttributes.variableHeating) {
         message.variableHeating = value as bool;
-      } else if (attr == DeviceAttributes.sterilization) {
+      } else if (attr == E2DeviceAttributes.sterilization) {
         message.sterilization = value as bool;
-      } else if (attr == DeviceAttributes.protection) {
+      } else if (attr == E2DeviceAttributes.protection) {
         message.protect = value as bool;
-      } else if (attr == DeviceAttributes.sleep) {
+      } else if (attr == E2DeviceAttributes.sleep) {
         message.sleep = value as bool;
-      } else if (attr == DeviceAttributes.screenOff) {
+      } else if (attr == E2DeviceAttributes.screenOff) {
         message.screenOff = value as bool;
-      } else if (attr == DeviceAttributes.smartSterilize) {
+      } else if (attr == E2DeviceAttributes.smartSterilize) {
         message.smartSterilize = value as bool;
-      } else if (attr == DeviceAttributes.uvSterilize) {
+      } else if (attr == E2DeviceAttributes.uvSterilize) {
         message.uvSterilize = value as bool;
       }
       buildSend(message);

@@ -8,7 +8,7 @@ import '../../device.dart';
 import '../../message.dart';
 import 'message.dart';
 
-class DeviceAttributes {
+class X13DeviceAttributes {
   static const String brightness = 'brightness';
   static const String colorTemperature = 'color_temperature';
   static const String rgbColor = 'rgb_color';
@@ -83,10 +83,10 @@ class MideaX13Device extends MideaDevice {
       for (final status in attrs.keys) {
         final attrValue = _getMessageAttribute(message, status);
         if (attrValue != null) {
-          if (status == DeviceAttributes.effect) {
+          if (status == X13DeviceAttributes.effect) {
             attrs[status] = _effects[attrValue as int];
             newStatus[status] = attrs[status];
-          } else if (status == DeviceAttributes.colorTemperature) {
+          } else if (status == X13DeviceAttributes.colorTemperature) {
             attrs[status] = mideaToKelvin(attrValue as int);
             newStatus[status] = attrs[status];
           } else {
@@ -101,13 +101,13 @@ class MideaX13Device extends MideaDevice {
 
   dynamic _getMessageAttribute(Message13Response msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.brightness:
+      case X13DeviceAttributes.brightness:
         return msg.brightness;
-      case DeviceAttributes.colorTemperature:
+      case X13DeviceAttributes.colorTemperature:
         return msg.colorTemperature;
-      case DeviceAttributes.effect:
+      case X13DeviceAttributes.effect:
         return msg.effect;
-      case DeviceAttributes.power:
+      case X13DeviceAttributes.power:
         return msg.power;
       default:
         return null;
@@ -116,21 +116,21 @@ class MideaX13Device extends MideaDevice {
 
   @override
   void setAttribute(String attr, dynamic value) {
-    if (attr == DeviceAttributes.brightness ||
-        attr == DeviceAttributes.colorTemperature ||
-        attr == DeviceAttributes.effect ||
-        attr == DeviceAttributes.power) {
+    if (attr == X13DeviceAttributes.brightness ||
+        attr == X13DeviceAttributes.colorTemperature ||
+        attr == X13DeviceAttributes.effect ||
+        attr == X13DeviceAttributes.power) {
       final message = MessageSet(messageProtocolVersion);
-      if (attr == DeviceAttributes.effect && _effects.contains(value)) {
+      if (attr == X13DeviceAttributes.effect && _effects.contains(value)) {
         message.effect = _effects.indexOf(value as String);
-      } else if (attr == DeviceAttributes.colorTemperature) {
+      } else if (attr == X13DeviceAttributes.colorTemperature) {
         message.colorTemperature = kelvinToMidea(value as int);
       } else {
         switch (attr) {
-          case DeviceAttributes.power:
+          case X13DeviceAttributes.power:
             message.power = value as bool;
             break;
-          case DeviceAttributes.brightness:
+          case X13DeviceAttributes.brightness:
             message.brightness = value as int;
             break;
         }
@@ -158,11 +158,11 @@ class MideaX13Device extends MideaDevice {
   }
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.brightness: null,
-    DeviceAttributes.colorTemperature: null,
-    DeviceAttributes.rgbColor: null,
-    DeviceAttributes.effect: null,
-    DeviceAttributes.power: false,
+    X13DeviceAttributes.brightness: null,
+    X13DeviceAttributes.colorTemperature: null,
+    X13DeviceAttributes.rgbColor: null,
+    X13DeviceAttributes.effect: null,
+    X13DeviceAttributes.power: false,
   };
 }
 

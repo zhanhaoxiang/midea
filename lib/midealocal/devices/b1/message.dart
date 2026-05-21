@@ -59,7 +59,7 @@ class B1MessageBody extends MessageBody {
   bool get waterChangeReminder => _waterChangeReminder;
 }
 
-class DeviceAttributes {
+class B1DeviceAttributes {
   static const String door = 'door';
   static const String status = 'status';
   static const String timeRemaining = 'time_remaining';
@@ -85,13 +85,13 @@ class MessageB1Response extends MessageResponse {
       _tankEjected = b1Body.tankEjected;
       _waterShortage = b1Body.waterShortage;
       _waterChangeReminder = b1Body.waterChangeReminder;
-      _attributes[DeviceAttributes.door] = _door;
-      _attributes[DeviceAttributes.status] = _status;
-      _attributes[DeviceAttributes.timeRemaining] = _timeRemaining;
-      _attributes[DeviceAttributes.currentTemperature] = _currentTemperature;
-      _attributes[DeviceAttributes.tankEjected] = _tankEjected;
-      _attributes[DeviceAttributes.waterShortage] = _waterShortage;
-      _attributes[DeviceAttributes.waterChangeReminder] = _waterChangeReminder;
+      _attributes[B1DeviceAttributes.door] = _door;
+      _attributes[B1DeviceAttributes.status] = _status;
+      _attributes[B1DeviceAttributes.timeRemaining] = _timeRemaining;
+      _attributes[B1DeviceAttributes.currentTemperature] = _currentTemperature;
+      _attributes[B1DeviceAttributes.tankEjected] = _tankEjected;
+      _attributes[B1DeviceAttributes.waterShortage] = _waterShortage;
+      _attributes[B1DeviceAttributes.waterChangeReminder] = _waterChangeReminder;
     }
   }
 

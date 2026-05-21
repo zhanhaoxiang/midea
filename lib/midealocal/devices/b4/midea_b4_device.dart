@@ -6,7 +6,7 @@ import '../../device.dart';
 import '../../message.dart';
 import 'message.dart';
 
-class DeviceAttributes {
+class B4DeviceAttributes {
   static const String door = 'door';
   static const String status = 'status';
   static const String timeRemaining = 'time_remaining';
@@ -44,13 +44,13 @@ class MideaB4Device extends MideaDevice {
   };
 
   static const Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.door: false,
-    DeviceAttributes.status: null,
-    DeviceAttributes.timeRemaining: null,
-    DeviceAttributes.currentTemperature: null,
-    DeviceAttributes.tankEjected: false,
-    DeviceAttributes.waterChangeReminder: false,
-    DeviceAttributes.waterShortage: false,
+    B4DeviceAttributes.door: false,
+    B4DeviceAttributes.status: null,
+    B4DeviceAttributes.timeRemaining: null,
+    B4DeviceAttributes.currentTemperature: null,
+    B4DeviceAttributes.tankEjected: false,
+    B4DeviceAttributes.waterChangeReminder: false,
+    B4DeviceAttributes.waterShortage: false,
   };
 
   @override
@@ -66,10 +66,10 @@ class MideaB4Device extends MideaDevice {
     for (final statusKey in attrs.keys) {
       if (message.hasAttribute(statusKey)) {
         final value = message.getAttribute(statusKey);
-        if (statusKey == DeviceAttributes.status) {
+        if (statusKey == B4DeviceAttributes.status) {
           final statusValue = _statusMap[value];
-          attrs[DeviceAttributes.status] = statusValue;
-          newStatus[DeviceAttributes.status] = attrs[DeviceAttributes.status];
+          attrs[B4DeviceAttributes.status] = statusValue;
+          newStatus[B4DeviceAttributes.status] = attrs[B4DeviceAttributes.status];
         } else {
           attrs[statusKey] = value;
           newStatus[statusKey] = value;

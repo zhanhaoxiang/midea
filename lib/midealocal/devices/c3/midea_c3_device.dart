@@ -9,10 +9,10 @@ import '../../message.dart';
 import 'message.dart';
 
 // ---------------------------------------------------------------------------
-// DeviceAttributes
+// C3DeviceAttributes
 // ---------------------------------------------------------------------------
 
-class DeviceAttributes {
+class C3DeviceAttributes {
   static const String zone1Power = 'zone1_power';
   static const String zone2Power = 'zone2_power';
   static const String dhwPower = 'dhw_power';
@@ -104,50 +104,50 @@ class MideaC3Device extends MideaDevice {
   }
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.zone1Power: false,
-    DeviceAttributes.zone2Power: false,
-    DeviceAttributes.dhwPower: false,
-    DeviceAttributes.zone1Curve: false,
-    DeviceAttributes.zone2Curve: false,
-    DeviceAttributes.disinfect: false,
-    DeviceAttributes.fastDhw: false,
-    DeviceAttributes.zoneTempType: [false, false],
-    DeviceAttributes.zone1RoomTempMode: false,
-    DeviceAttributes.zone2RoomTempMode: false,
-    DeviceAttributes.zone1WaterTempMode: false,
-    DeviceAttributes.zone2WaterTempMode: false,
-    DeviceAttributes.silentMode: false,
-    DeviceAttributes.silentLevel: C3SilentLevel.off.name,
-    DeviceAttributes.ecoMode: false,
-    DeviceAttributes.tbh: false,
-    DeviceAttributes.mode: 1,
-    DeviceAttributes.modeAuto: 1,
-    DeviceAttributes.zoneTargetTemp: [25.0, 25.0],
-    DeviceAttributes.dhwTargetTemp: 25.0,
-    DeviceAttributes.roomTargetTemp: 30.0,
-    DeviceAttributes.zoneHeatingTempMax: [55.0, 55.0],
-    DeviceAttributes.zoneHeatingTempMin: [25.0, 25.0],
-    DeviceAttributes.zoneCoolingTempMax: [25.0, 25.0],
-    DeviceAttributes.zoneCoolingTempMin: [5.0, 5.0],
-    DeviceAttributes.roomTempMax: 60.0,
-    DeviceAttributes.roomTempMin: 34.0,
-    DeviceAttributes.dhwTempMax: 60.0,
-    DeviceAttributes.dhwTempMin: 20.0,
-    DeviceAttributes.tankActualTemperature: null,
-    DeviceAttributes.targetTemperature: [25.0, 25.0],
-    DeviceAttributes.temperatureMax: [0.0, 0.0],
-    DeviceAttributes.temperatureMin: [0.0, 0.0],
-    DeviceAttributes.totalEnergyConsumption: null,
-    DeviceAttributes.statusHeating: null,
-    DeviceAttributes.statusDhw: null,
-    DeviceAttributes.statusTbh: null,
-    DeviceAttributes.statusIbh: null,
-    DeviceAttributes.totalProducedEnergy: null,
-    DeviceAttributes.outdoorTemperature: null,
-    DeviceAttributes.tempTwIn: null,
-    DeviceAttributes.tempTwOut: null,
-    DeviceAttributes.instantPower0: null,
-    DeviceAttributes.errorCode: 0,
+    C3DeviceAttributes.zone1Power: false,
+    C3DeviceAttributes.zone2Power: false,
+    C3DeviceAttributes.dhwPower: false,
+    C3DeviceAttributes.zone1Curve: false,
+    C3DeviceAttributes.zone2Curve: false,
+    C3DeviceAttributes.disinfect: false,
+    C3DeviceAttributes.fastDhw: false,
+    C3DeviceAttributes.zoneTempType: [false, false],
+    C3DeviceAttributes.zone1RoomTempMode: false,
+    C3DeviceAttributes.zone2RoomTempMode: false,
+    C3DeviceAttributes.zone1WaterTempMode: false,
+    C3DeviceAttributes.zone2WaterTempMode: false,
+    C3DeviceAttributes.silentMode: false,
+    C3DeviceAttributes.silentLevel: C3SilentLevel.off.name,
+    C3DeviceAttributes.ecoMode: false,
+    C3DeviceAttributes.tbh: false,
+    C3DeviceAttributes.mode: 1,
+    C3DeviceAttributes.modeAuto: 1,
+    C3DeviceAttributes.zoneTargetTemp: [25.0, 25.0],
+    C3DeviceAttributes.dhwTargetTemp: 25.0,
+    C3DeviceAttributes.roomTargetTemp: 30.0,
+    C3DeviceAttributes.zoneHeatingTempMax: [55.0, 55.0],
+    C3DeviceAttributes.zoneHeatingTempMin: [25.0, 25.0],
+    C3DeviceAttributes.zoneCoolingTempMax: [25.0, 25.0],
+    C3DeviceAttributes.zoneCoolingTempMin: [5.0, 5.0],
+    C3DeviceAttributes.roomTempMax: 60.0,
+    C3DeviceAttributes.roomTempMin: 34.0,
+    C3DeviceAttributes.dhwTempMax: 60.0,
+    C3DeviceAttributes.dhwTempMin: 20.0,
+    C3DeviceAttributes.tankActualTemperature: null,
+    C3DeviceAttributes.targetTemperature: [25.0, 25.0],
+    C3DeviceAttributes.temperatureMax: [0.0, 0.0],
+    C3DeviceAttributes.temperatureMin: [0.0, 0.0],
+    C3DeviceAttributes.totalEnergyConsumption: null,
+    C3DeviceAttributes.statusHeating: null,
+    C3DeviceAttributes.statusDhw: null,
+    C3DeviceAttributes.statusTbh: null,
+    C3DeviceAttributes.statusIbh: null,
+    C3DeviceAttributes.totalProducedEnergy: null,
+    C3DeviceAttributes.outdoorTemperature: null,
+    C3DeviceAttributes.tempTwIn: null,
+    C3DeviceAttributes.tempTwOut: null,
+    C3DeviceAttributes.instantPower0: null,
+    C3DeviceAttributes.errorCode: 0,
   };
 
   double _defaultTemperatureStep = 0.5;
@@ -181,67 +181,67 @@ class MideaC3Device extends MideaDevice {
       }
     }
 
-    if (newStatus.containsKey(DeviceAttributes.zoneTempType)) {
+    if (newStatus.containsKey(C3DeviceAttributes.zoneTempType)) {
       for (var zone = 0; zone < 2; zone++) {
         final zoneTempType =
-            (attrs[DeviceAttributes.zoneTempType] as List)[zone];
+            (attrs[C3DeviceAttributes.zoneTempType] as List)[zone];
         if (zoneTempType) {
-          attrs[DeviceAttributes.targetTemperature] =
-              (attrs[DeviceAttributes.zoneTargetTemp] as List)[zone];
-          final modeAuto = attrs[DeviceAttributes.modeAuto] as int;
+          attrs[C3DeviceAttributes.targetTemperature] =
+              (attrs[C3DeviceAttributes.zoneTargetTemp] as List)[zone];
+          final modeAuto = attrs[C3DeviceAttributes.modeAuto] as int;
           if (modeAuto == C3DeviceMode.cool.value) {
-            attrs[DeviceAttributes.temperatureMax] =
-                (attrs[DeviceAttributes.zoneCoolingTempMax] as List)[zone];
-            attrs[DeviceAttributes.temperatureMin] =
-                (attrs[DeviceAttributes.zoneCoolingTempMin] as List)[zone];
-          } else if (attrs[DeviceAttributes.mode] == C3DeviceMode.heat.value) {
-            attrs[DeviceAttributes.temperatureMax] =
-                (attrs[DeviceAttributes.zoneHeatingTempMax] as List)[zone];
-            attrs[DeviceAttributes.temperatureMin] =
-                (attrs[DeviceAttributes.zoneHeatingTempMin] as List)[zone];
+            attrs[C3DeviceAttributes.temperatureMax] =
+                (attrs[C3DeviceAttributes.zoneCoolingTempMax] as List)[zone];
+            attrs[C3DeviceAttributes.temperatureMin] =
+                (attrs[C3DeviceAttributes.zoneCoolingTempMin] as List)[zone];
+          } else if (attrs[C3DeviceAttributes.mode] == C3DeviceMode.heat.value) {
+            attrs[C3DeviceAttributes.temperatureMax] =
+                (attrs[C3DeviceAttributes.zoneHeatingTempMax] as List)[zone];
+            attrs[C3DeviceAttributes.temperatureMin] =
+                (attrs[C3DeviceAttributes.zoneHeatingTempMin] as List)[zone];
           }
         } else {
-          attrs[DeviceAttributes.targetTemperature] =
-              attrs[DeviceAttributes.roomTargetTemp];
-          attrs[DeviceAttributes.temperatureMax] =
-              attrs[DeviceAttributes.roomTempMax];
-          attrs[DeviceAttributes.temperatureMin] =
-              attrs[DeviceAttributes.roomTempMin];
+          attrs[C3DeviceAttributes.targetTemperature] =
+              attrs[C3DeviceAttributes.roomTargetTemp];
+          attrs[C3DeviceAttributes.temperatureMax] =
+              attrs[C3DeviceAttributes.roomTempMax];
+          attrs[C3DeviceAttributes.temperatureMin] =
+              attrs[C3DeviceAttributes.roomTempMin];
         }
-        final zone1Power = attrs[DeviceAttributes.zone1Power] as bool;
-        final zone2Power = attrs[DeviceAttributes.zone2Power] as bool;
+        final zone1Power = attrs[C3DeviceAttributes.zone1Power] as bool;
+        final zone2Power = attrs[C3DeviceAttributes.zone2Power] as bool;
         if (zone1Power) {
           if (zoneTempType) {
-            attrs[DeviceAttributes.zone1WaterTempMode] = true;
-            attrs[DeviceAttributes.zone1RoomTempMode] = false;
+            attrs[C3DeviceAttributes.zone1WaterTempMode] = true;
+            attrs[C3DeviceAttributes.zone1RoomTempMode] = false;
           } else {
-            attrs[DeviceAttributes.zone1WaterTempMode] = false;
-            attrs[DeviceAttributes.zone1RoomTempMode] = true;
+            attrs[C3DeviceAttributes.zone1WaterTempMode] = false;
+            attrs[C3DeviceAttributes.zone1RoomTempMode] = true;
           }
         } else {
-          attrs[DeviceAttributes.zone1WaterTempMode] = false;
-          attrs[DeviceAttributes.zone1RoomTempMode] = false;
+          attrs[C3DeviceAttributes.zone1WaterTempMode] = false;
+          attrs[C3DeviceAttributes.zone1RoomTempMode] = false;
         }
         if (zone2Power) {
           if (zoneTempType) {
-            attrs[DeviceAttributes.zone2WaterTempMode] = true;
-            attrs[DeviceAttributes.zone2RoomTempMode] = false;
+            attrs[C3DeviceAttributes.zone2WaterTempMode] = true;
+            attrs[C3DeviceAttributes.zone2RoomTempMode] = false;
           } else {
-            attrs[DeviceAttributes.zone2WaterTempMode] = false;
-            attrs[DeviceAttributes.zone2RoomTempMode] = true;
+            attrs[C3DeviceAttributes.zone2WaterTempMode] = false;
+            attrs[C3DeviceAttributes.zone2RoomTempMode] = true;
           }
         } else {
-          attrs[DeviceAttributes.zone2WaterTempMode] = false;
-          attrs[DeviceAttributes.zone2RoomTempMode] = false;
+          attrs[C3DeviceAttributes.zone2WaterTempMode] = false;
+          attrs[C3DeviceAttributes.zone2RoomTempMode] = false;
         }
-        newStatus[DeviceAttributes.zone1WaterTempMode] =
-            attrs[DeviceAttributes.zone1WaterTempMode];
-        newStatus[DeviceAttributes.zone2WaterTempMode] =
-            attrs[DeviceAttributes.zone2WaterTempMode];
-        newStatus[DeviceAttributes.zone1RoomTempMode] =
-            attrs[DeviceAttributes.zone1RoomTempMode];
-        newStatus[DeviceAttributes.zone2RoomTempMode] =
-            attrs[DeviceAttributes.zone2RoomTempMode];
+        newStatus[C3DeviceAttributes.zone1WaterTempMode] =
+            attrs[C3DeviceAttributes.zone1WaterTempMode];
+        newStatus[C3DeviceAttributes.zone2WaterTempMode] =
+            attrs[C3DeviceAttributes.zone2WaterTempMode];
+        newStatus[C3DeviceAttributes.zone1RoomTempMode] =
+            attrs[C3DeviceAttributes.zone1RoomTempMode];
+        newStatus[C3DeviceAttributes.zone2RoomTempMode] =
+            attrs[C3DeviceAttributes.zone2RoomTempMode];
       }
     }
 
@@ -250,77 +250,77 @@ class MideaC3Device extends MideaDevice {
 
   bool _hasAttribute(MessageC3Response msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.zone1Power:
+      case C3DeviceAttributes.zone1Power:
         return msg.zone1Power != null;
-      case DeviceAttributes.zone2Power:
+      case C3DeviceAttributes.zone2Power:
         return msg.zone2Power != null;
-      case DeviceAttributes.dhwPower:
+      case C3DeviceAttributes.dhwPower:
         return msg.dhwPower != null;
-      case DeviceAttributes.zone1Curve:
+      case C3DeviceAttributes.zone1Curve:
         return msg.zone1Curve != null;
-      case DeviceAttributes.zone2Curve:
+      case C3DeviceAttributes.zone2Curve:
         return msg.zone2Curve != null;
-      case DeviceAttributes.disinfect:
+      case C3DeviceAttributes.disinfect:
         return msg.disinfect != null;
-      case DeviceAttributes.fastDhw:
+      case C3DeviceAttributes.fastDhw:
         return msg.fastDhw != null;
-      case DeviceAttributes.tbh:
+      case C3DeviceAttributes.tbh:
         return msg.tbh != null;
-      case DeviceAttributes.mode:
+      case C3DeviceAttributes.mode:
         return msg.mode != null;
-      case DeviceAttributes.modeAuto:
+      case C3DeviceAttributes.modeAuto:
         return msg.modeAuto != null;
-      case DeviceAttributes.zoneTargetTemp:
+      case C3DeviceAttributes.zoneTargetTemp:
         return msg.zoneTargetTemp != null;
-      case DeviceAttributes.dhwTargetTemp:
+      case C3DeviceAttributes.dhwTargetTemp:
         return msg.dhwTargetTemp != null;
-      case DeviceAttributes.roomTargetTemp:
+      case C3DeviceAttributes.roomTargetTemp:
         return msg.roomTargetTemp != null;
-      case DeviceAttributes.zoneHeatingTempMax:
+      case C3DeviceAttributes.zoneHeatingTempMax:
         return msg.zoneHeatingTempMax != null;
-      case DeviceAttributes.zoneHeatingTempMin:
+      case C3DeviceAttributes.zoneHeatingTempMin:
         return msg.zoneHeatingTempMin != null;
-      case DeviceAttributes.zoneCoolingTempMax:
+      case C3DeviceAttributes.zoneCoolingTempMax:
         return msg.zoneCoolingTempMax != null;
-      case DeviceAttributes.zoneCoolingTempMin:
+      case C3DeviceAttributes.zoneCoolingTempMin:
         return msg.zoneCoolingTempMin != null;
-      case DeviceAttributes.roomTempMax:
+      case C3DeviceAttributes.roomTempMax:
         return msg.roomTempMax != null;
-      case DeviceAttributes.roomTempMin:
+      case C3DeviceAttributes.roomTempMin:
         return msg.roomTempMin != null;
-      case DeviceAttributes.dhwTempMax:
+      case C3DeviceAttributes.dhwTempMax:
         return msg.dhwTempMax != null;
-      case DeviceAttributes.dhwTempMin:
+      case C3DeviceAttributes.dhwTempMin:
         return msg.dhwTempMin != null;
-      case DeviceAttributes.tankActualTemperature:
+      case C3DeviceAttributes.tankActualTemperature:
         return msg.tankActualTemperature != null;
-      case DeviceAttributes.errorCode:
+      case C3DeviceAttributes.errorCode:
         return msg.errorCode != null;
-      case DeviceAttributes.silentMode:
+      case C3DeviceAttributes.silentMode:
         return msg.silentMode != null;
-      case DeviceAttributes.silentLevel:
+      case C3DeviceAttributes.silentLevel:
         return msg.silentLevel != null;
-      case DeviceAttributes.ecoMode:
+      case C3DeviceAttributes.ecoMode:
         return msg.ecoMode != null;
-      case DeviceAttributes.statusHeating:
+      case C3DeviceAttributes.statusHeating:
         return msg.statusHeating != null;
-      case DeviceAttributes.statusDhw:
+      case C3DeviceAttributes.statusDhw:
         return msg.statusDhw != null;
-      case DeviceAttributes.statusTbh:
+      case C3DeviceAttributes.statusTbh:
         return msg.statusTbh != null;
-      case DeviceAttributes.statusIbh:
+      case C3DeviceAttributes.statusIbh:
         return msg.statusIbh != null;
-      case DeviceAttributes.totalEnergyConsumption:
+      case C3DeviceAttributes.totalEnergyConsumption:
         return msg.totalEnergyConsumption != null;
-      case DeviceAttributes.totalProducedEnergy:
+      case C3DeviceAttributes.totalProducedEnergy:
         return msg.totalProducedEnergy != null;
-      case DeviceAttributes.outdoorTemperature:
+      case C3DeviceAttributes.outdoorTemperature:
         return msg.outdoorTemperature != null;
-      case DeviceAttributes.tempTwIn:
+      case C3DeviceAttributes.tempTwIn:
         return msg.tempTwIn != null;
-      case DeviceAttributes.tempTwOut:
+      case C3DeviceAttributes.tempTwOut:
         return msg.tempTwOut != null;
-      case DeviceAttributes.instantPower0:
+      case C3DeviceAttributes.instantPower0:
         return msg.instantPower0 != null;
       default:
         return false;
@@ -329,77 +329,77 @@ class MideaC3Device extends MideaDevice {
 
   dynamic _getAttribute(MessageC3Response msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.zone1Power:
+      case C3DeviceAttributes.zone1Power:
         return msg.zone1Power;
-      case DeviceAttributes.zone2Power:
+      case C3DeviceAttributes.zone2Power:
         return msg.zone2Power;
-      case DeviceAttributes.dhwPower:
+      case C3DeviceAttributes.dhwPower:
         return msg.dhwPower;
-      case DeviceAttributes.zone1Curve:
+      case C3DeviceAttributes.zone1Curve:
         return msg.zone1Curve;
-      case DeviceAttributes.zone2Curve:
+      case C3DeviceAttributes.zone2Curve:
         return msg.zone2Curve;
-      case DeviceAttributes.disinfect:
+      case C3DeviceAttributes.disinfect:
         return msg.disinfect;
-      case DeviceAttributes.fastDhw:
+      case C3DeviceAttributes.fastDhw:
         return msg.fastDhw;
-      case DeviceAttributes.tbh:
+      case C3DeviceAttributes.tbh:
         return msg.tbh;
-      case DeviceAttributes.mode:
+      case C3DeviceAttributes.mode:
         return msg.mode;
-      case DeviceAttributes.modeAuto:
+      case C3DeviceAttributes.modeAuto:
         return msg.modeAuto;
-      case DeviceAttributes.zoneTargetTemp:
+      case C3DeviceAttributes.zoneTargetTemp:
         return msg.zoneTargetTemp;
-      case DeviceAttributes.dhwTargetTemp:
+      case C3DeviceAttributes.dhwTargetTemp:
         return msg.dhwTargetTemp;
-      case DeviceAttributes.roomTargetTemp:
+      case C3DeviceAttributes.roomTargetTemp:
         return msg.roomTargetTemp;
-      case DeviceAttributes.zoneHeatingTempMax:
+      case C3DeviceAttributes.zoneHeatingTempMax:
         return msg.zoneHeatingTempMax;
-      case DeviceAttributes.zoneHeatingTempMin:
+      case C3DeviceAttributes.zoneHeatingTempMin:
         return msg.zoneHeatingTempMin;
-      case DeviceAttributes.zoneCoolingTempMax:
+      case C3DeviceAttributes.zoneCoolingTempMax:
         return msg.zoneCoolingTempMax;
-      case DeviceAttributes.zoneCoolingTempMin:
+      case C3DeviceAttributes.zoneCoolingTempMin:
         return msg.zoneCoolingTempMin;
-      case DeviceAttributes.roomTempMax:
+      case C3DeviceAttributes.roomTempMax:
         return msg.roomTempMax;
-      case DeviceAttributes.roomTempMin:
+      case C3DeviceAttributes.roomTempMin:
         return msg.roomTempMin;
-      case DeviceAttributes.dhwTempMax:
+      case C3DeviceAttributes.dhwTempMax:
         return msg.dhwTempMax;
-      case DeviceAttributes.dhwTempMin:
+      case C3DeviceAttributes.dhwTempMin:
         return msg.dhwTempMin;
-      case DeviceAttributes.tankActualTemperature:
+      case C3DeviceAttributes.tankActualTemperature:
         return msg.tankActualTemperature;
-      case DeviceAttributes.errorCode:
+      case C3DeviceAttributes.errorCode:
         return msg.errorCode;
-      case DeviceAttributes.silentMode:
+      case C3DeviceAttributes.silentMode:
         return msg.silentMode;
-      case DeviceAttributes.silentLevel:
+      case C3DeviceAttributes.silentLevel:
         return msg.silentLevel;
-      case DeviceAttributes.ecoMode:
+      case C3DeviceAttributes.ecoMode:
         return msg.ecoMode;
-      case DeviceAttributes.statusHeating:
+      case C3DeviceAttributes.statusHeating:
         return msg.statusHeating;
-      case DeviceAttributes.statusDhw:
+      case C3DeviceAttributes.statusDhw:
         return msg.statusDhw;
-      case DeviceAttributes.statusTbh:
+      case C3DeviceAttributes.statusTbh:
         return msg.statusTbh;
-      case DeviceAttributes.statusIbh:
+      case C3DeviceAttributes.statusIbh:
         return msg.statusIbh;
-      case DeviceAttributes.totalEnergyConsumption:
+      case C3DeviceAttributes.totalEnergyConsumption:
         return msg.totalEnergyConsumption;
-      case DeviceAttributes.totalProducedEnergy:
+      case C3DeviceAttributes.totalProducedEnergy:
         return msg.totalProducedEnergy;
-      case DeviceAttributes.outdoorTemperature:
+      case C3DeviceAttributes.outdoorTemperature:
         return msg.outdoorTemperature;
-      case DeviceAttributes.tempTwIn:
+      case C3DeviceAttributes.tempTwIn:
         return msg.tempTwIn;
-      case DeviceAttributes.tempTwOut:
+      case C3DeviceAttributes.tempTwOut:
         return msg.tempTwOut;
-      case DeviceAttributes.instantPower0:
+      case C3DeviceAttributes.instantPower0:
         return msg.instantPower0;
       default:
         return null;
@@ -408,20 +408,20 @@ class MideaC3Device extends MideaDevice {
 
   MessageSet makeMessageSet() {
     final message = MessageSet(messageProtocolVersion);
-    message.zone1Power = attrs[DeviceAttributes.zone1Power] as bool? ?? false;
-    message.zone2Power = attrs[DeviceAttributes.zone2Power] as bool? ?? false;
-    message.dhwPower = attrs[DeviceAttributes.dhwPower] as bool? ?? false;
-    message.mode = attrs[DeviceAttributes.mode] as int? ?? 0;
-    message.zoneTargetTemp = (attrs[DeviceAttributes.zoneTargetTemp] as List)
+    message.zone1Power = attrs[C3DeviceAttributes.zone1Power] as bool? ?? false;
+    message.zone2Power = attrs[C3DeviceAttributes.zone2Power] as bool? ?? false;
+    message.dhwPower = attrs[C3DeviceAttributes.dhwPower] as bool? ?? false;
+    message.mode = attrs[C3DeviceAttributes.mode] as int? ?? 0;
+    message.zoneTargetTemp = (attrs[C3DeviceAttributes.zoneTargetTemp] as List)
         .cast<double>();
     message.dhwTargetTemp =
-        attrs[DeviceAttributes.dhwTargetTemp] as double? ?? 25.0;
+        attrs[C3DeviceAttributes.dhwTargetTemp] as double? ?? 25.0;
     message.roomTargetTemp =
-        attrs[DeviceAttributes.roomTargetTemp] as double? ?? 30.0;
-    message.zone1Curve = attrs[DeviceAttributes.zone1Curve] as bool? ?? false;
-    message.zone2Curve = attrs[DeviceAttributes.zone2Curve] as bool? ?? false;
-    message.tbh = attrs[DeviceAttributes.tbh] as bool? ?? false;
-    message.fastDhw = attrs[DeviceAttributes.fastDhw] as bool? ?? false;
+        attrs[C3DeviceAttributes.roomTargetTemp] as double? ?? 30.0;
+    message.zone1Curve = attrs[C3DeviceAttributes.zone1Curve] as bool? ?? false;
+    message.zone2Curve = attrs[C3DeviceAttributes.zone2Curve] as bool? ?? false;
+    message.tbh = attrs[C3DeviceAttributes.tbh] as bool? ?? false;
+    message.fastDhw = attrs[C3DeviceAttributes.fastDhw] as bool? ?? false;
     return message;
   }
 
@@ -432,56 +432,56 @@ class MideaC3Device extends MideaDevice {
     if (_settableAttributes.contains(attr)) {
       message = makeMessageSet();
       switch (attr) {
-        case DeviceAttributes.zone1Power:
+        case C3DeviceAttributes.zone1Power:
           (message as MessageSet).zone1Power = value as bool;
           break;
-        case DeviceAttributes.zone2Power:
+        case C3DeviceAttributes.zone2Power:
           (message as MessageSet).zone2Power = value as bool;
           break;
-        case DeviceAttributes.dhwPower:
+        case C3DeviceAttributes.dhwPower:
           (message as MessageSet).dhwPower = value as bool;
           break;
-        case DeviceAttributes.zone1Curve:
+        case C3DeviceAttributes.zone1Curve:
           (message as MessageSet).zone1Curve = value as bool;
           break;
-        case DeviceAttributes.zone2Curve:
+        case C3DeviceAttributes.zone2Curve:
           (message as MessageSet).zone2Curve = value as bool;
           break;
-        case DeviceAttributes.tbh:
+        case C3DeviceAttributes.tbh:
           (message as MessageSet).tbh = value as bool;
           break;
-        case DeviceAttributes.fastDhw:
+        case C3DeviceAttributes.fastDhw:
           (message as MessageSet).fastDhw = value as bool;
           break;
-        case DeviceAttributes.dhwTargetTemp:
+        case C3DeviceAttributes.dhwTargetTemp:
           (message as MessageSet).dhwTargetTemp = value as double;
           break;
-        case DeviceAttributes.zoneTargetTemp:
+        case C3DeviceAttributes.zoneTargetTemp:
           (message as MessageSet).zoneTargetTemp = (value as List)
               .cast<double>();
           break;
       }
-    } else if (attr == DeviceAttributes.ecoMode) {
+    } else if (attr == C3DeviceAttributes.ecoMode) {
       message = MessageSetECO(messageProtocolVersion);
       (message as MessageSetECO).ecoMode = value as bool;
-    } else if (attr == DeviceAttributes.disinfect) {
+    } else if (attr == C3DeviceAttributes.disinfect) {
       message = MessageSetDisinfect(messageProtocolVersion);
       (message as MessageSetDisinfect).disinfect = value as bool;
-    } else if (attr == DeviceAttributes.silentMode ||
-        attr == DeviceAttributes.silentLevel) {
+    } else if (attr == C3DeviceAttributes.silentMode ||
+        attr == C3DeviceAttributes.silentLevel) {
       final silentMsg = MessageSetSilent(messageProtocolVersion);
       message = silentMsg;
-      if (attr == DeviceAttributes.silentMode && value is bool) {
+      if (attr == C3DeviceAttributes.silentMode && value is bool) {
         silentMsg.silentMode = value;
         silentMsg.silentLevel =
             value &&
-                attrs[DeviceAttributes.silentLevel] == C3SilentLevel.off.name
+                attrs[C3DeviceAttributes.silentLevel] == C3SilentLevel.off.name
             ? C3SilentLevel.silent
             : C3SilentLevel.values.firstWhere(
-                (e) => e.name == attrs[DeviceAttributes.silentLevel],
+                (e) => e.name == attrs[C3DeviceAttributes.silentLevel],
                 orElse: () => C3SilentLevel.off,
               );
-      } else if (attr == DeviceAttributes.silentLevel && value is String) {
+      } else if (attr == C3DeviceAttributes.silentLevel && value is String) {
         silentMsg.silentLevel = C3SilentLevel.values.firstWhere(
           (e) => e.name == value,
           orElse: () => C3SilentLevel.off,
@@ -496,14 +496,14 @@ class MideaC3Device extends MideaDevice {
   }
 
   static const _settableAttributes = {
-    DeviceAttributes.zone1Power,
-    DeviceAttributes.zone2Power,
-    DeviceAttributes.dhwPower,
-    DeviceAttributes.zone1Curve,
-    DeviceAttributes.zone2Curve,
-    DeviceAttributes.tbh,
-    DeviceAttributes.fastDhw,
-    DeviceAttributes.dhwTargetTemp,
+    C3DeviceAttributes.zone1Power,
+    C3DeviceAttributes.zone2Power,
+    C3DeviceAttributes.dhwPower,
+    C3DeviceAttributes.zone1Curve,
+    C3DeviceAttributes.zone2Curve,
+    C3DeviceAttributes.tbh,
+    C3DeviceAttributes.fastDhw,
+    C3DeviceAttributes.dhwTargetTemp,
   };
 
   void setMode(int zone, int mode) {
@@ -527,7 +527,7 @@ class MideaC3Device extends MideaDevice {
     }
 
     final message = makeMessageSet();
-    final zoneTempType = (attrs[DeviceAttributes.zoneTempType] as List)[zone];
+    final zoneTempType = (attrs[C3DeviceAttributes.zoneTempType] as List)[zone];
     if (zoneTempType) {
       message.zoneTargetTemp[zone] = targetTemperature;
     } else {

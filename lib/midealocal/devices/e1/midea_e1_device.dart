@@ -8,7 +8,7 @@ import '../../exceptions.dart';
 import '../../message.dart';
 import 'message.dart';
 
-class DeviceAttributes {
+class E1DeviceAttributes {
   static const String power = 'power';
   static const String status = 'status';
   static const String mode = 'mode';
@@ -62,30 +62,30 @@ class MideaE1Device extends MideaDevice {
        );
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.power: false,
-    DeviceAttributes.status: null,
-    DeviceAttributes.mode: 0,
-    DeviceAttributes.additional: 0,
-    DeviceAttributes.uv: false,
-    DeviceAttributes.dry: false,
-    DeviceAttributes.dryStatus: false,
-    DeviceAttributes.door: false,
-    DeviceAttributes.rinseAid: false,
-    DeviceAttributes.salt: false,
-    DeviceAttributes.childLock: false,
-    DeviceAttributes.storage: false,
-    DeviceAttributes.storageStatus: false,
-    DeviceAttributes.timeRemaining: null,
-    DeviceAttributes.progress: null,
-    DeviceAttributes.storageRemaining: null,
-    DeviceAttributes.temperature: null,
-    DeviceAttributes.humidity: null,
-    DeviceAttributes.waterswitch: false,
-    DeviceAttributes.waterLack: false,
-    DeviceAttributes.errorCode: null,
-    DeviceAttributes.softwater: 0,
-    DeviceAttributes.wrongOperation: null,
-    DeviceAttributes.bright: 0,
+    E1DeviceAttributes.power: false,
+    E1DeviceAttributes.status: null,
+    E1DeviceAttributes.mode: 0,
+    E1DeviceAttributes.additional: 0,
+    E1DeviceAttributes.uv: false,
+    E1DeviceAttributes.dry: false,
+    E1DeviceAttributes.dryStatus: false,
+    E1DeviceAttributes.door: false,
+    E1DeviceAttributes.rinseAid: false,
+    E1DeviceAttributes.salt: false,
+    E1DeviceAttributes.childLock: false,
+    E1DeviceAttributes.storage: false,
+    E1DeviceAttributes.storageStatus: false,
+    E1DeviceAttributes.timeRemaining: null,
+    E1DeviceAttributes.progress: null,
+    E1DeviceAttributes.storageRemaining: null,
+    E1DeviceAttributes.temperature: null,
+    E1DeviceAttributes.humidity: null,
+    E1DeviceAttributes.waterswitch: false,
+    E1DeviceAttributes.waterLack: false,
+    E1DeviceAttributes.errorCode: null,
+    E1DeviceAttributes.softwater: 0,
+    E1DeviceAttributes.wrongOperation: null,
+    E1DeviceAttributes.bright: 0,
   };
 
   static const Map<int, String> _modes = {
@@ -144,15 +144,15 @@ class MideaE1Device extends MideaDevice {
     for (final attr in attrs.keys) {
       if (_hasAttribute(message, attr)) {
         var value = _getAttribute(message, attr);
-        if (attr == DeviceAttributes.status) {
+        if (attr == E1DeviceAttributes.status) {
           value = _statusMap[value];
-        } else if (attr == DeviceAttributes.progress) {
+        } else if (attr == E1DeviceAttributes.progress) {
           if (value != null && value < _progressList.length) {
             value = _progressList[value];
           } else {
             value = null;
           }
-        } else if (attr == DeviceAttributes.mode) {
+        } else if (attr == E1DeviceAttributes.mode) {
           value = _modes[value];
         }
         attrs[attr] = value;
@@ -164,53 +164,53 @@ class MideaE1Device extends MideaDevice {
 
   bool _hasAttribute(MessageE1Response msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case E1DeviceAttributes.power:
         return msg.power != null;
-      case DeviceAttributes.status:
+      case E1DeviceAttributes.status:
         return msg.status != null;
-      case DeviceAttributes.mode:
+      case E1DeviceAttributes.mode:
         return msg.mode != null;
-      case DeviceAttributes.additional:
+      case E1DeviceAttributes.additional:
         return msg.additional != null;
-      case DeviceAttributes.door:
+      case E1DeviceAttributes.door:
         return msg.door != null;
-      case DeviceAttributes.rinseAid:
+      case E1DeviceAttributes.rinseAid:
         return msg.rinseAid != null;
-      case DeviceAttributes.salt:
+      case E1DeviceAttributes.salt:
         return msg.salt != null;
-      case DeviceAttributes.childLock:
+      case E1DeviceAttributes.childLock:
         return msg.childLock != null;
-      case DeviceAttributes.uv:
+      case E1DeviceAttributes.uv:
         return msg.uv != null;
-      case DeviceAttributes.dry:
+      case E1DeviceAttributes.dry:
         return msg.dry != null;
-      case DeviceAttributes.dryStatus:
+      case E1DeviceAttributes.dryStatus:
         return msg.dryStatus != null;
-      case DeviceAttributes.storage:
+      case E1DeviceAttributes.storage:
         return msg.storage != null;
-      case DeviceAttributes.storageStatus:
+      case E1DeviceAttributes.storageStatus:
         return msg.storageStatus != null;
-      case DeviceAttributes.timeRemaining:
+      case E1DeviceAttributes.timeRemaining:
         return msg.timeRemaining != null;
-      case DeviceAttributes.progress:
+      case E1DeviceAttributes.progress:
         return msg.progress != null;
-      case DeviceAttributes.storageRemaining:
+      case E1DeviceAttributes.storageRemaining:
         return msg.storageRemaining != null;
-      case DeviceAttributes.temperature:
+      case E1DeviceAttributes.temperature:
         return msg.temperature != null;
-      case DeviceAttributes.humidity:
+      case E1DeviceAttributes.humidity:
         return msg.humidity != null;
-      case DeviceAttributes.waterswitch:
+      case E1DeviceAttributes.waterswitch:
         return msg.waterswitch != null;
-      case DeviceAttributes.waterLack:
+      case E1DeviceAttributes.waterLack:
         return msg.waterLack != null;
-      case DeviceAttributes.errorCode:
+      case E1DeviceAttributes.errorCode:
         return msg.errorCode != null;
-      case DeviceAttributes.softwater:
+      case E1DeviceAttributes.softwater:
         return msg.softwater != null;
-      case DeviceAttributes.wrongOperation:
+      case E1DeviceAttributes.wrongOperation:
         return msg.wrongOperation != null;
-      case DeviceAttributes.bright:
+      case E1DeviceAttributes.bright:
         return msg.bright != null;
       default:
         return false;
@@ -219,53 +219,53 @@ class MideaE1Device extends MideaDevice {
 
   dynamic _getAttribute(MessageE1Response msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case E1DeviceAttributes.power:
         return msg.power;
-      case DeviceAttributes.status:
+      case E1DeviceAttributes.status:
         return msg.status;
-      case DeviceAttributes.mode:
+      case E1DeviceAttributes.mode:
         return msg.mode;
-      case DeviceAttributes.additional:
+      case E1DeviceAttributes.additional:
         return msg.additional;
-      case DeviceAttributes.door:
+      case E1DeviceAttributes.door:
         return msg.door;
-      case DeviceAttributes.rinseAid:
+      case E1DeviceAttributes.rinseAid:
         return msg.rinseAid;
-      case DeviceAttributes.salt:
+      case E1DeviceAttributes.salt:
         return msg.salt;
-      case DeviceAttributes.childLock:
+      case E1DeviceAttributes.childLock:
         return msg.childLock;
-      case DeviceAttributes.uv:
+      case E1DeviceAttributes.uv:
         return msg.uv;
-      case DeviceAttributes.dry:
+      case E1DeviceAttributes.dry:
         return msg.dry;
-      case DeviceAttributes.dryStatus:
+      case E1DeviceAttributes.dryStatus:
         return msg.dryStatus;
-      case DeviceAttributes.storage:
+      case E1DeviceAttributes.storage:
         return msg.storage;
-      case DeviceAttributes.storageStatus:
+      case E1DeviceAttributes.storageStatus:
         return msg.storageStatus;
-      case DeviceAttributes.timeRemaining:
+      case E1DeviceAttributes.timeRemaining:
         return msg.timeRemaining;
-      case DeviceAttributes.progress:
+      case E1DeviceAttributes.progress:
         return msg.progress;
-      case DeviceAttributes.storageRemaining:
+      case E1DeviceAttributes.storageRemaining:
         return msg.storageRemaining;
-      case DeviceAttributes.temperature:
+      case E1DeviceAttributes.temperature:
         return msg.temperature;
-      case DeviceAttributes.humidity:
+      case E1DeviceAttributes.humidity:
         return msg.humidity;
-      case DeviceAttributes.waterswitch:
+      case E1DeviceAttributes.waterswitch:
         return msg.waterswitch;
-      case DeviceAttributes.waterLack:
+      case E1DeviceAttributes.waterLack:
         return msg.waterLack;
-      case DeviceAttributes.errorCode:
+      case E1DeviceAttributes.errorCode:
         return msg.errorCode;
-      case DeviceAttributes.softwater:
+      case E1DeviceAttributes.softwater:
         return msg.softwater;
-      case DeviceAttributes.wrongOperation:
+      case E1DeviceAttributes.wrongOperation:
         return msg.wrongOperation;
-      case DeviceAttributes.bright:
+      case E1DeviceAttributes.bright:
         return msg.bright;
       default:
         return null;
@@ -277,15 +277,15 @@ class MideaE1Device extends MideaDevice {
     if (value is! bool) {
       throw ValueWrongType('[e1] Expected bool');
     }
-    if (attr == DeviceAttributes.power) {
+    if (attr == E1DeviceAttributes.power) {
       final msg = MessagePower(messageProtocolVersion);
       msg.power = value;
       buildSend(msg);
-    } else if (attr == DeviceAttributes.childLock) {
+    } else if (attr == E1DeviceAttributes.childLock) {
       final msg = MessageLock(messageProtocolVersion);
       msg.lock = value;
       buildSend(msg);
-    } else if (attr == DeviceAttributes.storage) {
+    } else if (attr == E1DeviceAttributes.storage) {
       final msg = MessageStorage(messageProtocolVersion);
       msg.storage = value;
       buildSend(msg);

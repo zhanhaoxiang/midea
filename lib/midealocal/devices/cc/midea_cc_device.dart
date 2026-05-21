@@ -6,7 +6,7 @@ import '../../device.dart';
 import '../../message.dart';
 import 'message.dart';
 
-class DeviceAttributes {
+class CcDeviceAttributes {
   static const String power = 'power';
   static const String mode = 'mode';
   static const String targetTemperature = 'target_temperature';
@@ -62,22 +62,22 @@ class MideaCCDevice extends MideaDevice {
   };
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.power: false,
-    DeviceAttributes.mode: 1,
-    DeviceAttributes.targetTemperature: 26.0,
-    DeviceAttributes.fanSpeed: 0x80,
-    DeviceAttributes.sleepMode: false,
-    DeviceAttributes.ecoMode: false,
-    DeviceAttributes.nightLight: false,
-    DeviceAttributes.ventilation: false,
-    DeviceAttributes.auxHeating: false,
-    DeviceAttributes.auxHeatStatus: 0,
-    DeviceAttributes.autoAuxHeatRunning: false,
-    DeviceAttributes.swing: false,
-    DeviceAttributes.fanSpeedLevel: null,
-    DeviceAttributes.indoorTemperature: null,
-    DeviceAttributes.temperaturePrecision: 1,
-    DeviceAttributes.tempFahrenheit: false,
+    CcDeviceAttributes.power: false,
+    CcDeviceAttributes.mode: 1,
+    CcDeviceAttributes.targetTemperature: 26.0,
+    CcDeviceAttributes.fanSpeed: 0x80,
+    CcDeviceAttributes.sleepMode: false,
+    CcDeviceAttributes.ecoMode: false,
+    CcDeviceAttributes.nightLight: false,
+    CcDeviceAttributes.ventilation: false,
+    CcDeviceAttributes.auxHeating: false,
+    CcDeviceAttributes.auxHeatStatus: 0,
+    CcDeviceAttributes.autoAuxHeatRunning: false,
+    CcDeviceAttributes.swing: false,
+    CcDeviceAttributes.fanSpeedLevel: null,
+    CcDeviceAttributes.indoorTemperature: null,
+    CcDeviceAttributes.temperaturePrecision: 1,
+    CcDeviceAttributes.tempFahrenheit: false,
   };
 
   Map<int, String>? _fanSpeeds;
@@ -100,7 +100,7 @@ class MideaCCDevice extends MideaDevice {
     for (final status in attrs.keys) {
       if (message.hasAttribute(status)) {
         final value = message.getAttribute(status);
-        if (status == DeviceAttributes.fanSpeed) {
+        if (status == CcDeviceAttributes.fanSpeed) {
           fanSpeed = value;
         } else {
           attrs[status] = value;
@@ -109,28 +109,28 @@ class MideaCCDevice extends MideaDevice {
       }
     }
 
-    if (fanSpeed != null && attrs[DeviceAttributes.fanSpeedLevel] != null) {
+    if (fanSpeed != null && attrs[CcDeviceAttributes.fanSpeedLevel] != null) {
       if (_fanSpeeds == null) {
-        if (attrs[DeviceAttributes.fanSpeedLevel] == true) {
+        if (attrs[CcDeviceAttributes.fanSpeedLevel] == true) {
           _fanSpeeds = _fanSpeeds3Level;
         } else {
           _fanSpeeds = _fanSpeeds7Level;
         }
       }
       if (_fanSpeeds!.containsKey(fanSpeed)) {
-        attrs[DeviceAttributes.fanSpeed] = _fanSpeeds![fanSpeed];
+        attrs[CcDeviceAttributes.fanSpeed] = _fanSpeeds![fanSpeed];
       } else {
-        attrs[DeviceAttributes.fanSpeed] = null;
+        attrs[CcDeviceAttributes.fanSpeed] = null;
       }
-      newStatus[DeviceAttributes.fanSpeed] = attrs[DeviceAttributes.fanSpeed];
+      newStatus[CcDeviceAttributes.fanSpeed] = attrs[CcDeviceAttributes.fanSpeed];
     }
 
     final auxHeating =
-        (attrs[DeviceAttributes.auxHeatStatus] == 1 ||
-        attrs[DeviceAttributes.autoAuxHeatRunning] == true);
-    if (attrs[DeviceAttributes.auxHeating] != auxHeating) {
-      attrs[DeviceAttributes.auxHeating] = auxHeating;
-      newStatus[DeviceAttributes.auxHeating] = auxHeating;
+        (attrs[CcDeviceAttributes.auxHeatStatus] == 1 ||
+        attrs[CcDeviceAttributes.autoAuxHeatRunning] == true);
+    if (attrs[CcDeviceAttributes.auxHeating] != auxHeating) {
+      attrs[CcDeviceAttributes.auxHeating] = auxHeating;
+      newStatus[CcDeviceAttributes.auxHeating] = auxHeating;
     }
 
     return newStatus;
@@ -138,12 +138,12 @@ class MideaCCDevice extends MideaDevice {
 
   MessageSet makeMessageSet() {
     final message = MessageSet(messageProtocolVersion);
-    message.power = attrs[DeviceAttributes.power] as bool? ?? false;
-    message.mode = attrs[DeviceAttributes.mode] as int? ?? 1;
+    message.power = attrs[CcDeviceAttributes.power] as bool? ?? false;
+    message.mode = attrs[CcDeviceAttributes.mode] as int? ?? 1;
     message.targetTemperature =
-        (attrs[DeviceAttributes.targetTemperature] as num?)?.toDouble() ?? 26.0;
+        (attrs[CcDeviceAttributes.targetTemperature] as num?)?.toDouble() ?? 26.0;
     if (_fanSpeeds != null) {
-      final fanSpeedValue = attrs[DeviceAttributes.fanSpeed] as String?;
+      final fanSpeedValue = attrs[CcDeviceAttributes.fanSpeed] as String?;
       if (fanSpeedValue != null) {
         final idx = _fanSpeeds!.values.toList().indexOf(fanSpeedValue);
         if (idx >= 0) {
@@ -151,11 +151,11 @@ class MideaCCDevice extends MideaDevice {
         }
       }
     }
-    message.ecoMode = attrs[DeviceAttributes.ecoMode] as bool? ?? false;
-    message.sleepMode = attrs[DeviceAttributes.sleepMode] as bool? ?? false;
-    message.nightLight = attrs[DeviceAttributes.nightLight] as bool? ?? false;
-    message.auxHeatStatus = attrs[DeviceAttributes.auxHeatStatus] as int? ?? 0;
-    message.swing = attrs[DeviceAttributes.swing] as bool? ?? false;
+    message.ecoMode = attrs[CcDeviceAttributes.ecoMode] as bool? ?? false;
+    message.sleepMode = attrs[CcDeviceAttributes.sleepMode] as bool? ?? false;
+    message.nightLight = attrs[CcDeviceAttributes.nightLight] as bool? ?? false;
+    message.auxHeatStatus = attrs[CcDeviceAttributes.auxHeatStatus] as int? ?? 0;
+    message.swing = attrs[CcDeviceAttributes.swing] as bool? ?? false;
     return message;
   }
 
@@ -172,18 +172,18 @@ class MideaCCDevice extends MideaDevice {
   @override
   void setAttribute(String attr, dynamic value) {
     final readOnlyAttrs = <String>[
-      DeviceAttributes.indoorTemperature,
-      DeviceAttributes.temperaturePrecision,
-      DeviceAttributes.fanSpeedLevel,
-      DeviceAttributes.auxHeatStatus,
-      DeviceAttributes.autoAuxHeatRunning,
+      CcDeviceAttributes.indoorTemperature,
+      CcDeviceAttributes.temperaturePrecision,
+      CcDeviceAttributes.fanSpeedLevel,
+      CcDeviceAttributes.auxHeatStatus,
+      CcDeviceAttributes.autoAuxHeatRunning,
     ];
     if (readOnlyAttrs.contains(attr)) {
       return;
     }
 
     final message = makeMessageSet();
-    if (attr == DeviceAttributes.fanSpeed) {
+    if (attr == CcDeviceAttributes.fanSpeed) {
       if (_fanSpeeds != null && value is String) {
         final keys = _fanSpeeds!.keys.toList();
         final values = _fanSpeeds!.values.toList();
@@ -192,22 +192,22 @@ class MideaCCDevice extends MideaDevice {
           message.fanSpeed = keys[idx];
         }
       }
-    } else if (attr == DeviceAttributes.mode) {
+    } else if (attr == CcDeviceAttributes.mode) {
       if (value is int) {
         message.mode = value;
         message.power = true;
       }
-    } else if (attr == DeviceAttributes.ecoMode) {
+    } else if (attr == CcDeviceAttributes.ecoMode) {
       if (value == true) {
         message.sleepMode = false;
       }
       _setMessageValue(message, attr, value);
-    } else if (attr == DeviceAttributes.sleepMode) {
+    } else if (attr == CcDeviceAttributes.sleepMode) {
       if (value == true) {
         message.ecoMode = false;
       }
       _setMessageValue(message, attr, value);
-    } else if (attr == DeviceAttributes.auxHeating) {
+    } else if (attr == CcDeviceAttributes.auxHeating) {
       if (value == true) {
         message.auxHeatStatus = 1;
       } else {
@@ -220,23 +220,23 @@ class MideaCCDevice extends MideaDevice {
   }
 
   void _setMessageValue(MessageSet message, String attr, dynamic value) {
-    if (attr == DeviceAttributes.power && value is bool) {
+    if (attr == CcDeviceAttributes.power && value is bool) {
       message.power = value;
-    } else if (attr == DeviceAttributes.mode && value is int) {
+    } else if (attr == CcDeviceAttributes.mode && value is int) {
       message.mode = value;
-    } else if (attr == DeviceAttributes.targetTemperature && value is num) {
+    } else if (attr == CcDeviceAttributes.targetTemperature && value is num) {
       message.targetTemperature = value.toDouble();
-    } else if (attr == DeviceAttributes.fanSpeed && value is int) {
+    } else if (attr == CcDeviceAttributes.fanSpeed && value is int) {
       message.fanSpeed = value;
-    } else if (attr == DeviceAttributes.ecoMode && value is bool) {
+    } else if (attr == CcDeviceAttributes.ecoMode && value is bool) {
       message.ecoMode = value;
-    } else if (attr == DeviceAttributes.sleepMode && value is bool) {
+    } else if (attr == CcDeviceAttributes.sleepMode && value is bool) {
       message.sleepMode = value;
-    } else if (attr == DeviceAttributes.nightLight && value is bool) {
+    } else if (attr == CcDeviceAttributes.nightLight && value is bool) {
       message.nightLight = value;
-    } else if (attr == DeviceAttributes.ventilation && value is bool) {
+    } else if (attr == CcDeviceAttributes.ventilation && value is bool) {
       message.ventilation = value;
-    } else if (attr == DeviceAttributes.swing && value is bool) {
+    } else if (attr == CcDeviceAttributes.swing && value is bool) {
       message.swing = value;
     }
   }
@@ -260,35 +260,35 @@ class MideaAppliance extends MideaCCDevice {
 extension MessageCCResponseExtension on MessageCCResponse {
   bool hasAttribute(String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case CcDeviceAttributes.power:
         return true;
-      case DeviceAttributes.mode:
+      case CcDeviceAttributes.mode:
         return true;
-      case DeviceAttributes.targetTemperature:
+      case CcDeviceAttributes.targetTemperature:
         return true;
-      case DeviceAttributes.fanSpeed:
+      case CcDeviceAttributes.fanSpeed:
         return true;
-      case DeviceAttributes.indoorTemperature:
+      case CcDeviceAttributes.indoorTemperature:
         return true;
-      case DeviceAttributes.ecoMode:
+      case CcDeviceAttributes.ecoMode:
         return true;
-      case DeviceAttributes.sleepMode:
+      case CcDeviceAttributes.sleepMode:
         return true;
-      case DeviceAttributes.nightLight:
+      case CcDeviceAttributes.nightLight:
         return true;
-      case DeviceAttributes.ventilation:
+      case CcDeviceAttributes.ventilation:
         return true;
-      case DeviceAttributes.auxHeatStatus:
+      case CcDeviceAttributes.auxHeatStatus:
         return true;
-      case DeviceAttributes.autoAuxHeatRunning:
+      case CcDeviceAttributes.autoAuxHeatRunning:
         return true;
-      case DeviceAttributes.fanSpeedLevel:
+      case CcDeviceAttributes.fanSpeedLevel:
         return true;
-      case DeviceAttributes.temperaturePrecision:
+      case CcDeviceAttributes.temperaturePrecision:
         return true;
-      case DeviceAttributes.swing:
+      case CcDeviceAttributes.swing:
         return true;
-      case DeviceAttributes.tempFahrenheit:
+      case CcDeviceAttributes.tempFahrenheit:
         return true;
       default:
         return false;
@@ -297,35 +297,35 @@ extension MessageCCResponseExtension on MessageCCResponse {
 
   dynamic getAttribute(String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case CcDeviceAttributes.power:
         return power;
-      case DeviceAttributes.mode:
+      case CcDeviceAttributes.mode:
         return mode;
-      case DeviceAttributes.targetTemperature:
+      case CcDeviceAttributes.targetTemperature:
         return targetTemperature;
-      case DeviceAttributes.fanSpeed:
+      case CcDeviceAttributes.fanSpeed:
         return fanSpeed;
-      case DeviceAttributes.indoorTemperature:
+      case CcDeviceAttributes.indoorTemperature:
         return indoorTemperature;
-      case DeviceAttributes.ecoMode:
+      case CcDeviceAttributes.ecoMode:
         return ecoMode;
-      case DeviceAttributes.sleepMode:
+      case CcDeviceAttributes.sleepMode:
         return sleepMode;
-      case DeviceAttributes.nightLight:
+      case CcDeviceAttributes.nightLight:
         return nightLight;
-      case DeviceAttributes.ventilation:
+      case CcDeviceAttributes.ventilation:
         return ventilation;
-      case DeviceAttributes.auxHeatStatus:
+      case CcDeviceAttributes.auxHeatStatus:
         return auxHeatStatus;
-      case DeviceAttributes.autoAuxHeatRunning:
+      case CcDeviceAttributes.autoAuxHeatRunning:
         return autoAuxHeatRunning;
-      case DeviceAttributes.fanSpeedLevel:
+      case CcDeviceAttributes.fanSpeedLevel:
         return fanSpeedLevel;
-      case DeviceAttributes.temperaturePrecision:
+      case CcDeviceAttributes.temperaturePrecision:
         return temperaturePrecision;
-      case DeviceAttributes.swing:
+      case CcDeviceAttributes.swing:
         return swing;
-      case DeviceAttributes.tempFahrenheit:
+      case CcDeviceAttributes.tempFahrenheit:
         return tempFahrenheit;
       default:
         return null;

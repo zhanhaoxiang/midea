@@ -6,7 +6,7 @@ import '../../const.dart';
 import '../../device.dart';
 import 'message.dart';
 
-class DeviceAttributes {
+class B6DeviceAttributes {
   static const String power = 'power';
   static const String light = 'light';
   static const String mode = 'mode';
@@ -32,13 +32,13 @@ class MideaB6Device extends MideaDevice {
          deviceType: DeviceType.b6,
          deviceProtocol: deviceProtocol,
          attributes: {
-           DeviceAttributes.power: false,
-           DeviceAttributes.light: null,
-           DeviceAttributes.mode: null,
-           DeviceAttributes.fanLevel: 0,
-           DeviceAttributes.fanSpeed: 0,
-           DeviceAttributes.oilCupFull: false,
-           DeviceAttributes.cleaningReminder: false,
+           B6DeviceAttributes.power: false,
+           B6DeviceAttributes.light: null,
+           B6DeviceAttributes.mode: null,
+           B6DeviceAttributes.fanLevel: 0,
+           B6DeviceAttributes.fanSpeed: 0,
+           B6DeviceAttributes.oilCupFull: false,
+           B6DeviceAttributes.cleaningReminder: false,
          },
        ) {
     _defaultPowerSpeed = 2;
@@ -73,19 +73,19 @@ class MideaB6Device extends MideaDevice {
     for (final status in attrs.keys) {
       if (hasAttr(message, status)) {
         final value = getAttr(message, status);
-        if (status == DeviceAttributes.fanLevel) {
+        if (status == B6DeviceAttributes.fanLevel) {
           if (_speeds.containsKey(value)) {
-            attrs[DeviceAttributes.mode] = _speeds[value];
-            attrs[DeviceAttributes.fanSpeed] = _speeds.keys.toList().indexOf(
+            attrs[B6DeviceAttributes.mode] = _speeds[value];
+            attrs[B6DeviceAttributes.fanSpeed] = _speeds.keys.toList().indexOf(
               value,
             );
           } else {
-            attrs[DeviceAttributes.mode] = null;
-            attrs[DeviceAttributes.fanSpeed] = 0;
+            attrs[B6DeviceAttributes.mode] = null;
+            attrs[B6DeviceAttributes.fanSpeed] = 0;
           }
-          newStatus[DeviceAttributes.mode] = attrs[DeviceAttributes.mode];
-          newStatus[DeviceAttributes.fanSpeed] =
-              attrs[DeviceAttributes.fanSpeed];
+          newStatus[B6DeviceAttributes.mode] = attrs[B6DeviceAttributes.mode];
+          newStatus[B6DeviceAttributes.fanSpeed] =
+              attrs[B6DeviceAttributes.fanSpeed];
         }
         attrs[status] = value;
         newStatus[status] = attrs[status];
@@ -96,15 +96,15 @@ class MideaB6Device extends MideaDevice {
 
   bool hasAttr(MessageB6Response msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case B6DeviceAttributes.power:
         return msg.power != null;
-      case DeviceAttributes.light:
+      case B6DeviceAttributes.light:
         return msg.light != null;
-      case DeviceAttributes.fanLevel:
+      case B6DeviceAttributes.fanLevel:
         return msg.fanLevel != null;
-      case DeviceAttributes.oilCupFull:
+      case B6DeviceAttributes.oilCupFull:
         return msg.oilCupFull != null;
-      case DeviceAttributes.cleaningReminder:
+      case B6DeviceAttributes.cleaningReminder:
         return msg.cleaningReminder != null;
       default:
         return false;
@@ -113,15 +113,15 @@ class MideaB6Device extends MideaDevice {
 
   dynamic getAttr(MessageB6Response msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case B6DeviceAttributes.power:
         return msg.power;
-      case DeviceAttributes.light:
+      case B6DeviceAttributes.light:
         return msg.light;
-      case DeviceAttributes.fanLevel:
+      case B6DeviceAttributes.fanLevel:
         return msg.fanLevel;
-      case DeviceAttributes.oilCupFull:
+      case B6DeviceAttributes.oilCupFull:
         return msg.oilCupFull;
-      case DeviceAttributes.cleaningReminder:
+      case B6DeviceAttributes.cleaningReminder:
         return msg.cleaningReminder;
       default:
         return null;
@@ -131,12 +131,12 @@ class MideaB6Device extends MideaDevice {
   @override
   void setAttribute(String attr, dynamic value) {
     MessageSet? message;
-    if (attr == DeviceAttributes.fanSpeed) {
+    if (attr == B6DeviceAttributes.fanSpeed) {
       if (value < _speeds.length) {
         message = MessageSet(this.messageProtocolVersion);
         message.fanLevel = _speeds.keys.toList()[value];
       }
-    } else if (attr == DeviceAttributes.mode) {
+    } else if (attr == B6DeviceAttributes.mode) {
       if (_speeds.containsValue(value)) {
         message = MessageSet(this.messageProtocolVersion);
         message.fanLevel = _speeds.keys
@@ -145,11 +145,11 @@ class MideaB6Device extends MideaDevice {
         message = MessageSet(this.messageProtocolVersion);
         message.power = false;
       }
-    } else if (attr == DeviceAttributes.power) {
+    } else if (attr == B6DeviceAttributes.power) {
       message = MessageSet(this.messageProtocolVersion);
       message.power = value;
       message.fanLevel = _powerSpeed;
-    } else if (attr == DeviceAttributes.light) {
+    } else if (attr == B6DeviceAttributes.light) {
       message = MessageSet(this.messageProtocolVersion);
       message.light = value;
     }

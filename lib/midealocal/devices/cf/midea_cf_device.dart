@@ -9,10 +9,10 @@ import '../../message.dart';
 import 'message.dart';
 
 // ---------------------------------------------------------------------------
-// DeviceAttributes
+// CfDeviceAttributes
 // ---------------------------------------------------------------------------
 
-class DeviceAttributes {
+class CfDeviceAttributes {
   static const String power = 'power';
   static const String mode = 'mode';
   static const String targetTemperature = 'target_temperature';
@@ -47,15 +47,15 @@ class MideaCFDevice extends MideaDevice {
        );
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.power: false,
-    DeviceAttributes.mode: 0,
-    DeviceAttributes.defrost: false,
-    DeviceAttributes.freeze: false,
-    DeviceAttributes.targetTemperature: null,
-    DeviceAttributes.auxHeating: false,
-    DeviceAttributes.currentTemperature: 0,
-    DeviceAttributes.maxTemperature: 55,
-    DeviceAttributes.minTemperature: 5,
+    CfDeviceAttributes.power: false,
+    CfDeviceAttributes.mode: 0,
+    CfDeviceAttributes.defrost: false,
+    CfDeviceAttributes.freeze: false,
+    CfDeviceAttributes.targetTemperature: null,
+    CfDeviceAttributes.auxHeating: false,
+    CfDeviceAttributes.currentTemperature: 0,
+    CfDeviceAttributes.maxTemperature: 55,
+    CfDeviceAttributes.minTemperature: 5,
   };
 
   @override
@@ -80,23 +80,23 @@ class MideaCFDevice extends MideaDevice {
 
   bool _hasAttribute(MessageCFResponse msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case CfDeviceAttributes.power:
         return msg.power != null;
-      case DeviceAttributes.mode:
+      case CfDeviceAttributes.mode:
         return msg.mode != null;
-      case DeviceAttributes.targetTemperature:
+      case CfDeviceAttributes.targetTemperature:
         return msg.targetTemperature != null;
-      case DeviceAttributes.auxHeating:
+      case CfDeviceAttributes.auxHeating:
         return msg.auxHeating != null;
-      case DeviceAttributes.currentTemperature:
+      case CfDeviceAttributes.currentTemperature:
         return msg.currentTemperature != null;
-      case DeviceAttributes.maxTemperature:
+      case CfDeviceAttributes.maxTemperature:
         return msg.maxTemperature != null;
-      case DeviceAttributes.minTemperature:
+      case CfDeviceAttributes.minTemperature:
         return msg.minTemperature != null;
-      case DeviceAttributes.defrost:
+      case CfDeviceAttributes.defrost:
         return msg.defrost != null;
-      case DeviceAttributes.freeze:
+      case CfDeviceAttributes.freeze:
         return msg.freeze != null;
       default:
         return false;
@@ -105,23 +105,23 @@ class MideaCFDevice extends MideaDevice {
 
   dynamic _getAttribute(MessageCFResponse msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case CfDeviceAttributes.power:
         return msg.power;
-      case DeviceAttributes.mode:
+      case CfDeviceAttributes.mode:
         return msg.mode;
-      case DeviceAttributes.targetTemperature:
+      case CfDeviceAttributes.targetTemperature:
         return msg.targetTemperature;
-      case DeviceAttributes.auxHeating:
+      case CfDeviceAttributes.auxHeating:
         return msg.auxHeating;
-      case DeviceAttributes.currentTemperature:
+      case CfDeviceAttributes.currentTemperature:
         return msg.currentTemperature;
-      case DeviceAttributes.maxTemperature:
+      case CfDeviceAttributes.maxTemperature:
         return msg.maxTemperature;
-      case DeviceAttributes.minTemperature:
+      case CfDeviceAttributes.minTemperature:
         return msg.minTemperature;
-      case DeviceAttributes.defrost:
+      case CfDeviceAttributes.defrost:
         return msg.defrost;
-      case DeviceAttributes.freeze:
+      case CfDeviceAttributes.freeze:
         return msg.freeze;
       default:
         return null;
@@ -131,7 +131,7 @@ class MideaCFDevice extends MideaDevice {
   void setTargetTemperature(double targetTemperature, {int? mode, int? zone}) {
     final message = MessageSet(messageProtocolVersion);
     message.power = true;
-    message.mode = attrs[DeviceAttributes.mode] as int? ?? 0;
+    message.mode = attrs[CfDeviceAttributes.mode] as int? ?? 0;
     message.targetTemperature = targetTemperature;
     if (mode != null) {
       message.mode = mode;
@@ -141,23 +141,23 @@ class MideaCFDevice extends MideaDevice {
 
   @override
   void setAttribute(String attr, dynamic value) {
-    if (attr == DeviceAttributes.power && value is! bool) {
+    if (attr == CfDeviceAttributes.power && value is! bool) {
       throw MideaLocalError('[cf] Expected bool');
     }
-    if (attr == DeviceAttributes.auxHeating && value is! bool) {
+    if (attr == CfDeviceAttributes.auxHeating && value is! bool) {
       throw MideaLocalError('[cf] Expected bool');
     }
     final message = MessageSet(messageProtocolVersion);
     message.power = true;
-    message.mode = attrs[DeviceAttributes.mode] as int? ?? 0;
-    if (attr == DeviceAttributes.power) {
+    message.mode = attrs[CfDeviceAttributes.mode] as int? ?? 0;
+    if (attr == CfDeviceAttributes.power) {
       message.power = value as bool;
-    } else if (attr == DeviceAttributes.mode) {
+    } else if (attr == CfDeviceAttributes.mode) {
       message.power = true;
       message.mode = value as int;
-    } else if (attr == DeviceAttributes.targetTemperature) {
+    } else if (attr == CfDeviceAttributes.targetTemperature) {
       message.targetTemperature = (value as num).toDouble();
-    } else if (attr == DeviceAttributes.auxHeating) {
+    } else if (attr == CfDeviceAttributes.auxHeating) {
       message.auxHeating = value as bool;
     }
     buildSend(message);

@@ -7,7 +7,7 @@ import '../../device.dart';
 import '../../message.dart';
 import 'message.dart';
 
-class DeviceAttributes {
+class AdDeviceAttributes {
   static const String temperature = 'temperature';
   static const String humidity = 'humidity';
   static const String tvoc = 'tvoc';
@@ -52,27 +52,27 @@ class MideaADDevice extends MideaDevice {
        );
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.temperature: null,
-    DeviceAttributes.humidity: null,
-    DeviceAttributes.tvoc: null,
-    DeviceAttributes.co2: null,
-    DeviceAttributes.pm25: null,
-    DeviceAttributes.hcho: null,
-    DeviceAttributes.presetsFunction: false,
-    DeviceAttributes.fallAsleepStatus: false,
-    DeviceAttributes.portableSense: false,
-    DeviceAttributes.nightMode: false,
-    DeviceAttributes.screenExtinctionTimeout: null,
-    DeviceAttributes.screenStatus: false,
-    DeviceAttributes.ledStatus: false,
-    DeviceAttributes.arofeneLink: false,
-    DeviceAttributes.headerExist: false,
-    DeviceAttributes.radarExist: false,
-    DeviceAttributes.headerLedStatus: false,
-    DeviceAttributes.temperatureRaw: null,
-    DeviceAttributes.humidityRaw: null,
-    DeviceAttributes.temperatureCompensate: null,
-    DeviceAttributes.humidityCompensate: null,
+    AdDeviceAttributes.temperature: null,
+    AdDeviceAttributes.humidity: null,
+    AdDeviceAttributes.tvoc: null,
+    AdDeviceAttributes.co2: null,
+    AdDeviceAttributes.pm25: null,
+    AdDeviceAttributes.hcho: null,
+    AdDeviceAttributes.presetsFunction: false,
+    AdDeviceAttributes.fallAsleepStatus: false,
+    AdDeviceAttributes.portableSense: false,
+    AdDeviceAttributes.nightMode: false,
+    AdDeviceAttributes.screenExtinctionTimeout: null,
+    AdDeviceAttributes.screenStatus: false,
+    AdDeviceAttributes.ledStatus: false,
+    AdDeviceAttributes.arofeneLink: false,
+    AdDeviceAttributes.headerExist: false,
+    AdDeviceAttributes.radarExist: false,
+    AdDeviceAttributes.headerLedStatus: false,
+    AdDeviceAttributes.temperatureRaw: null,
+    AdDeviceAttributes.humidityRaw: null,
+    AdDeviceAttributes.temperatureCompensate: null,
+    AdDeviceAttributes.humidityCompensate: null,
   };
 
   @override
@@ -100,47 +100,47 @@ class MideaADDevice extends MideaDevice {
 
   dynamic _getMessageAttribute(MessageADResponse message, String attr) {
     switch (attr) {
-      case DeviceAttributes.temperature:
+      case AdDeviceAttributes.temperature:
         return message.temperature;
-      case DeviceAttributes.humidity:
+      case AdDeviceAttributes.humidity:
         return message.humidity;
-      case DeviceAttributes.tvoc:
+      case AdDeviceAttributes.tvoc:
         return message.tvoc;
-      case DeviceAttributes.co2:
+      case AdDeviceAttributes.co2:
         return message.co2;
-      case DeviceAttributes.pm25:
+      case AdDeviceAttributes.pm25:
         return message.pm25;
-      case DeviceAttributes.hcho:
+      case AdDeviceAttributes.hcho:
         return message.hcho;
-      case DeviceAttributes.presetsFunction:
+      case AdDeviceAttributes.presetsFunction:
         return message.presetsFunction;
-      case DeviceAttributes.fallAsleepStatus:
+      case AdDeviceAttributes.fallAsleepStatus:
         return message.fallAsleepStatus;
-      case DeviceAttributes.portableSense:
+      case AdDeviceAttributes.portableSense:
         return message.portableSense;
-      case DeviceAttributes.nightMode:
+      case AdDeviceAttributes.nightMode:
         return message.nightMode;
-      case DeviceAttributes.screenExtinctionTimeout:
+      case AdDeviceAttributes.screenExtinctionTimeout:
         return message.screenExtinctionTimeout;
-      case DeviceAttributes.screenStatus:
+      case AdDeviceAttributes.screenStatus:
         return message.screenStatus;
-      case DeviceAttributes.ledStatus:
+      case AdDeviceAttributes.ledStatus:
         return message.ledStatus;
-      case DeviceAttributes.arofeneLink:
+      case AdDeviceAttributes.arofeneLink:
         return message.arofeneLink;
-      case DeviceAttributes.headerExist:
+      case AdDeviceAttributes.headerExist:
         return message.headerExist;
-      case DeviceAttributes.radarExist:
+      case AdDeviceAttributes.radarExist:
         return message.radarExist;
-      case DeviceAttributes.headerLedStatus:
+      case AdDeviceAttributes.headerLedStatus:
         return message.headerLedStatus;
-      case DeviceAttributes.temperatureRaw:
+      case AdDeviceAttributes.temperatureRaw:
         return message.temperatureRaw;
-      case DeviceAttributes.humidityRaw:
+      case AdDeviceAttributes.humidityRaw:
         return message.humidityRaw;
-      case DeviceAttributes.temperatureCompensate:
+      case AdDeviceAttributes.temperatureCompensate:
         return message.temperatureCompensate;
-      case DeviceAttributes.humidityCompensate:
+      case AdDeviceAttributes.humidityCompensate:
         return message.humidityCompensate;
       default:
         return null;

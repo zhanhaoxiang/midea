@@ -10,7 +10,7 @@ import 'message.dart';
 
 const int standbyDetectLength = 2;
 
-class DeviceAttributes {
+class FcDeviceAttributes {
   static const String power = 'power';
   static const String mode = 'mode';
   static const String fanSpeed = 'fan_speed';
@@ -76,20 +76,20 @@ class MideaFCDevice extends MideaDevice {
   static const List<String> _detectModes = ['Off', 'PM 2.5', 'Methanal'];
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.power: false,
-    DeviceAttributes.mode: null,
-    DeviceAttributes.fanSpeed: null,
-    DeviceAttributes.anion: false,
-    DeviceAttributes.standby: false,
-    DeviceAttributes.screenDisplay: null,
-    DeviceAttributes.detectMode: null,
-    DeviceAttributes.pm25: null,
-    DeviceAttributes.tvoc: null,
-    DeviceAttributes.hcho: null,
-    DeviceAttributes.childLock: false,
-    DeviceAttributes.promptTone: true,
-    DeviceAttributes.filter1Life: null,
-    DeviceAttributes.filter2Life: null,
+    FcDeviceAttributes.power: false,
+    FcDeviceAttributes.mode: null,
+    FcDeviceAttributes.fanSpeed: null,
+    FcDeviceAttributes.anion: false,
+    FcDeviceAttributes.standby: false,
+    FcDeviceAttributes.screenDisplay: null,
+    FcDeviceAttributes.detectMode: null,
+    FcDeviceAttributes.pm25: null,
+    FcDeviceAttributes.tvoc: null,
+    FcDeviceAttributes.hcho: null,
+    FcDeviceAttributes.childLock: false,
+    FcDeviceAttributes.promptTone: true,
+    FcDeviceAttributes.filter1Life: null,
+    FcDeviceAttributes.filter2Life: null,
   };
 
   static const List<int> _standbyDetectDefault = [40, 20];
@@ -117,25 +117,25 @@ class MideaFCDevice extends MideaDevice {
     for (final status in attrs.keys) {
       if (message.hasAttribute(status)) {
         var value = message.getAttribute(status);
-        if (status == DeviceAttributes.mode) {
+        if (status == FcDeviceAttributes.mode) {
           if (value != null && _modes.containsKey(value)) {
             attrs[status] = _modes[value];
           } else {
             attrs[status] = null;
           }
-        } else if (status == DeviceAttributes.fanSpeed) {
+        } else if (status == FcDeviceAttributes.fanSpeed) {
           if (value != null && _speeds.containsKey(value)) {
             attrs[status] = _speeds[value];
           } else {
             attrs[status] = null;
           }
-        } else if (status == DeviceAttributes.screenDisplay) {
+        } else if (status == FcDeviceAttributes.screenDisplay) {
           if (value != null && _screenDisplays.containsKey(value)) {
             attrs[status] = _screenDisplays[value];
           } else {
             attrs[status] = null;
           }
-        } else if (status == DeviceAttributes.detectMode) {
+        } else if (status == FcDeviceAttributes.detectMode) {
           if (value != null && value is int && value < _detectModes.length) {
             attrs[status] = _detectModes[value];
           } else {
@@ -152,11 +152,11 @@ class MideaFCDevice extends MideaDevice {
 
   MessageSet makeMessageSet() {
     final message = MessageSet(messageProtocolVersion);
-    message.power = attrs[DeviceAttributes.power] as bool? ?? false;
-    message.childLock = attrs[DeviceAttributes.childLock] as bool? ?? false;
-    message.promptTone = attrs[DeviceAttributes.promptTone] as bool? ?? true;
-    message.anion = attrs[DeviceAttributes.anion] as bool? ?? false;
-    message.standby = attrs[DeviceAttributes.standby] as bool? ?? false;
+    message.power = attrs[FcDeviceAttributes.power] as bool? ?? false;
+    message.childLock = attrs[FcDeviceAttributes.childLock] as bool? ?? false;
+    message.promptTone = attrs[FcDeviceAttributes.promptTone] as bool? ?? true;
+    message.anion = attrs[FcDeviceAttributes.anion] as bool? ?? false;
+    message.standby = attrs[FcDeviceAttributes.standby] as bool? ?? false;
     message.screenDisplay = _getScreenDisplayValue();
     message.detectMode = _getDetectModeValue();
     message.mode = _getModeValue();
@@ -166,7 +166,7 @@ class MideaFCDevice extends MideaDevice {
   }
 
   int _getScreenDisplayValue() {
-    final display = attrs[DeviceAttributes.screenDisplay];
+    final display = attrs[FcDeviceAttributes.screenDisplay];
     if (display == null) return 0;
     for (final entry in _screenDisplays.entries) {
       if (entry.value == display) return entry.key;
@@ -175,13 +175,13 @@ class MideaFCDevice extends MideaDevice {
   }
 
   int _getDetectModeValue() {
-    final modeVal = attrs[DeviceAttributes.detectMode];
+    final modeVal = attrs[FcDeviceAttributes.detectMode];
     if (modeVal == null) return 0;
     return _detectModes.indexOf(modeVal as String);
   }
 
   int _getModeValue() {
-    final modeVal = attrs[DeviceAttributes.mode];
+    final modeVal = attrs[FcDeviceAttributes.mode];
     if (modeVal == null) return 0x10;
     for (final entry in _modes.entries) {
       if (entry.value == modeVal) return entry.key;
@@ -190,7 +190,7 @@ class MideaFCDevice extends MideaDevice {
   }
 
   int _getFanSpeedValue() {
-    final speedVal = attrs[DeviceAttributes.fanSpeed];
+    final speedVal = attrs[FcDeviceAttributes.fanSpeed];
     if (speedVal == null) return 39;
     for (final entry in _speeds.entries) {
       if (entry.value == speedVal) return entry.key;
@@ -200,42 +200,42 @@ class MideaFCDevice extends MideaDevice {
 
   @override
   void setAttribute(String attr, dynamic value) {
-    if (attr == DeviceAttributes.promptTone) {
-      attrs[DeviceAttributes.promptTone] = value;
-      updateAll({DeviceAttributes.promptTone: value});
+    if (attr == FcDeviceAttributes.promptTone) {
+      attrs[FcDeviceAttributes.promptTone] = value;
+      updateAll({FcDeviceAttributes.promptTone: value});
       return;
     }
 
     final message = makeMessageSet();
 
-    if (attr == DeviceAttributes.mode) {
+    if (attr == FcDeviceAttributes.mode) {
       if (value != null) {
         message.mode = _getModeFromValue(value);
       }
-    } else if (attr == DeviceAttributes.fanSpeed) {
+    } else if (attr == FcDeviceAttributes.fanSpeed) {
       if (value != null) {
         message.fanSpeed = _getSpeedFromValue(value);
       }
-    } else if (attr == DeviceAttributes.screenDisplay) {
+    } else if (attr == FcDeviceAttributes.screenDisplay) {
       if (value != null) {
         message.screenDisplay = _getScreenDisplayKey(value);
       } else {
         message.screenDisplay = 7;
       }
-    } else if (attr == DeviceAttributes.detectMode) {
+    } else if (attr == FcDeviceAttributes.detectMode) {
       if (value != null) {
         message.detectMode = _detectModes.indexOf(value as String);
       } else {
         message.detectMode = 0;
       }
     } else {
-      if (attr == DeviceAttributes.power) {
+      if (attr == FcDeviceAttributes.power) {
         message.power = value as bool? ?? false;
-      } else if (attr == DeviceAttributes.childLock) {
+      } else if (attr == FcDeviceAttributes.childLock) {
         message.childLock = value as bool? ?? false;
-      } else if (attr == DeviceAttributes.anion) {
+      } else if (attr == FcDeviceAttributes.anion) {
         message.anion = value as bool? ?? false;
-      } else if (attr == DeviceAttributes.standby) {
+      } else if (attr == FcDeviceAttributes.standby) {
         message.standby = value as bool? ?? false;
       }
     }

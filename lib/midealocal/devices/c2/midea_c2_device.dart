@@ -8,10 +8,10 @@ import '../../device.dart';
 import 'message.dart';
 
 // ---------------------------------------------------------------------------
-// DeviceAttributes
+// C2DeviceAttributes
 // ---------------------------------------------------------------------------
 
-class DeviceAttributes {
+class C2DeviceAttributes {
   static const String power = 'power';
   static const String childLock = 'child_lock';
   static const String sensorLight = 'sensor_light';
@@ -54,19 +54,19 @@ class MideaC2Device extends MideaDevice {
   }
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.power: false,
-    DeviceAttributes.childLock: false,
-    DeviceAttributes.sensorLight: false,
-    DeviceAttributes.foamShield: false,
-    DeviceAttributes.lightStatus: null,
-    DeviceAttributes.seatStatus: null,
-    DeviceAttributes.lidStatus: null,
-    DeviceAttributes.dryLevel: 0,
-    DeviceAttributes.waterTempLevel: 0,
-    DeviceAttributes.seatTempLevel: 0,
-    DeviceAttributes.waterTemperature: null,
-    DeviceAttributes.seatTemperature: null,
-    DeviceAttributes.filterLife: null,
+    C2DeviceAttributes.power: false,
+    C2DeviceAttributes.childLock: false,
+    C2DeviceAttributes.sensorLight: false,
+    C2DeviceAttributes.foamShield: false,
+    C2DeviceAttributes.lightStatus: null,
+    C2DeviceAttributes.seatStatus: null,
+    C2DeviceAttributes.lidStatus: null,
+    C2DeviceAttributes.dryLevel: 0,
+    C2DeviceAttributes.waterTempLevel: 0,
+    C2DeviceAttributes.seatTempLevel: 0,
+    C2DeviceAttributes.waterTemperature: null,
+    C2DeviceAttributes.seatTemperature: null,
+    C2DeviceAttributes.filterLife: null,
   };
 
   int? _maxDryLevel;
@@ -102,31 +102,31 @@ class MideaC2Device extends MideaDevice {
 
   dynamic _getAttrValue(MessageC2Response message, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case C2DeviceAttributes.power:
         return message.power;
-      case DeviceAttributes.childLock:
+      case C2DeviceAttributes.childLock:
         return message.childLock;
-      case DeviceAttributes.sensorLight:
+      case C2DeviceAttributes.sensorLight:
         return message.sensorLight;
-      case DeviceAttributes.foamShield:
+      case C2DeviceAttributes.foamShield:
         return message.foamShield;
-      case DeviceAttributes.seatStatus:
+      case C2DeviceAttributes.seatStatus:
         return message.seatStatus;
-      case DeviceAttributes.lidStatus:
+      case C2DeviceAttributes.lidStatus:
         return message.lidStatus;
-      case DeviceAttributes.lightStatus:
+      case C2DeviceAttributes.lightStatus:
         return message.lightStatus;
-      case DeviceAttributes.dryLevel:
+      case C2DeviceAttributes.dryLevel:
         return message.dryLevel;
-      case DeviceAttributes.waterTempLevel:
+      case C2DeviceAttributes.waterTempLevel:
         return message.waterTempLevel;
-      case DeviceAttributes.seatTempLevel:
+      case C2DeviceAttributes.seatTempLevel:
         return message.seatTempLevel;
-      case DeviceAttributes.waterTemperature:
+      case C2DeviceAttributes.waterTemperature:
         return message.waterTemperature;
-      case DeviceAttributes.seatTemperature:
+      case C2DeviceAttributes.seatTemperature:
         return message.seatTemperature;
-      case DeviceAttributes.filterLife:
+      case C2DeviceAttributes.filterLife:
         return message.filterLife;
       default:
         return null;
@@ -135,7 +135,7 @@ class MideaC2Device extends MideaDevice {
 
   @override
   void setAttribute(String attr, dynamic value) {
-    if (attr == DeviceAttributes.power) {
+    if (attr == C2DeviceAttributes.power) {
       final message = MessagePower(messageProtocolVersion);
       message.power = value == true;
       buildSend(message);
@@ -147,32 +147,32 @@ class MideaC2Device extends MideaDevice {
   }
 
   bool _isSettableAttr(String attr) {
-    return attr == DeviceAttributes.childLock ||
-        attr == DeviceAttributes.sensorLight ||
-        attr == DeviceAttributes.foamShield ||
-        attr == DeviceAttributes.waterTempLevel ||
-        attr == DeviceAttributes.seatTempLevel ||
-        attr == DeviceAttributes.dryLevel;
+    return attr == C2DeviceAttributes.childLock ||
+        attr == C2DeviceAttributes.sensorLight ||
+        attr == C2DeviceAttributes.foamShield ||
+        attr == C2DeviceAttributes.waterTempLevel ||
+        attr == C2DeviceAttributes.seatTempLevel ||
+        attr == C2DeviceAttributes.dryLevel;
   }
 
   void _setAttrOnMessage(MessageSet message, String attr, dynamic value) {
     switch (attr) {
-      case DeviceAttributes.childLock:
+      case C2DeviceAttributes.childLock:
         message.childLock = value == true;
         break;
-      case DeviceAttributes.sensorLight:
+      case C2DeviceAttributes.sensorLight:
         message.sensorLight = value == true;
         break;
-      case DeviceAttributes.foamShield:
+      case C2DeviceAttributes.foamShield:
         message.foamShield = value == true;
         break;
-      case DeviceAttributes.waterTempLevel:
+      case C2DeviceAttributes.waterTempLevel:
         message.waterTempLevel = value as int?;
         break;
-      case DeviceAttributes.seatTempLevel:
+      case C2DeviceAttributes.seatTempLevel:
         message.seatTempLevel = value as int?;
         break;
-      case DeviceAttributes.dryLevel:
+      case C2DeviceAttributes.dryLevel:
         message.dryLevel = value as int?;
         break;
     }
@@ -199,11 +199,11 @@ class MideaC2Device extends MideaDevice {
     }
 
     updateAll({
-      DeviceAttributes.dryLevel: {'max_dry_level': _maxDryLevel},
-      DeviceAttributes.waterTempLevel: {
+      C2DeviceAttributes.dryLevel: {'max_dry_level': _maxDryLevel},
+      C2DeviceAttributes.waterTempLevel: {
         'max_water_temp_level': _maxWaterTempLevel,
       },
-      DeviceAttributes.seatTempLevel: {
+      C2DeviceAttributes.seatTempLevel: {
         'max_seat_temp_level': _maxSeatTempLevel,
       },
     });

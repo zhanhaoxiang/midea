@@ -9,10 +9,10 @@ import '../../message.dart';
 import 'message.dart';
 
 // ---------------------------------------------------------------------------
-// DeviceAttributes
+// EdDeviceAttributes
 // ---------------------------------------------------------------------------
 
-class DeviceAttributes {
+class EdDeviceAttributes {
   static const String power = 'power';
   static const String waterConsumption = 'water_consumption';
   static const String inTds = 'in_tds';
@@ -63,17 +63,17 @@ class MideaEDDevice extends MideaDevice {
        );
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.power: false,
-    DeviceAttributes.waterConsumption: null,
-    DeviceAttributes.inTds: null,
-    DeviceAttributes.outTds: null,
-    DeviceAttributes.filter1: null,
-    DeviceAttributes.filter2: null,
-    DeviceAttributes.filter3: null,
-    DeviceAttributes.life1: null,
-    DeviceAttributes.life2: null,
-    DeviceAttributes.life3: null,
-    DeviceAttributes.childLock: false,
+    EdDeviceAttributes.power: false,
+    EdDeviceAttributes.waterConsumption: null,
+    EdDeviceAttributes.inTds: null,
+    EdDeviceAttributes.outTds: null,
+    EdDeviceAttributes.filter1: null,
+    EdDeviceAttributes.filter2: null,
+    EdDeviceAttributes.filter3: null,
+    EdDeviceAttributes.life1: null,
+    EdDeviceAttributes.life2: null,
+    EdDeviceAttributes.life3: null,
+    EdDeviceAttributes.childLock: false,
   };
 
   int _deviceClass = 0x00;
@@ -126,27 +126,27 @@ class MideaEDDevice extends MideaDevice {
 
   bool _hasAttribute(MessageEDResponse msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case EdDeviceAttributes.power:
         return msg.power != null;
-      case DeviceAttributes.waterConsumption:
+      case EdDeviceAttributes.waterConsumption:
         return msg.waterConsumption != null;
-      case DeviceAttributes.inTds:
+      case EdDeviceAttributes.inTds:
         return msg.inTds != null;
-      case DeviceAttributes.outTds:
+      case EdDeviceAttributes.outTds:
         return msg.outTds != null;
-      case DeviceAttributes.filter1:
+      case EdDeviceAttributes.filter1:
         return msg.filter1 != null;
-      case DeviceAttributes.filter2:
+      case EdDeviceAttributes.filter2:
         return msg.filter2 != null;
-      case DeviceAttributes.filter3:
+      case EdDeviceAttributes.filter3:
         return msg.filter3 != null;
-      case DeviceAttributes.life1:
+      case EdDeviceAttributes.life1:
         return msg.life1 != null;
-      case DeviceAttributes.life2:
+      case EdDeviceAttributes.life2:
         return msg.life2 != null;
-      case DeviceAttributes.life3:
+      case EdDeviceAttributes.life3:
         return msg.life3 != null;
-      case DeviceAttributes.childLock:
+      case EdDeviceAttributes.childLock:
         return msg.childLock != null;
       default:
         return false;
@@ -155,27 +155,27 @@ class MideaEDDevice extends MideaDevice {
 
   dynamic _getAttribute(MessageEDResponse msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case EdDeviceAttributes.power:
         return msg.power;
-      case DeviceAttributes.waterConsumption:
+      case EdDeviceAttributes.waterConsumption:
         return msg.waterConsumption;
-      case DeviceAttributes.inTds:
+      case EdDeviceAttributes.inTds:
         return msg.inTds;
-      case DeviceAttributes.outTds:
+      case EdDeviceAttributes.outTds:
         return msg.outTds;
-      case DeviceAttributes.filter1:
+      case EdDeviceAttributes.filter1:
         return msg.filter1;
-      case DeviceAttributes.filter2:
+      case EdDeviceAttributes.filter2:
         return msg.filter2;
-      case DeviceAttributes.filter3:
+      case EdDeviceAttributes.filter3:
         return msg.filter3;
-      case DeviceAttributes.life1:
+      case EdDeviceAttributes.life1:
         return msg.life1;
-      case DeviceAttributes.life2:
+      case EdDeviceAttributes.life2:
         return msg.life2;
-      case DeviceAttributes.life3:
+      case EdDeviceAttributes.life3:
         return msg.life3;
-      case DeviceAttributes.childLock:
+      case EdDeviceAttributes.childLock:
         return msg.childLock;
       default:
         return null;
@@ -186,15 +186,15 @@ class MideaEDDevice extends MideaDevice {
   void setAttribute(String attr, dynamic value) {
     MessageRequest? message;
     if (_useNewSet()) {
-      if (attr == DeviceAttributes.power ||
-          attr == DeviceAttributes.childLock) {
+      if (attr == EdDeviceAttributes.power ||
+          attr == EdDeviceAttributes.childLock) {
         final newSet = MessageNewSet(messageProtocolVersion);
-        if (attr == DeviceAttributes.power) {
+        if (attr == EdDeviceAttributes.power) {
           if (value is! bool) {
             throw MideaLocalError('[ed] Expected bool');
           }
           newSet.power = value;
-        } else if (attr == DeviceAttributes.childLock) {
+        } else if (attr == EdDeviceAttributes.childLock) {
           if (value is! bool) {
             throw MideaLocalError('[ed] Expected bool');
           }

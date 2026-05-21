@@ -68,14 +68,14 @@ void main() {
     test('precision_halves=false → temperature = raw value (53)', () {
       final device = _makeDevice();
       final newStatus = device.processMessage(_x40Msg(currentTemperature: 53));
-      expect(newStatus[DeviceAttributes.currentTemperature], 53);
+      expect(newStatus[X40DeviceAttributes.currentTemperature], 53);
     });
 
     test('precision_halves=true → temperature = raw / 2 (26.5)', () {
       final device = _makeDevice();
       device.setCustomize('{"precision_halves": true}');
       final newStatus = device.processMessage(_x40Msg(currentTemperature: 53));
-      expect(newStatus[DeviceAttributes.currentTemperature], 26.5);
+      expect(newStatus[X40DeviceAttributes.currentTemperature], 26.5);
     });
   });
 }
