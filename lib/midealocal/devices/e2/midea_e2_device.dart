@@ -84,7 +84,7 @@ class MideaE2Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.e2,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     _oldProtocol = _defaultOldProtocol;
     _temperatureStep = _defaultTemperatureStep;

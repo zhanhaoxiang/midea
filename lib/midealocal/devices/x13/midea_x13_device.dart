@@ -39,7 +39,7 @@ class MideaX13Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.x13,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     _colorTempRange = _defaultColorTempRange;
     setCustomize('');

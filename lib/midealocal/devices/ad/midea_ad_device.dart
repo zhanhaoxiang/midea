@@ -48,7 +48,7 @@ class MideaADDevice extends MideaDevice {
   }) : super(
          deviceType: DeviceType.ad,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static final Map<String, dynamic> _defaultAttributes = {

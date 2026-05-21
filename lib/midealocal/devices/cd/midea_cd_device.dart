@@ -99,7 +99,7 @@ class MideaCDDevice extends MideaDevice {
        super(
          deviceType: DeviceType.cd,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     setCustomize(customize);
   }
@@ -162,18 +162,6 @@ class MideaCDDevice extends MideaDevice {
     return value;
   }
 
-  double _temperatureToValue(double value) {
-    if (_fahrenheit) {
-      return _celsiusToFahrenheit(value);
-    }
-    if (_luaProtocol == LuaProtocol.old) {
-      return (value * 2 + 30.0).roundToDouble();
-    }
-    return value;
-  }
-
-  double _celsiusToFahrenheit(double celsius) => celsius * 9.0 / 5.0 + 32;
-
   double _fahrenheitToCelsius(double fahrenheit, bool? isFahrenheit) {
     final shouldConvert = isFahrenheit ?? _fahrenheit;
     if (shouldConvert) {
@@ -224,7 +212,7 @@ class MideaCDDevice extends MideaDevice {
     }
 
     for (final attr in attrs.keys) {
-      final attrStr = attr as String;
+      final attrStr = attr;
       final hasAttr = _hasAttribute(message, attrStr);
       if (!hasAttr) continue;
 

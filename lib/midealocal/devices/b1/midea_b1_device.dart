@@ -19,7 +19,7 @@ class MideaB1Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.b1,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static const Map<int, String> _statusMap = {

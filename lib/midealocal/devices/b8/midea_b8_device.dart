@@ -23,7 +23,7 @@ class MideaB8Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.b8,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static final Map<String, dynamic> _defaultAttributes = {
@@ -86,6 +86,12 @@ class MideaB8Device extends MideaDevice {
         } else if (value is B8Speed) {
           value = value.name;
         } else if (value is B8ErrorType) {
+          value = value.name;
+        } else if (value is B8ErrorCanFixDescription) {
+          value = value.name;
+        } else if (value is B8ErrorRebootDescription) {
+          value = value.name;
+        } else if (value is B8ErrorWarningDescription) {
           value = value.name;
         }
         attrs[attr] = value;

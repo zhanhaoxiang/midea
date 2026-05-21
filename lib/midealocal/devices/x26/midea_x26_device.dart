@@ -35,7 +35,7 @@ class Midea26Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.x26,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static const List<String> modes = [

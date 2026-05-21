@@ -32,7 +32,7 @@ class MideaE8Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.e8,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static const Map<int, String> _statusMap = {

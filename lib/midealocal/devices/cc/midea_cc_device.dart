@@ -40,7 +40,7 @@ class MideaCCDevice extends MideaDevice {
   }) : super(
          deviceType: DeviceType.cc,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static const Map<int, String> _fanSpeeds7Level = {

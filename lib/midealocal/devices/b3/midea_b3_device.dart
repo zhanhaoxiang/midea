@@ -69,7 +69,7 @@ class MideaB3Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.b3,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static final Map<String, dynamic> _defaultAttributes = {

@@ -5,7 +5,6 @@ import 'dart:typed_data';
 
 import '../../const.dart';
 import '../../device.dart';
-import '../../message.dart';
 import 'message.dart';
 
 // ---------------------------------------------------------------------------
@@ -47,7 +46,7 @@ class MideaC2Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.c2,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     if (customize != null && customize.isNotEmpty) {
       setCustomize(customize);

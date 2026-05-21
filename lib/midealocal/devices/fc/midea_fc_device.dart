@@ -42,7 +42,7 @@ class MideaFCDevice extends MideaDevice {
   }) : super(
          deviceType: DeviceType.fc,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     _standbyDetect = List<int>.from(_standbyDetectDefault);
     if (customize != null && customize.isNotEmpty) {

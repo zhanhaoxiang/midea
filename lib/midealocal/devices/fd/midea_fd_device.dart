@@ -36,7 +36,7 @@ class MideaFDDevice extends MideaDevice {
   }) : super(
          deviceType: DeviceType.fd,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     if (subtype > maxSubtypeOldSpeeds) {
       _speeds = _speedsNew;

@@ -41,7 +41,7 @@ class MideaBFDevice extends MideaDevice {
   }) : super(
          deviceType: DeviceType.bf,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static const Map<int, String> _statusMap = {

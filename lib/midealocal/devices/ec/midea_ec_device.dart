@@ -41,7 +41,7 @@ class MideaECDevice extends MideaDevice {
   }) : super(
          deviceType: DeviceType.ec,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static const List<String> _modeList = [

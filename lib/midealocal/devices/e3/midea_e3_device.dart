@@ -42,7 +42,7 @@ class MideaE3Device extends MideaDevice {
          model: model,
          subtype: subtype,
          deviceType: DeviceType.e3,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     _precisionHalves = _defaultPrecisionHalves;
     _temperatureStep = _defaultTemperatureStep;

@@ -211,6 +211,5 @@ class MessageCEResponse extends MessageResponse {
   bool? get filterChangeReminder => _generalBody?.filterChangeReminder;
   int? get errorCode => _generalBody?.errorCode ?? _notifyBody?.errorCode;
 
-  @override
   void _setAttr() {}
 }

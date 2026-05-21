@@ -67,7 +67,7 @@ class MideaFBDevice extends MideaDevice {
          deviceProtocol: deviceProtocol,
          model: model,
          subtype: subtype,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   List<String> get modes => _modes.values.toList();

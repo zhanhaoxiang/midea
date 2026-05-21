@@ -41,7 +41,7 @@ class MideaCEDevice extends MideaDevice {
   }) : super(
          deviceType: DeviceType.ce,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     _speedCount = _defaultSpeedCount;
     if (customize != null && customize.isNotEmpty) {

@@ -38,7 +38,7 @@ class MideaE6Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.e6,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     _temperatureStep = _defaultTemperatureStep;
     if (customize != null && customize.isNotEmpty) {

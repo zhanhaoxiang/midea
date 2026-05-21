@@ -96,7 +96,7 @@ class MideaC3Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.c3,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     _defaultTemperatureStep = 0.5;
     _temperatureStep = 0.5;
@@ -153,7 +153,6 @@ class MideaC3Device extends MideaDevice {
   double _defaultTemperatureStep = 0.5;
   double _temperatureStep = 0.5;
 
-  @override
   double? get temperatureStep => _temperatureStep;
 
   List<String> get silentModes => _silentModes;
@@ -470,10 +469,11 @@ class MideaC3Device extends MideaDevice {
       (message as MessageSetDisinfect).disinfect = value as bool;
     } else if (attr == DeviceAttributes.silentMode ||
         attr == DeviceAttributes.silentLevel) {
-      message = MessageSetSilent(messageProtocolVersion);
+      final silentMsg = MessageSetSilent(messageProtocolVersion);
+      message = silentMsg;
       if (attr == DeviceAttributes.silentMode && value is bool) {
-        (message as MessageSetSilent).silentMode = value;
-        (message as MessageSetSilent).silentLevel =
+        silentMsg.silentMode = value;
+        silentMsg.silentLevel =
             value &&
                 attrs[DeviceAttributes.silentLevel] == C3SilentLevel.off.name
             ? C3SilentLevel.silent
@@ -482,13 +482,11 @@ class MideaC3Device extends MideaDevice {
                 orElse: () => C3SilentLevel.off,
               );
       } else if (attr == DeviceAttributes.silentLevel && value is String) {
-        (message as MessageSetSilent).silentLevel = C3SilentLevel.values
-            .firstWhere(
-              (e) => e.name == value,
-              orElse: () => C3SilentLevel.off,
-            );
-        (message as MessageSetSilent).silentMode =
-            value != C3SilentLevel.off.name;
+        silentMsg.silentLevel = C3SilentLevel.values.firstWhere(
+          (e) => e.name == value,
+          orElse: () => C3SilentLevel.off,
+        );
+        silentMsg.silentMode = value != C3SilentLevel.off.name;
       }
     }
 

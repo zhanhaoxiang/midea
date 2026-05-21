@@ -60,7 +60,7 @@ class MideaA1Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.a1,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     _speeds = _defaultSpeeds;
     _modes = _defaultModes;

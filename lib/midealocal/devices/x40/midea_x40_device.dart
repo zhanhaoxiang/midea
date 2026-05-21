@@ -54,7 +54,7 @@ class MideaX40Device extends MideaDevice {
          deviceProtocol: deviceProtocol,
          model: model,
          subtype: subtype,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     _fields = {};
     if (customize != null && customize.isNotEmpty) {
@@ -71,7 +71,7 @@ class MideaX40Device extends MideaDevice {
     'Oscillate',
   ];
 
-  static const Map<String, dynamic> _defaultAttributes = {
+  static final Map<String, dynamic> _defaultAttributes = {
     DeviceAttributes.light: false,
     DeviceAttributes.fanSpeed: 0,
     DeviceAttributes.direction: false,
