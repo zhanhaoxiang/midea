@@ -106,7 +106,7 @@ Future<void> main() async {
       // Step 4: power on
       print('\n[4] 尝试控制：开机...');
 
-      device.setAttribute(DeviceAttributes.power, true);
+      device.setAttribute(DbDeviceAttributes.power, true);
       print('  已发送开机指令');
       await device.drainIncomingMessages(
         idleTimeout: const Duration(seconds: 1),
@@ -121,7 +121,7 @@ Future<void> main() async {
           maxDuration: const Duration(seconds: 3),
         );
         print(' 当前状态： ${device.attributes}');
-        print('  开机后 power 状态: ${device.attributes[DeviceAttributes.power]}');
+        print('  开机后 power 状态: ${device.attributes[DbDeviceAttributes.power]}');
       } on NoSupportedProtocol {
         print('  开机指令已发送，但状态查询没有匹配到可用协议');
       }
