@@ -6,7 +6,7 @@ import '../../const.dart';
 import '../../device.dart';
 import 'message.dart';
 
-class DeviceAttributes {
+class E8DeviceAttributes {
   static const String status = 'status';
   static const String timeRemaining = 'time_remaining';
   static const String keepWarmRemaining = 'keep_warm_remaining';
@@ -32,7 +32,7 @@ class MideaE8Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.e8,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static const Map<int, String> _statusMap = {
@@ -45,14 +45,14 @@ class MideaE8Device extends MideaDevice {
   };
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.status: null,
-    DeviceAttributes.timeRemaining: null,
-    DeviceAttributes.keepWarmRemaining: null,
-    DeviceAttributes.workingTime: null,
-    DeviceAttributes.targetTemperature: null,
-    DeviceAttributes.currentTemperature: null,
-    DeviceAttributes.finished: null,
-    DeviceAttributes.waterShortage: null,
+    E8DeviceAttributes.status: null,
+    E8DeviceAttributes.timeRemaining: null,
+    E8DeviceAttributes.keepWarmRemaining: null,
+    E8DeviceAttributes.workingTime: null,
+    E8DeviceAttributes.targetTemperature: null,
+    E8DeviceAttributes.currentTemperature: null,
+    E8DeviceAttributes.finished: null,
+    E8DeviceAttributes.waterShortage: null,
   };
 
   @override
@@ -67,11 +67,11 @@ class MideaE8Device extends MideaDevice {
     for (final attr in attrs.keys) {
       if (message.hasProperty(attr)) {
         final value = message.getProperty(attr);
-        if (attr == DeviceAttributes.status) {
+        if (attr == E8DeviceAttributes.status) {
           if (_statusMap.containsKey(value)) {
-            attrs[DeviceAttributes.status] = _statusMap[value];
+            attrs[E8DeviceAttributes.status] = _statusMap[value];
           } else {
-            attrs[DeviceAttributes.status] = null;
+            attrs[E8DeviceAttributes.status] = null;
           }
         } else {
           attrs[attr] = value;
@@ -89,21 +89,21 @@ class MideaE8Device extends MideaDevice {
 extension MessageE8ResponseExtension on MessageE8Response {
   bool hasProperty(String attr) {
     switch (attr) {
-      case DeviceAttributes.status:
+      case E8DeviceAttributes.status:
         return status != null;
-      case DeviceAttributes.timeRemaining:
+      case E8DeviceAttributes.timeRemaining:
         return timeRemaining != null;
-      case DeviceAttributes.keepWarmRemaining:
+      case E8DeviceAttributes.keepWarmRemaining:
         return keepWarmRemaining != null;
-      case DeviceAttributes.workingTime:
+      case E8DeviceAttributes.workingTime:
         return workingTime != null;
-      case DeviceAttributes.targetTemperature:
+      case E8DeviceAttributes.targetTemperature:
         return targetTemperature != null;
-      case DeviceAttributes.currentTemperature:
+      case E8DeviceAttributes.currentTemperature:
         return currentTemperature != null;
-      case DeviceAttributes.finished:
+      case E8DeviceAttributes.finished:
         return finished != null;
-      case DeviceAttributes.waterShortage:
+      case E8DeviceAttributes.waterShortage:
         return waterShortcut != null;
       default:
         return false;
@@ -112,21 +112,21 @@ extension MessageE8ResponseExtension on MessageE8Response {
 
   dynamic getProperty(String attr) {
     switch (attr) {
-      case DeviceAttributes.status:
+      case E8DeviceAttributes.status:
         return status;
-      case DeviceAttributes.timeRemaining:
+      case E8DeviceAttributes.timeRemaining:
         return timeRemaining;
-      case DeviceAttributes.keepWarmRemaining:
+      case E8DeviceAttributes.keepWarmRemaining:
         return keepWarmRemaining;
-      case DeviceAttributes.workingTime:
+      case E8DeviceAttributes.workingTime:
         return workingTime;
-      case DeviceAttributes.targetTemperature:
+      case E8DeviceAttributes.targetTemperature:
         return targetTemperature;
-      case DeviceAttributes.currentTemperature:
+      case E8DeviceAttributes.currentTemperature:
         return currentTemperature;
-      case DeviceAttributes.finished:
+      case E8DeviceAttributes.finished:
         return finished;
-      case DeviceAttributes.waterShortage:
+      case E8DeviceAttributes.waterShortage:
         return waterShortcut;
       default:
         return null;

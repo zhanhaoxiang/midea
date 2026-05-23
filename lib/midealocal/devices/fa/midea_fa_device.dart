@@ -6,7 +6,7 @@ import '../../device.dart';
 import '../../message.dart';
 import 'message.dart';
 
-class DeviceAttributes {
+class FaDeviceAttributes {
   static const String power = 'power';
   static const String childLock = 'child_lock';
   static const String mode = 'mode';
@@ -89,14 +89,14 @@ class MideaFADevice extends MideaDevice {
          model: model,
          subtype: subtype,
          attributes: {
-           DeviceAttributes.power: false,
-           DeviceAttributes.childLock: false,
-           DeviceAttributes.mode: 0,
-           DeviceAttributes.fanSpeed: 0,
-           DeviceAttributes.oscillate: false,
-           DeviceAttributes.oscillationAngle: null,
-           DeviceAttributes.tiltingAngle: null,
-           DeviceAttributes.oscillationMode: null,
+           FaDeviceAttributes.power: false,
+           FaDeviceAttributes.childLock: false,
+           FaDeviceAttributes.mode: 0,
+           FaDeviceAttributes.fanSpeed: 0,
+           FaDeviceAttributes.oscillate: false,
+           FaDeviceAttributes.oscillationAngle: null,
+           FaDeviceAttributes.tiltingAngle: null,
+           FaDeviceAttributes.oscillationMode: null,
          },
        ) {
     setCustomize(customize);
@@ -124,37 +124,37 @@ class MideaFADevice extends MideaDevice {
 
     for (final status in attrs.keys) {
       final value = _getAttribute(message, status);
-      if (status == DeviceAttributes.oscillationAngle) {
+      if (status == FaDeviceAttributes.oscillationAngle) {
         if (value < oscillationAngles.length) {
           attrs[status] = oscillationAngles[value];
         } else {
           attrs[status] = null;
         }
-      } else if (status == DeviceAttributes.tiltingAngle) {
+      } else if (status == FaDeviceAttributes.tiltingAngle) {
         if (value < tiltingAngles.length) {
           attrs[status] = tiltingAngles[value];
         } else {
           attrs[status] = null;
         }
-      } else if (status == DeviceAttributes.oscillationMode) {
+      } else if (status == FaDeviceAttributes.oscillationMode) {
         if (value < oscillationModes.length) {
           attrs[status] = oscillationModes[value];
         } else {
           attrs[status] = null;
         }
-      } else if (status == DeviceAttributes.mode) {
+      } else if (status == FaDeviceAttributes.mode) {
         if (value < modes.length) {
           attrs[status] = modes[value];
         } else {
           attrs[status] = null;
         }
-      } else if (status == DeviceAttributes.power) {
+      } else if (status == FaDeviceAttributes.power) {
         attrs[status] = value;
         if (!value) {
-          attrs[DeviceAttributes.fanSpeed] = 0;
+          attrs[FaDeviceAttributes.fanSpeed] = 0;
         }
-      } else if (status == DeviceAttributes.fanSpeed &&
-          !(attrs[DeviceAttributes.power] as bool)) {
+      } else if (status == FaDeviceAttributes.fanSpeed &&
+          !(attrs[FaDeviceAttributes.power] as bool)) {
         attrs[status] = 0;
       } else {
         attrs[status] = value;
@@ -166,21 +166,21 @@ class MideaFADevice extends MideaDevice {
 
   dynamic _getAttribute(MessageFAResponse message, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case FaDeviceAttributes.power:
         return message.power;
-      case DeviceAttributes.childLock:
+      case FaDeviceAttributes.childLock:
         return message.childLock;
-      case DeviceAttributes.mode:
+      case FaDeviceAttributes.mode:
         return message.mode;
-      case DeviceAttributes.fanSpeed:
+      case FaDeviceAttributes.fanSpeed:
         return message.fanSpeed;
-      case DeviceAttributes.oscillate:
+      case FaDeviceAttributes.oscillate:
         return message.oscillate;
-      case DeviceAttributes.oscillationAngle:
+      case FaDeviceAttributes.oscillationAngle:
         return message.oscillationAngle;
-      case DeviceAttributes.oscillationMode:
+      case FaDeviceAttributes.oscillationMode:
         return message.oscillationMode;
-      case DeviceAttributes.tiltingAngle:
+      case FaDeviceAttributes.tiltingAngle:
         return message.tiltingAngle;
       default:
         return null;
@@ -194,34 +194,34 @@ class MideaFADevice extends MideaDevice {
       message.oscillate = true;
       message.oscillationMode = oscillationModes.indexOf(value);
       if (value == 'Oscillation') {
-        if (attrs[DeviceAttributes.oscillationAngle] == 'Off') {
+        if (attrs[FaDeviceAttributes.oscillationAngle] == 'Off') {
           message.oscillationAngle = 3;
         } else {
           message.oscillationAngle = oscillationAngles.indexOf(
-            attrs[DeviceAttributes.oscillationAngle] as String,
+            attrs[FaDeviceAttributes.oscillationAngle] as String,
           );
         }
       } else if (value == 'Tilting') {
-        if (attrs[DeviceAttributes.tiltingAngle] == 'Off') {
+        if (attrs[FaDeviceAttributes.tiltingAngle] == 'Off') {
           message.tiltingAngle = 3;
         } else {
           message.tiltingAngle = tiltingAngles.indexOf(
-            attrs[DeviceAttributes.tiltingAngle] as String,
+            attrs[FaDeviceAttributes.tiltingAngle] as String,
           );
         }
       } else {
-        if (attrs[DeviceAttributes.oscillationAngle] == 'Off') {
+        if (attrs[FaDeviceAttributes.oscillationAngle] == 'Off') {
           message.oscillationAngle = 3;
         } else {
           message.oscillationAngle = oscillationAngles.indexOf(
-            attrs[DeviceAttributes.oscillationAngle] as String,
+            attrs[FaDeviceAttributes.oscillationAngle] as String,
           );
         }
-        if (attrs[DeviceAttributes.tiltingAngle] == 'Off') {
+        if (attrs[FaDeviceAttributes.tiltingAngle] == 'Off') {
           message.tiltingAngle = 3;
         } else {
           message.tiltingAngle = tiltingAngles.indexOf(
-            attrs[DeviceAttributes.tiltingAngle] as String,
+            attrs[FaDeviceAttributes.tiltingAngle] as String,
           );
         }
       }
@@ -230,24 +230,24 @@ class MideaFADevice extends MideaDevice {
 
   void _setOscillationAngle(MessageSet message, String value) {
     if (value == 'Off' || value.isEmpty) {
-      if (attrs[DeviceAttributes.tiltingAngle] == 'Off') {
+      if (attrs[FaDeviceAttributes.tiltingAngle] == 'Off') {
         message.oscillate = false;
       } else {
         message.oscillate = true;
         message.oscillationMode = 2;
         message.tiltingAngle = tiltingAngles.indexOf(
-          attrs[DeviceAttributes.tiltingAngle] as String,
+          attrs[FaDeviceAttributes.tiltingAngle] as String,
         );
       }
     } else {
       message.oscillationAngle = oscillationAngles.indexOf(value);
       message.oscillate = true;
-      if (attrs[DeviceAttributes.tiltingAngle] == 'Off') {
+      if (attrs[FaDeviceAttributes.tiltingAngle] == 'Off') {
         message.oscillationMode = 1;
-      } else if (attrs[DeviceAttributes.oscillationMode] == 'Tilting') {
+      } else if (attrs[FaDeviceAttributes.oscillationMode] == 'Tilting') {
         message.oscillationMode = 6;
         message.tiltingAngle = tiltingAngles.indexOf(
-          attrs[DeviceAttributes.tiltingAngle] as String,
+          attrs[FaDeviceAttributes.tiltingAngle] as String,
         );
       }
     }
@@ -255,24 +255,24 @@ class MideaFADevice extends MideaDevice {
 
   void _setTiltingAngle(MessageSet message, String value) {
     if (value == 'Off' || value.isEmpty) {
-      if (attrs[DeviceAttributes.oscillationAngle] == 'Off') {
+      if (attrs[FaDeviceAttributes.oscillationAngle] == 'Off') {
         message.oscillate = false;
       } else {
         message.oscillate = true;
         message.oscillationMode = 1;
         message.oscillationAngle = oscillationAngles.indexOf(
-          attrs[DeviceAttributes.oscillationAngle] as String,
+          attrs[FaDeviceAttributes.oscillationAngle] as String,
         );
       }
     } else {
       message.tiltingAngle = tiltingAngles.indexOf(value);
       message.oscillate = true;
-      if (attrs[DeviceAttributes.oscillationAngle] == 'Off') {
+      if (attrs[FaDeviceAttributes.oscillationAngle] == 'Off') {
         message.oscillationMode = 2;
-      } else if (attrs[DeviceAttributes.oscillationMode] == 'Oscillation') {
+      } else if (attrs[FaDeviceAttributes.oscillationMode] == 'Oscillation') {
         message.oscillationMode = 6;
         message.oscillationAngle = oscillationAngles.indexOf(
-          attrs[DeviceAttributes.oscillationAngle] as String,
+          attrs[FaDeviceAttributes.oscillationAngle] as String,
         );
       }
     }
@@ -281,7 +281,7 @@ class MideaFADevice extends MideaDevice {
   MessageSet? setOscillation(String attr, dynamic value) {
     MessageSet? message;
     if (attrs[attr] != value) {
-      if (attr == DeviceAttributes.oscillate) {
+      if (attr == FaDeviceAttributes.oscillate) {
         message = MessageSet(
           protocolVersion: messageProtocolVersion,
           subtype: subtype,
@@ -291,21 +291,21 @@ class MideaFADevice extends MideaDevice {
           message.oscillationAngle = 3;
           message.oscillationMode = 1;
         }
-      } else if (attr == DeviceAttributes.oscillationMode &&
+      } else if (attr == FaDeviceAttributes.oscillationMode &&
           (oscillationModes.contains(value) || value.toString().isEmpty)) {
         message = MessageSet(
           protocolVersion: messageProtocolVersion,
           subtype: subtype,
         );
         _setOscillationMode(message, value.toString());
-      } else if (attr == DeviceAttributes.oscillationAngle &&
+      } else if (attr == FaDeviceAttributes.oscillationAngle &&
           (oscillationAngles.contains(value) || value.toString().isEmpty)) {
         message = MessageSet(
           protocolVersion: messageProtocolVersion,
           subtype: subtype,
         );
         _setOscillationAngle(message, value.toString());
-      } else if (attr == DeviceAttributes.tiltingAngle &&
+      } else if (attr == FaDeviceAttributes.tiltingAngle &&
           (tiltingAngles.contains(value) || value.toString().isEmpty)) {
         message = MessageSet(
           protocolVersion: messageProtocolVersion,
@@ -321,22 +321,22 @@ class MideaFADevice extends MideaDevice {
   void setAttribute(String attr, dynamic value) {
     MessageSet? message;
     if ([
-      DeviceAttributes.oscillate,
-      DeviceAttributes.oscillationMode,
-      DeviceAttributes.oscillationAngle,
-      DeviceAttributes.tiltingAngle,
+      FaDeviceAttributes.oscillate,
+      FaDeviceAttributes.oscillationMode,
+      FaDeviceAttributes.oscillationAngle,
+      FaDeviceAttributes.tiltingAngle,
     ].contains(attr)) {
       message = setOscillation(attr, value);
-    } else if (attr == DeviceAttributes.fanSpeed &&
+    } else if (attr == FaDeviceAttributes.fanSpeed &&
         value > 0 &&
-        !(attrs[DeviceAttributes.power] as bool)) {
+        !(attrs[FaDeviceAttributes.power] as bool)) {
       message = MessageSet(
         protocolVersion: messageProtocolVersion,
         subtype: subtype,
       );
       message.fanSpeed = value as int;
       message.power = true;
-    } else if (attr == DeviceAttributes.mode) {
+    } else if (attr == FaDeviceAttributes.mode) {
       final modeVal = modes.indexOf(value.toString());
       if (modeVal >= 0) {
         message = MessageSet(
@@ -345,7 +345,7 @@ class MideaFADevice extends MideaDevice {
         );
         message.mode = modeVal;
       }
-    } else if (!(attr == DeviceAttributes.fanSpeed && value == 0)) {
+    } else if (!(attr == FaDeviceAttributes.fanSpeed && value == 0)) {
       message = MessageSet(
         protocolVersion: messageProtocolVersion,
         subtype: subtype,
@@ -359,13 +359,13 @@ class MideaFADevice extends MideaDevice {
 
   void _setAttr(MessageSet message, String attr, dynamic value) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case FaDeviceAttributes.power:
         message.power = value as bool;
         break;
-      case DeviceAttributes.childLock:
+      case FaDeviceAttributes.childLock:
         message.lock = value as bool;
         break;
-      case DeviceAttributes.fanSpeed:
+      case FaDeviceAttributes.fanSpeed:
         message.fanSpeed = value as int;
         break;
       default:

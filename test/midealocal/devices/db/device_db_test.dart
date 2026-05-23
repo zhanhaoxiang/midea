@@ -24,9 +24,9 @@ void main() {
     });
 
     test('test initial attributes', () {
-      expect(device.attributes[DeviceAttributes.power], false);
-      expect(device.attributes[DeviceAttributes.start], false);
-      expect(device.attributes[DeviceAttributes.status], null);
+      expect(device.attributes[DbDeviceAttributes.power], false);
+      expect(device.attributes[DbDeviceAttributes.start], false);
+      expect(device.attributes[DbDeviceAttributes.status], null);
     });
 
     test('test build query', () {

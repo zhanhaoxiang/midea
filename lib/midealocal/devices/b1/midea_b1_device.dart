@@ -19,7 +19,7 @@ class MideaB1Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.b1,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static const Map<int, String> _statusMap = {
@@ -32,13 +32,13 @@ class MideaB1Device extends MideaDevice {
   };
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.door: false,
-    DeviceAttributes.status: null,
-    DeviceAttributes.timeRemaining: null,
-    DeviceAttributes.currentTemperature: null,
-    DeviceAttributes.tankEjected: false,
-    DeviceAttributes.waterChangeReminder: false,
-    DeviceAttributes.waterShortage: false,
+    B1DeviceAttributes.door: false,
+    B1DeviceAttributes.status: null,
+    B1DeviceAttributes.timeRemaining: null,
+    B1DeviceAttributes.currentTemperature: null,
+    B1DeviceAttributes.tankEjected: false,
+    B1DeviceAttributes.waterChangeReminder: false,
+    B1DeviceAttributes.waterShortage: false,
   };
 
   @override
@@ -55,9 +55,9 @@ class MideaB1Device extends MideaDevice {
       final attrStr = status.toString();
       if (message.hasAttribute(attrStr)) {
         final value = message.getAttribute(attrStr);
-        if (status == DeviceAttributes.status) {
-          attrs[DeviceAttributes.status] = _statusMap[value] ?? null;
-          newStatus[DeviceAttributes.status] = attrs[DeviceAttributes.status];
+        if (status == B1DeviceAttributes.status) {
+          attrs[B1DeviceAttributes.status] = _statusMap[value] ?? null;
+          newStatus[B1DeviceAttributes.status] = attrs[B1DeviceAttributes.status];
         } else {
           attrs[status] = value;
           newStatus[status] = value;

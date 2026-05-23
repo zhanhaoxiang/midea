@@ -5,7 +5,7 @@ import '../../device.dart';
 import '../../message.dart';
 import 'message.dart';
 
-class DeviceAttributes {
+class CeDeviceAttributes {
   static const String power = 'power';
   static const String mode = 'mode';
   static const String childLock = 'child_lock';
@@ -41,7 +41,7 @@ class MideaCEDevice extends MideaDevice {
   }) : super(
          deviceType: DeviceType.ce,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     _speedCount = _defaultSpeedCount;
     if (customize != null && customize.isNotEmpty) {
@@ -53,24 +53,24 @@ class MideaCEDevice extends MideaDevice {
 
   static const int _defaultSpeedCount = 7;
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.power: false,
-    DeviceAttributes.mode: null,
-    DeviceAttributes.childLock: false,
-    DeviceAttributes.scheduled: false,
-    DeviceAttributes.fanSpeed: 0,
-    DeviceAttributes.pm25: null,
-    DeviceAttributes.co2: null,
-    DeviceAttributes.currentHumidity: null,
-    DeviceAttributes.currentTemperature: null,
-    DeviceAttributes.hcho: null,
-    DeviceAttributes.linkToAc: false,
-    DeviceAttributes.sleepMode: false,
-    DeviceAttributes.ecoMode: false,
-    DeviceAttributes.auxHeating: null,
-    DeviceAttributes.powerfulPurify: false,
-    DeviceAttributes.filterCleaningReminder: false,
-    DeviceAttributes.filterChangeReminder: false,
-    DeviceAttributes.errorCode: 0,
+    CeDeviceAttributes.power: false,
+    CeDeviceAttributes.mode: null,
+    CeDeviceAttributes.childLock: false,
+    CeDeviceAttributes.scheduled: false,
+    CeDeviceAttributes.fanSpeed: 0,
+    CeDeviceAttributes.pm25: null,
+    CeDeviceAttributes.co2: null,
+    CeDeviceAttributes.currentHumidity: null,
+    CeDeviceAttributes.currentTemperature: null,
+    CeDeviceAttributes.hcho: null,
+    CeDeviceAttributes.linkToAc: false,
+    CeDeviceAttributes.sleepMode: false,
+    CeDeviceAttributes.ecoMode: false,
+    CeDeviceAttributes.auxHeating: null,
+    CeDeviceAttributes.powerfulPurify: false,
+    CeDeviceAttributes.filterCleaningReminder: false,
+    CeDeviceAttributes.filterChangeReminder: false,
+    CeDeviceAttributes.errorCode: 0,
   };
 
   int _speedCount = _defaultSpeedCount;
@@ -97,55 +97,55 @@ class MideaCEDevice extends MideaDevice {
       }
     }
 
-    final sleepMode = attrs[DeviceAttributes.sleepMode] as bool? ?? false;
-    final ecoMode = attrs[DeviceAttributes.ecoMode] as bool? ?? false;
+    final sleepMode = attrs[CeDeviceAttributes.sleepMode] as bool? ?? false;
+    final ecoMode = attrs[CeDeviceAttributes.ecoMode] as bool? ?? false;
     if (sleepMode) {
-      attrs[DeviceAttributes.mode] = 'Sleep mode';
+      attrs[CeDeviceAttributes.mode] = 'Sleep mode';
     } else if (ecoMode) {
-      attrs[DeviceAttributes.mode] = 'ECO mode';
+      attrs[CeDeviceAttributes.mode] = 'ECO mode';
     } else {
-      attrs[DeviceAttributes.mode] = 'None';
+      attrs[CeDeviceAttributes.mode] = 'None';
     }
-    newStatus[DeviceAttributes.mode] = attrs[DeviceAttributes.mode];
+    newStatus[CeDeviceAttributes.mode] = attrs[CeDeviceAttributes.mode];
 
     return newStatus;
   }
 
   dynamic _getMessageAttribute(MessageCEResponse message, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case CeDeviceAttributes.power:
         return message.power;
-      case DeviceAttributes.childLock:
+      case CeDeviceAttributes.childLock:
         return message.childLock;
-      case DeviceAttributes.scheduled:
+      case CeDeviceAttributes.scheduled:
         return message.scheduled;
-      case DeviceAttributes.fanSpeed:
+      case CeDeviceAttributes.fanSpeed:
         return message.fanSpeed;
-      case DeviceAttributes.pm25:
+      case CeDeviceAttributes.pm25:
         return message.pm25;
-      case DeviceAttributes.co2:
+      case CeDeviceAttributes.co2:
         return message.co2;
-      case DeviceAttributes.currentHumidity:
+      case CeDeviceAttributes.currentHumidity:
         return message.currentHumidity;
-      case DeviceAttributes.currentTemperature:
+      case CeDeviceAttributes.currentTemperature:
         return message.currentTemperature;
-      case DeviceAttributes.hcho:
+      case CeDeviceAttributes.hcho:
         return message.hcho;
-      case DeviceAttributes.linkToAc:
+      case CeDeviceAttributes.linkToAc:
         return message.linkToAc;
-      case DeviceAttributes.sleepMode:
+      case CeDeviceAttributes.sleepMode:
         return message.sleepMode;
-      case DeviceAttributes.ecoMode:
+      case CeDeviceAttributes.ecoMode:
         return message.ecoMode;
-      case DeviceAttributes.auxHeating:
+      case CeDeviceAttributes.auxHeating:
         return message.auxHeating;
-      case DeviceAttributes.powerfulPurify:
+      case CeDeviceAttributes.powerfulPurify:
         return message.powerfulPurify;
-      case DeviceAttributes.filterCleaningReminder:
+      case CeDeviceAttributes.filterCleaningReminder:
         return message.filterCleaningReminder;
-      case DeviceAttributes.filterChangeReminder:
+      case CeDeviceAttributes.filterChangeReminder:
         return message.filterChangeReminder;
-      case DeviceAttributes.errorCode:
+      case CeDeviceAttributes.errorCode:
         return message.errorCode;
       default:
         return null;
@@ -154,23 +154,23 @@ class MideaCEDevice extends MideaDevice {
 
   MessageSet makeMessageSet() {
     final message = MessageSet(messageProtocolVersion);
-    message.power = attrs[DeviceAttributes.power] as bool? ?? false;
-    message.fanSpeed = attrs[DeviceAttributes.fanSpeed] as int? ?? 0;
-    message.linkToAc = attrs[DeviceAttributes.linkToAc] as bool? ?? false;
-    message.sleepMode = attrs[DeviceAttributes.sleepMode] as bool? ?? false;
-    message.ecoMode = attrs[DeviceAttributes.ecoMode] as bool? ?? false;
-    message.auxHeating = attrs[DeviceAttributes.auxHeating] as bool? ?? false;
+    message.power = attrs[CeDeviceAttributes.power] as bool? ?? false;
+    message.fanSpeed = attrs[CeDeviceAttributes.fanSpeed] as int? ?? 0;
+    message.linkToAc = attrs[CeDeviceAttributes.linkToAc] as bool? ?? false;
+    message.sleepMode = attrs[CeDeviceAttributes.sleepMode] as bool? ?? false;
+    message.ecoMode = attrs[CeDeviceAttributes.ecoMode] as bool? ?? false;
+    message.auxHeating = attrs[CeDeviceAttributes.auxHeating] as bool? ?? false;
     message.powerfulPurify =
-        attrs[DeviceAttributes.powerfulPurify] as bool? ?? false;
-    message.scheduled = attrs[DeviceAttributes.scheduled] as bool? ?? false;
-    message.childLock = attrs[DeviceAttributes.childLock] as bool? ?? false;
+        attrs[CeDeviceAttributes.powerfulPurify] as bool? ?? false;
+    message.scheduled = attrs[CeDeviceAttributes.scheduled] as bool? ?? false;
+    message.childLock = attrs[CeDeviceAttributes.childLock] as bool? ?? false;
     return message;
   }
 
   @override
   void setAttribute(String attr, dynamic value) {
     final message = makeMessageSet();
-    if (attr == DeviceAttributes.mode) {
+    if (attr == CeDeviceAttributes.mode) {
       message.sleepMode = false;
       message.ecoMode = false;
       if (value == 'Sleep mode') {
@@ -180,31 +180,31 @@ class MideaCEDevice extends MideaDevice {
       }
     } else {
       switch (attr) {
-        case DeviceAttributes.power:
+        case CeDeviceAttributes.power:
           message.power = value as bool;
           break;
-        case DeviceAttributes.fanSpeed:
+        case CeDeviceAttributes.fanSpeed:
           message.fanSpeed = value as int;
           break;
-        case DeviceAttributes.linkToAc:
+        case CeDeviceAttributes.linkToAc:
           message.linkToAc = value as bool;
           break;
-        case DeviceAttributes.sleepMode:
+        case CeDeviceAttributes.sleepMode:
           message.sleepMode = value as bool;
           break;
-        case DeviceAttributes.ecoMode:
+        case CeDeviceAttributes.ecoMode:
           message.ecoMode = value as bool;
           break;
-        case DeviceAttributes.auxHeating:
+        case CeDeviceAttributes.auxHeating:
           message.auxHeating = value as bool;
           break;
-        case DeviceAttributes.powerfulPurify:
+        case CeDeviceAttributes.powerfulPurify:
           message.powerfulPurify = value as bool;
           break;
-        case DeviceAttributes.scheduled:
+        case CeDeviceAttributes.scheduled:
           message.scheduled = value as bool;
           break;
-        case DeviceAttributes.childLock:
+        case CeDeviceAttributes.childLock:
           message.childLock = value as bool;
           break;
       }

@@ -7,10 +7,10 @@ import '../../message.dart';
 import 'message.dart';
 
 // ---------------------------------------------------------------------------
-// DeviceAttributes
+// FbDeviceAttributes
 // ---------------------------------------------------------------------------
 
-class DeviceAttributes {
+class FbDeviceAttributes {
   static const String power = 'power';
   static const String mode = 'mode';
   static const String heatingLevel = 'heating_level';
@@ -37,12 +37,12 @@ class MideaFBDevice extends MideaDevice {
   };
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.power: false,
-    DeviceAttributes.mode: null,
-    DeviceAttributes.heatingLevel: 0,
-    DeviceAttributes.targetTemperature: null,
-    DeviceAttributes.currentTemperature: null,
-    DeviceAttributes.childLock: false,
+    FbDeviceAttributes.power: false,
+    FbDeviceAttributes.mode: null,
+    FbDeviceAttributes.heatingLevel: 0,
+    FbDeviceAttributes.targetTemperature: null,
+    FbDeviceAttributes.currentTemperature: null,
+    FbDeviceAttributes.childLock: false,
   };
 
   MideaFBDevice({
@@ -67,7 +67,7 @@ class MideaFBDevice extends MideaDevice {
          deviceProtocol: deviceProtocol,
          model: model,
          subtype: subtype,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   List<String> get modes => _modes.values.toList();
@@ -85,7 +85,7 @@ class MideaFBDevice extends MideaDevice {
     for (final attr in attrs.keys) {
       if (_hasAttribute(message, attr)) {
         var value = _getAttribute(message, attr);
-        if (attr == DeviceAttributes.mode) {
+        if (attr == FbDeviceAttributes.mode) {
           if (value is int && _modes.containsKey(value)) {
             value = _modes[value];
           } else {
@@ -101,17 +101,17 @@ class MideaFBDevice extends MideaDevice {
 
   bool _hasAttribute(MessageFBResponse msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case FbDeviceAttributes.power:
         return msg.power != null;
-      case DeviceAttributes.mode:
+      case FbDeviceAttributes.mode:
         return msg.mode != null;
-      case DeviceAttributes.heatingLevel:
+      case FbDeviceAttributes.heatingLevel:
         return msg.heatingLevel != null;
-      case DeviceAttributes.targetTemperature:
+      case FbDeviceAttributes.targetTemperature:
         return msg.targetTemperature != null;
-      case DeviceAttributes.currentTemperature:
+      case FbDeviceAttributes.currentTemperature:
         return msg.currentTemperature != null;
-      case DeviceAttributes.childLock:
+      case FbDeviceAttributes.childLock:
         return msg.childLock != null;
       default:
         return false;
@@ -120,17 +120,17 @@ class MideaFBDevice extends MideaDevice {
 
   dynamic _getAttribute(MessageFBResponse msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case FbDeviceAttributes.power:
         return msg.power;
-      case DeviceAttributes.mode:
+      case FbDeviceAttributes.mode:
         return msg.mode;
-      case DeviceAttributes.heatingLevel:
+      case FbDeviceAttributes.heatingLevel:
         return msg.heatingLevel;
-      case DeviceAttributes.targetTemperature:
+      case FbDeviceAttributes.targetTemperature:
         return msg.targetTemperature;
-      case DeviceAttributes.currentTemperature:
+      case FbDeviceAttributes.currentTemperature:
         return msg.currentTemperature;
-      case DeviceAttributes.childLock:
+      case FbDeviceAttributes.childLock:
         return msg.childLock;
       default:
         return null;
@@ -140,23 +140,23 @@ class MideaFBDevice extends MideaDevice {
   @override
   void setAttribute(String attr, dynamic value) {
     final message = MessageSet(messageProtocolVersion, subtype);
-    if (attr == DeviceAttributes.mode) {
+    if (attr == FbDeviceAttributes.mode) {
       if (value is String && _modes.containsValue(value)) {
         final modeKey = _modes.keys.firstWhere((k) => _modes[k] == value);
         message.mode = modeKey;
       }
     } else {
       switch (attr) {
-        case DeviceAttributes.power:
+        case FbDeviceAttributes.power:
           message.power = value as bool;
           break;
-        case DeviceAttributes.heatingLevel:
+        case FbDeviceAttributes.heatingLevel:
           message.heatingLevel = value as int;
           break;
-        case DeviceAttributes.targetTemperature:
+        case FbDeviceAttributes.targetTemperature:
           message.targetTemperature = value as int;
           break;
-        case DeviceAttributes.childLock:
+        case FbDeviceAttributes.childLock:
           message.childLock = value as bool;
           break;
       }

@@ -15,7 +15,7 @@ const int minMsgLength = 56;
 const int minV2FactualMsgLength = 6;
 const int responseTimeout = 12;
 const int socketTimeoutSeconds = 10;
-const int queryTimeoutSeconds = 2;
+const int queryTimeoutSeconds = 20;
 
 // ---------------------------------------------------------------------------
 // Exceptions
@@ -60,16 +60,16 @@ abstract class MideaDevice {
     required String model,
     required int subtype,
     required Map<String, dynamic> attributes,
-  })  : _deviceId = deviceId,
-        _deviceType = deviceType,
-        _ipAddress = ipAddress,
-        _port = port,
-        _token = _hexToBytes(token),
-        _key = _hexToBytes(key),
-        _deviceProtocolVersion = deviceProtocol,
-        _model = model,
-        _subtype = subtype,
-        _attributes = attributes;
+  }) : _deviceId = deviceId,
+       _deviceType = deviceType,
+       _ipAddress = ipAddress,
+       _port = port,
+       _token = _hexToBytes(token),
+       _key = _hexToBytes(key),
+       _deviceProtocolVersion = deviceProtocol,
+       _model = model,
+       _subtype = subtype,
+       _attributes = attributes;
 
   final int _deviceId;
   final DeviceType _deviceType;
@@ -135,14 +135,17 @@ abstract class MideaDevice {
       return true;
     } on SocketException {
       _socket = null;
-    } on AuthException {
+    } on AuthException catch (e) {
       // authentication failed
+      print("auth exception: ${e.toString()}");
     } on midea_exc.SocketException {
       _socket = null;
     } on NoSupportedProtocol {
       // no supported query
-    } catch (_) {
+      print("no supported");
+    } catch (e) {
       _socket = null;
+      print(e.toString());
     }
     if (checkProtocol) setAvailable(false);
     return false;
@@ -225,16 +228,26 @@ abstract class MideaDevice {
   void buildSend(MessageRequest cmd, {bool query = false}) {
     final data = cmd.serialize();
     final msg = PacketBuilder(_deviceId, data).finalize();
+    print("$deviceId Sending: $cmd, query is $query");
     sendMessage(msg, query: query);
   }
 
   // ── Status polling ────────────────────────────────────────────────────────
 
   Future<void> refreshStatus({bool checkProtocol = false}) async {
-    final cmds = <MessageRequest>[];
     if (applianceQuery) {
-      cmds.add(MessageQueryAppliance(_deviceType));
+      buildSend(MessageQueryAppliance(_deviceType), query: true);
+      if (checkProtocol) {
+        await _waitForQueryResponse();
+      } else {
+        await drainIncomingMessages(
+          idleTimeout: const Duration(milliseconds: 500),
+          maxDuration: const Duration(seconds: 3),
+        );
+      }
     }
+
+    final cmds = <MessageRequest>[];
     cmds.addAll(buildQuery());
 
     var errorCount = 0;
@@ -248,18 +261,7 @@ abstract class MideaDevice {
 
       if (checkProtocol) {
         try {
-          while (true) {
-            if (_socket == null) throw midea_exc.SocketException();
-            final msg = await _recvBytes(
-              512,
-              timeout: const Duration(seconds: queryTimeoutSeconds),
-            );
-            if (msg.isEmpty) throw ResponseException();
-            final result = parseMessage(msg);
-            if (result == MessageResult.success) break;
-            if (result == MessageResult.padding) continue;
-            throw ResponseException();
-          }
+          await _waitForQueryResponse();
         } on TimeoutException {
           errorCount++;
           _unsupportedProtocol.add(cmdName);
@@ -269,7 +271,47 @@ abstract class MideaDevice {
       }
     }
 
-    if (cmds.isNotEmpty && errorCount == cmds.length) throw NoSupportedProtocol();
+    if (!checkProtocol) {
+      await drainIncomingMessages(
+        idleTimeout: const Duration(seconds: 2),
+        maxDuration: const Duration(seconds: 8),
+      );
+    }
+
+    if (cmds.isNotEmpty && errorCount == cmds.length) {
+      throw NoSupportedProtocol();
+    }
+  }
+
+  Future<void> _waitForQueryResponse() async {
+    while (true) {
+      if (_socket == null) throw midea_exc.SocketException();
+      final msg = await _recvBytes(
+        512,
+        timeout: const Duration(seconds: queryTimeoutSeconds),
+      );
+      if (msg.isEmpty) throw ResponseException();
+      final result = parseMessage(msg);
+      if (result == MessageResult.success) break;
+      if (result == MessageResult.padding) continue;
+      throw ResponseException();
+    }
+  }
+
+  Future<void> drainIncomingMessages({
+    Duration idleTimeout = const Duration(milliseconds: 500),
+    Duration maxDuration = const Duration(seconds: 5),
+  }) async {
+    final deadline = DateTime.now().add(maxDuration);
+    while (DateTime.now().isBefore(deadline)) {
+      try {
+        final msg = await _recvBytes(512, timeout: idleTimeout);
+        if (msg.isEmpty) return;
+        parseMessage(msg);
+      } on TimeoutException {
+        return;
+      }
+    }
   }
 
   // ── Message parsing ───────────────────────────────────────────────────────
@@ -279,6 +321,10 @@ abstract class MideaDevice {
       final message = MessageApplianceResponse(msg);
       applianceQuery = false;
       messageProtocolVersion = message.protocolVersion;
+      print(
+        '$deviceId Appliance query received: '
+        'protocol_version=$messageProtocolVersion',
+      );
       return false;
     }
     return true;
@@ -287,13 +333,15 @@ abstract class MideaDevice {
   MessageResult parseMessage(Uint8List msg) {
     List<Uint8List> messages;
     if (_deviceProtocolVersion == ProtocolVersion.v3) {
-      final (decoded, remaining) =
-          _security.decode8370(Uint8List.fromList([..._parseBuffer, ...msg]));
+      final (decoded, remaining) = _security.decode8370(
+        Uint8List.fromList([..._parseBuffer, ...msg]),
+      );
       messages = decoded;
       _parseBuffer = remaining;
     } else {
-      final (fetched, remaining) =
-          _fetchV2Message(Uint8List.fromList([..._parseBuffer, ...msg]));
+      final (fetched, remaining) = _fetchV2Message(
+        Uint8List.fromList([..._parseBuffer, ...msg]),
+      );
       messages = fetched;
       _parseBuffer = remaining;
     }
@@ -324,8 +372,8 @@ abstract class MideaDevice {
                 final status = processMessage(decrypted);
                 if (status.isNotEmpty) updateAll(status);
               }
-            } catch (_) {
-              // ignore parse errors
+            } catch (e) {
+              print('$deviceId Parse ignored: $e');
             }
           }
         }
@@ -353,8 +401,10 @@ abstract class MideaDevice {
   // ── Heartbeat ─────────────────────────────────────────────────────────────
 
   void sendHeartbeat() {
-    final msg =
-        PacketBuilder(_deviceId, Uint8List.fromList([0x00])).finalize(msgType: 0);
+    final msg = PacketBuilder(
+      _deviceId,
+      Uint8List.fromList([0x00]),
+    ).finalize(msgType: 0);
     sendMessage(msg);
   }
 

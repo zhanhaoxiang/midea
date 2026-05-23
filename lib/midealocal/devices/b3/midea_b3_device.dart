@@ -8,10 +8,10 @@ import '../../message.dart';
 import 'message.dart';
 
 // ---------------------------------------------------------------------------
-// DeviceAttributes
+// B3DeviceAttributes
 // ---------------------------------------------------------------------------
 
-class DeviceAttributes {
+class B3DeviceAttributes {
   static const String topCompartmentStatus = 'top_compartment_status';
   static const String topCompartmentMode = 'top_compartment_mode';
   static const String topCompartmentTemperature = 'top_compartment_temperature';
@@ -69,32 +69,32 @@ class MideaB3Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.b3,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.topCompartmentStatus: null,
-    DeviceAttributes.topCompartmentMode: null,
-    DeviceAttributes.topCompartmentTemperature: null,
-    DeviceAttributes.topCompartmentRemaining: null,
-    DeviceAttributes.topCompartmentDoor: false,
-    DeviceAttributes.topCompartmentPreheating: false,
-    DeviceAttributes.topCompartmentCooling: false,
-    DeviceAttributes.middleCompartmentStatus: null,
-    DeviceAttributes.middleCompartmentMode: null,
-    DeviceAttributes.middleCompartmentTemperature: null,
-    DeviceAttributes.middleCompartmentRemaining: null,
-    DeviceAttributes.middleCompartmentDoor: false,
-    DeviceAttributes.middleCompartmentPreheating: false,
-    DeviceAttributes.middleCompartmentCooling: false,
-    DeviceAttributes.bottomCompartmentStatus: null,
-    DeviceAttributes.bottomCompartmentMode: null,
-    DeviceAttributes.bottomCompartmentTemperature: null,
-    DeviceAttributes.bottomCompartmentRemaining: null,
-    DeviceAttributes.bottomCompartmentDoor: false,
-    DeviceAttributes.bottomCompartmentPreheating: false,
-    DeviceAttributes.bottomCompartmentCooling: false,
-    DeviceAttributes.lock: false,
+    B3DeviceAttributes.topCompartmentStatus: null,
+    B3DeviceAttributes.topCompartmentMode: null,
+    B3DeviceAttributes.topCompartmentTemperature: null,
+    B3DeviceAttributes.topCompartmentRemaining: null,
+    B3DeviceAttributes.topCompartmentDoor: false,
+    B3DeviceAttributes.topCompartmentPreheating: false,
+    B3DeviceAttributes.topCompartmentCooling: false,
+    B3DeviceAttributes.middleCompartmentStatus: null,
+    B3DeviceAttributes.middleCompartmentMode: null,
+    B3DeviceAttributes.middleCompartmentTemperature: null,
+    B3DeviceAttributes.middleCompartmentRemaining: null,
+    B3DeviceAttributes.middleCompartmentDoor: false,
+    B3DeviceAttributes.middleCompartmentPreheating: false,
+    B3DeviceAttributes.middleCompartmentCooling: false,
+    B3DeviceAttributes.bottomCompartmentStatus: null,
+    B3DeviceAttributes.bottomCompartmentMode: null,
+    B3DeviceAttributes.bottomCompartmentTemperature: null,
+    B3DeviceAttributes.bottomCompartmentRemaining: null,
+    B3DeviceAttributes.bottomCompartmentDoor: false,
+    B3DeviceAttributes.bottomCompartmentPreheating: false,
+    B3DeviceAttributes.bottomCompartmentCooling: false,
+    B3DeviceAttributes.lock: false,
   };
 
   @override
@@ -110,9 +110,9 @@ class MideaB3Device extends MideaDevice {
     for (final attr in attrs.keys) {
       if (_hasAttribute(message, attr)) {
         var value = _getAttribute(message, attr);
-        if (attr == DeviceAttributes.topCompartmentStatus ||
-            attr == DeviceAttributes.middleCompartmentStatus ||
-            attr == DeviceAttributes.bottomCompartmentStatus) {
+        if (attr == B3DeviceAttributes.topCompartmentStatus ||
+            attr == B3DeviceAttributes.middleCompartmentStatus ||
+            attr == B3DeviceAttributes.bottomCompartmentStatus) {
           if (value != null) {
             value = _statusMap[value] ?? null;
           }
@@ -126,49 +126,49 @@ class MideaB3Device extends MideaDevice {
 
   bool _hasAttribute(MessageB3Response msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.topCompartmentStatus:
+      case B3DeviceAttributes.topCompartmentStatus:
         return msg.topCompartmentStatus != null;
-      case DeviceAttributes.topCompartmentMode:
+      case B3DeviceAttributes.topCompartmentMode:
         return msg.topCompartmentMode != null;
-      case DeviceAttributes.topCompartmentTemperature:
+      case B3DeviceAttributes.topCompartmentTemperature:
         return msg.topCompartmentTemperature != null;
-      case DeviceAttributes.topCompartmentRemaining:
+      case B3DeviceAttributes.topCompartmentRemaining:
         return msg.topCompartmentRemaining != null;
-      case DeviceAttributes.topCompartmentDoor:
+      case B3DeviceAttributes.topCompartmentDoor:
         return msg.topCompartmentDoor != null;
-      case DeviceAttributes.topCompartmentPreheating:
+      case B3DeviceAttributes.topCompartmentPreheating:
         return msg.topCompartmentPreheating != null;
-      case DeviceAttributes.topCompartmentCooling:
+      case B3DeviceAttributes.topCompartmentCooling:
         return msg.topCompartmentCooling != null;
-      case DeviceAttributes.middleCompartmentStatus:
+      case B3DeviceAttributes.middleCompartmentStatus:
         return msg.middleCompartmentStatus != null;
-      case DeviceAttributes.middleCompartmentMode:
+      case B3DeviceAttributes.middleCompartmentMode:
         return msg.middleCompartmentMode != null;
-      case DeviceAttributes.middleCompartmentTemperature:
+      case B3DeviceAttributes.middleCompartmentTemperature:
         return msg.middleCompartmentTemperature != null;
-      case DeviceAttributes.middleCompartmentRemaining:
+      case B3DeviceAttributes.middleCompartmentRemaining:
         return msg.middleCompartmentRemaining != null;
-      case DeviceAttributes.middleCompartmentDoor:
+      case B3DeviceAttributes.middleCompartmentDoor:
         return msg.middleCompartmentDoor != null;
-      case DeviceAttributes.middleCompartmentPreheating:
+      case B3DeviceAttributes.middleCompartmentPreheating:
         return msg.middleCompartmentPreheating != null;
-      case DeviceAttributes.middleCompartmentCooling:
+      case B3DeviceAttributes.middleCompartmentCooling:
         return msg.middleCompartmentCooling != null;
-      case DeviceAttributes.bottomCompartmentStatus:
+      case B3DeviceAttributes.bottomCompartmentStatus:
         return msg.bottomCompartmentStatus != null;
-      case DeviceAttributes.bottomCompartmentMode:
+      case B3DeviceAttributes.bottomCompartmentMode:
         return msg.bottomCompartmentMode != null;
-      case DeviceAttributes.bottomCompartmentTemperature:
+      case B3DeviceAttributes.bottomCompartmentTemperature:
         return msg.bottomCompartmentTemperature != null;
-      case DeviceAttributes.bottomCompartmentRemaining:
+      case B3DeviceAttributes.bottomCompartmentRemaining:
         return msg.bottomCompartmentRemaining != null;
-      case DeviceAttributes.bottomCompartmentDoor:
+      case B3DeviceAttributes.bottomCompartmentDoor:
         return msg.bottomCompartmentDoor != null;
-      case DeviceAttributes.bottomCompartmentPreheating:
+      case B3DeviceAttributes.bottomCompartmentPreheating:
         return msg.bottomCompartmentPreheating != null;
-      case DeviceAttributes.bottomCompartmentCooling:
+      case B3DeviceAttributes.bottomCompartmentCooling:
         return msg.bottomCompartmentCooling != null;
-      case DeviceAttributes.lock:
+      case B3DeviceAttributes.lock:
         return msg.lock != null;
       default:
         return false;
@@ -177,49 +177,49 @@ class MideaB3Device extends MideaDevice {
 
   dynamic _getAttribute(MessageB3Response msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.topCompartmentStatus:
+      case B3DeviceAttributes.topCompartmentStatus:
         return msg.topCompartmentStatus;
-      case DeviceAttributes.topCompartmentMode:
+      case B3DeviceAttributes.topCompartmentMode:
         return msg.topCompartmentMode;
-      case DeviceAttributes.topCompartmentTemperature:
+      case B3DeviceAttributes.topCompartmentTemperature:
         return msg.topCompartmentTemperature;
-      case DeviceAttributes.topCompartmentRemaining:
+      case B3DeviceAttributes.topCompartmentRemaining:
         return msg.topCompartmentRemaining;
-      case DeviceAttributes.topCompartmentDoor:
+      case B3DeviceAttributes.topCompartmentDoor:
         return msg.topCompartmentDoor;
-      case DeviceAttributes.topCompartmentPreheating:
+      case B3DeviceAttributes.topCompartmentPreheating:
         return msg.topCompartmentPreheating;
-      case DeviceAttributes.topCompartmentCooling:
+      case B3DeviceAttributes.topCompartmentCooling:
         return msg.topCompartmentCooling;
-      case DeviceAttributes.middleCompartmentStatus:
+      case B3DeviceAttributes.middleCompartmentStatus:
         return msg.middleCompartmentStatus;
-      case DeviceAttributes.middleCompartmentMode:
+      case B3DeviceAttributes.middleCompartmentMode:
         return msg.middleCompartmentMode;
-      case DeviceAttributes.middleCompartmentTemperature:
+      case B3DeviceAttributes.middleCompartmentTemperature:
         return msg.middleCompartmentTemperature;
-      case DeviceAttributes.middleCompartmentRemaining:
+      case B3DeviceAttributes.middleCompartmentRemaining:
         return msg.middleCompartmentRemaining;
-      case DeviceAttributes.middleCompartmentDoor:
+      case B3DeviceAttributes.middleCompartmentDoor:
         return msg.middleCompartmentDoor;
-      case DeviceAttributes.middleCompartmentPreheating:
+      case B3DeviceAttributes.middleCompartmentPreheating:
         return msg.middleCompartmentPreheating;
-      case DeviceAttributes.middleCompartmentCooling:
+      case B3DeviceAttributes.middleCompartmentCooling:
         return msg.middleCompartmentCooling;
-      case DeviceAttributes.bottomCompartmentStatus:
+      case B3DeviceAttributes.bottomCompartmentStatus:
         return msg.bottomCompartmentStatus;
-      case DeviceAttributes.bottomCompartmentMode:
+      case B3DeviceAttributes.bottomCompartmentMode:
         return msg.bottomCompartmentMode;
-      case DeviceAttributes.bottomCompartmentTemperature:
+      case B3DeviceAttributes.bottomCompartmentTemperature:
         return msg.bottomCompartmentTemperature;
-      case DeviceAttributes.bottomCompartmentRemaining:
+      case B3DeviceAttributes.bottomCompartmentRemaining:
         return msg.bottomCompartmentRemaining;
-      case DeviceAttributes.bottomCompartmentDoor:
+      case B3DeviceAttributes.bottomCompartmentDoor:
         return msg.bottomCompartmentDoor;
-      case DeviceAttributes.bottomCompartmentPreheating:
+      case B3DeviceAttributes.bottomCompartmentPreheating:
         return msg.bottomCompartmentPreheating;
-      case DeviceAttributes.bottomCompartmentCooling:
+      case B3DeviceAttributes.bottomCompartmentCooling:
         return msg.bottomCompartmentCooling;
-      case DeviceAttributes.lock:
+      case B3DeviceAttributes.lock:
         return msg.lock;
       default:
         return null;

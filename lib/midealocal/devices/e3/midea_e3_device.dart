@@ -8,7 +8,7 @@ import '../../device.dart';
 import '../../message.dart';
 import 'message.dart';
 
-class DeviceAttributes {
+class E3DeviceAttributes {
   static const String power = 'power';
   static const String burningState = 'burning_state';
   static const String zeroColdWater = 'zero_cold_water';
@@ -42,7 +42,7 @@ class MideaE3Device extends MideaDevice {
          model: model,
          subtype: subtype,
          deviceType: DeviceType.e3,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     _precisionHalves = _defaultPrecisionHalves;
     _temperatureStep = _defaultTemperatureStep;
@@ -72,8 +72,8 @@ class MideaE3Device extends MideaDevice {
       if (_hasAttribute(message, status)) {
         var value = _getAttribute(message, status);
         if (_precisionHalves == true &&
-            (status == DeviceAttributes.currentTemperature ||
-                status == DeviceAttributes.targetTemperature)) {
+            (status == E3DeviceAttributes.currentTemperature ||
+                status == E3DeviceAttributes.targetTemperature)) {
           value = (value as double) / 2;
         }
         attrs[status] = value;
@@ -86,21 +86,21 @@ class MideaE3Device extends MideaDevice {
 
   bool _hasAttribute(MessageE3Response msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case E3DeviceAttributes.power:
         return msg.power != null;
-      case DeviceAttributes.burningState:
+      case E3DeviceAttributes.burningState:
         return msg.burningState != null;
-      case DeviceAttributes.zeroColdWater:
+      case E3DeviceAttributes.zeroColdWater:
         return msg.zeroColdWater != null;
-      case DeviceAttributes.protection:
+      case E3DeviceAttributes.protection:
         return msg.protection != null;
-      case DeviceAttributes.zeroColdPulse:
+      case E3DeviceAttributes.zeroColdPulse:
         return msg.zeroColdPulse != null;
-      case DeviceAttributes.smartVolume:
+      case E3DeviceAttributes.smartVolume:
         return msg.smartVolume != null;
-      case DeviceAttributes.currentTemperature:
+      case E3DeviceAttributes.currentTemperature:
         return msg.currentTemperature != null;
-      case DeviceAttributes.targetTemperature:
+      case E3DeviceAttributes.targetTemperature:
         return msg.targetTemperature != null;
       default:
         return false;
@@ -109,21 +109,21 @@ class MideaE3Device extends MideaDevice {
 
   dynamic _getAttribute(MessageE3Response msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case E3DeviceAttributes.power:
         return msg.power;
-      case DeviceAttributes.burningState:
+      case E3DeviceAttributes.burningState:
         return msg.burningState;
-      case DeviceAttributes.zeroColdWater:
+      case E3DeviceAttributes.zeroColdWater:
         return msg.zeroColdWater;
-      case DeviceAttributes.protection:
+      case E3DeviceAttributes.protection:
         return msg.protection;
-      case DeviceAttributes.zeroColdPulse:
+      case E3DeviceAttributes.zeroColdPulse:
         return msg.zeroColdPulse;
-      case DeviceAttributes.smartVolume:
+      case E3DeviceAttributes.smartVolume:
         return msg.smartVolume;
-      case DeviceAttributes.currentTemperature:
+      case E3DeviceAttributes.currentTemperature:
         return msg.currentTemperature;
-      case DeviceAttributes.targetTemperature:
+      case E3DeviceAttributes.targetTemperature:
         return msg.targetTemperature;
       default:
         return null;
@@ -133,50 +133,50 @@ class MideaE3Device extends MideaDevice {
   MessageSet _makeMessageSet() {
     final message = MessageSet(messageProtocolVersion);
     message.zeroColdWater =
-        attrs[DeviceAttributes.zeroColdWater] as bool? ?? false;
-    message.protection = attrs[DeviceAttributes.protection] as bool? ?? false;
+        attrs[E3DeviceAttributes.zeroColdWater] as bool? ?? false;
+    message.protection = attrs[E3DeviceAttributes.protection] as bool? ?? false;
     message.zeroColdPulse =
-        attrs[DeviceAttributes.zeroColdPulse] as bool? ?? false;
-    message.smartVolume = attrs[DeviceAttributes.smartVolume] as bool? ?? false;
+        attrs[E3DeviceAttributes.zeroColdPulse] as bool? ?? false;
+    message.smartVolume = attrs[E3DeviceAttributes.smartVolume] as bool? ?? false;
     message.targetTemperature =
-        attrs[DeviceAttributes.targetTemperature] as double? ?? 40.0;
+        attrs[E3DeviceAttributes.targetTemperature] as double? ?? 40.0;
     return message;
   }
 
   @override
   void setAttribute(String attr, dynamic value) {
-    if (attr == DeviceAttributes.burningState ||
-        attr == DeviceAttributes.currentTemperature ||
-        attr == DeviceAttributes.protection) {
+    if (attr == E3DeviceAttributes.burningState ||
+        attr == E3DeviceAttributes.currentTemperature ||
+        attr == E3DeviceAttributes.protection) {
       return;
     }
 
     var adjustedValue = value;
     if (_precisionHalves == true &&
-        attr == DeviceAttributes.targetTemperature) {
+        attr == E3DeviceAttributes.targetTemperature) {
       adjustedValue = (value as double) * 2;
     }
 
-    if (attr == DeviceAttributes.power) {
+    if (attr == E3DeviceAttributes.power) {
       final message = MessagePower(messageProtocolVersion);
       message.power = adjustedValue as bool;
       buildSend(message);
     } else if (_oldSubtypes.contains(subtype)) {
       final message = _makeMessageSet();
       switch (attr) {
-        case DeviceAttributes.zeroColdWater:
+        case E3DeviceAttributes.zeroColdWater:
           message.zeroColdWater = adjustedValue as bool;
           break;
-        case DeviceAttributes.protection:
+        case E3DeviceAttributes.protection:
           message.protection = adjustedValue as bool;
           break;
-        case DeviceAttributes.zeroColdPulse:
+        case E3DeviceAttributes.zeroColdPulse:
           message.zeroColdPulse = adjustedValue as bool;
           break;
-        case DeviceAttributes.smartVolume:
+        case E3DeviceAttributes.smartVolume:
           message.smartVolume = adjustedValue as bool;
           break;
-        case DeviceAttributes.targetTemperature:
+        case E3DeviceAttributes.targetTemperature:
           message.targetTemperature = adjustedValue as double;
           break;
       }
@@ -191,13 +191,13 @@ class MideaE3Device extends MideaDevice {
 
   String _attrToKey(String attr) {
     switch (attr) {
-      case DeviceAttributes.zeroColdWater:
+      case E3DeviceAttributes.zeroColdWater:
         return 'zero_cold_water';
-      case DeviceAttributes.zeroColdPulse:
+      case E3DeviceAttributes.zeroColdPulse:
         return 'zero_cold_pulse';
-      case DeviceAttributes.smartVolume:
+      case E3DeviceAttributes.smartVolume:
         return 'smart_volume';
-      case DeviceAttributes.targetTemperature:
+      case E3DeviceAttributes.targetTemperature:
         return 'target_temperature';
       default:
         return 'none';
@@ -225,14 +225,14 @@ class MideaE3Device extends MideaDevice {
   }
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.power: false,
-    DeviceAttributes.burningState: false,
-    DeviceAttributes.zeroColdWater: false,
-    DeviceAttributes.protection: false,
-    DeviceAttributes.zeroColdPulse: false,
-    DeviceAttributes.smartVolume: false,
-    DeviceAttributes.currentTemperature: null,
-    DeviceAttributes.targetTemperature: 40.0,
+    E3DeviceAttributes.power: false,
+    E3DeviceAttributes.burningState: false,
+    E3DeviceAttributes.zeroColdWater: false,
+    E3DeviceAttributes.protection: false,
+    E3DeviceAttributes.zeroColdPulse: false,
+    E3DeviceAttributes.smartVolume: false,
+    E3DeviceAttributes.currentTemperature: null,
+    E3DeviceAttributes.targetTemperature: 40.0,
   };
 }
 

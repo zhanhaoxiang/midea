@@ -8,7 +8,7 @@ import 'message.dart';
 
 const int maxSubtypeOldSpeeds = 5;
 
-class DeviceAttributes {
+class FdDeviceAttributes {
   static const String power = 'power';
   static const String fanSpeed = 'fan_speed';
   static const String promptTone = 'prompt_tone';
@@ -36,7 +36,7 @@ class MideaFDDevice extends MideaDevice {
   }) : super(
          deviceType: DeviceType.fd,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     if (subtype > maxSubtypeOldSpeeds) {
       _speeds = _speedsNew;
@@ -82,16 +82,16 @@ class MideaFDDevice extends MideaDevice {
   static const List<String> _detectModes = ['Off', 'PM 2.5', 'Methanal'];
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.power: false,
-    DeviceAttributes.fanSpeed: null,
-    DeviceAttributes.promptTone: true,
-    DeviceAttributes.targetHumidity: 60,
-    DeviceAttributes.currentHumidity: null,
-    DeviceAttributes.currentTemperature: null,
-    DeviceAttributes.tank: 0,
-    DeviceAttributes.mode: null,
-    DeviceAttributes.screenDisplay: null,
-    DeviceAttributes.disinfect: null,
+    FdDeviceAttributes.power: false,
+    FdDeviceAttributes.fanSpeed: null,
+    FdDeviceAttributes.promptTone: true,
+    FdDeviceAttributes.targetHumidity: 60,
+    FdDeviceAttributes.currentHumidity: null,
+    FdDeviceAttributes.currentTemperature: null,
+    FdDeviceAttributes.tank: 0,
+    FdDeviceAttributes.mode: null,
+    FdDeviceAttributes.screenDisplay: null,
+    FdDeviceAttributes.disinfect: null,
   };
 
   late Map<int, String> _speeds;
@@ -114,21 +114,21 @@ class MideaFDDevice extends MideaDevice {
     final message = MessageFDResponse(msg);
     final newStatus = <String, dynamic>{};
     for (final status in attrs.keys) {
-      if (status == DeviceAttributes.mode) {
+      if (status == FdDeviceAttributes.mode) {
         final value = message.mode;
         if (value != null && value <= _modes.length) {
           attrs[status] = _modes[value - 1];
         } else {
           attrs[status] = null;
         }
-      } else if (status == DeviceAttributes.fanSpeed) {
+      } else if (status == FdDeviceAttributes.fanSpeed) {
         final value = message.fanSpeed;
         if (value != null && _speeds.containsKey(value)) {
           attrs[status] = _speeds[value];
         } else {
           attrs[status] = null;
         }
-      } else if (status == DeviceAttributes.screenDisplay) {
+      } else if (status == FdDeviceAttributes.screenDisplay) {
         final value = message.screenDisplay;
         if (value != null && _screenDisplays.containsKey(value)) {
           attrs[status] = _screenDisplays[value];
@@ -146,25 +146,25 @@ class MideaFDDevice extends MideaDevice {
 
   dynamic _getMessageValue(MessageFDResponse message, String status) {
     switch (status) {
-      case DeviceAttributes.power:
+      case FdDeviceAttributes.power:
         return message.power;
-      case DeviceAttributes.fanSpeed:
+      case FdDeviceAttributes.fanSpeed:
         return message.fanSpeed;
-      case DeviceAttributes.promptTone:
+      case FdDeviceAttributes.promptTone:
         return true;
-      case DeviceAttributes.targetHumidity:
+      case FdDeviceAttributes.targetHumidity:
         return message.targetHumidity;
-      case DeviceAttributes.currentHumidity:
+      case FdDeviceAttributes.currentHumidity:
         return message.currentHumidity;
-      case DeviceAttributes.currentTemperature:
+      case FdDeviceAttributes.currentTemperature:
         return message.currentTemperature;
-      case DeviceAttributes.tank:
+      case FdDeviceAttributes.tank:
         return message.tank;
-      case DeviceAttributes.mode:
+      case FdDeviceAttributes.mode:
         return message.mode;
-      case DeviceAttributes.screenDisplay:
+      case FdDeviceAttributes.screenDisplay:
         return message.screenDisplay;
-      case DeviceAttributes.disinfect:
+      case FdDeviceAttributes.disinfect:
         return message.disinfect;
       default:
         return null;
@@ -173,26 +173,26 @@ class MideaFDDevice extends MideaDevice {
 
   MessageSet makeMessageSet() {
     final message = MessageSet(messageProtocolVersion);
-    final power = attrs[DeviceAttributes.power];
+    final power = attrs[FdDeviceAttributes.power];
     if (power != null) message.power = power as bool;
-    final promptTone = attrs[DeviceAttributes.promptTone];
+    final promptTone = attrs[FdDeviceAttributes.promptTone];
     if (promptTone != null) message.promptTone = promptTone as bool;
-    final screenDisplayAttr = attrs[DeviceAttributes.screenDisplay];
+    final screenDisplayAttr = attrs[FdDeviceAttributes.screenDisplay];
     if (screenDisplayAttr != null &&
         _screenDisplays.containsValue(screenDisplayAttr as String)) {
       message.screenDisplay = _screenDisplays.keys.firstWhere(
         (k) => _screenDisplays[k] == screenDisplayAttr,
       );
     }
-    final disinfect = attrs[DeviceAttributes.disinfect];
+    final disinfect = attrs[FdDeviceAttributes.disinfect];
     if (disinfect != null) message.disinfect = disinfect as bool?;
-    final mode = attrs[DeviceAttributes.mode];
+    final mode = attrs[FdDeviceAttributes.mode];
     if (mode != null && _modes.contains(mode)) {
       message.mode = _modes.indexOf(mode as String) + 1;
     } else {
       message.mode = 1;
     }
-    final fanSpeed = attrs[DeviceAttributes.fanSpeed];
+    final fanSpeed = attrs[FdDeviceAttributes.fanSpeed];
     if (fanSpeed != null && _speeds.containsValue(fanSpeed as String)) {
       message.fanSpeed = _speeds.keys.firstWhere((k) => _speeds[k] == fanSpeed);
     } else {
@@ -203,22 +203,22 @@ class MideaFDDevice extends MideaDevice {
 
   @override
   void setAttribute(String attr, dynamic value) {
-    if (attr == DeviceAttributes.promptTone) {
-      attrs[DeviceAttributes.promptTone] = value;
-      updateAll({DeviceAttributes.promptTone: value});
+    if (attr == FdDeviceAttributes.promptTone) {
+      attrs[FdDeviceAttributes.promptTone] = value;
+      updateAll({FdDeviceAttributes.promptTone: value});
     } else {
       final message = makeMessageSet();
-      if (attr == DeviceAttributes.mode) {
+      if (attr == FdDeviceAttributes.mode) {
         if (_modes.contains(value)) {
           message.mode = _modes.indexOf(value as String) + 1;
         }
-      } else if (attr == DeviceAttributes.fanSpeed) {
+      } else if (attr == FdDeviceAttributes.fanSpeed) {
         if (_speeds.containsValue(value)) {
           message.fanSpeed = _speeds.keys.firstWhere(
             (k) => _speeds[k] == value,
           );
         }
-      } else if (attr == DeviceAttributes.screenDisplay) {
+      } else if (attr == FdDeviceAttributes.screenDisplay) {
         if (_screenDisplays.containsValue(value)) {
           message.screenDisplay = _screenDisplays.keys.firstWhere(
             (k) => _screenDisplays[k] == value,

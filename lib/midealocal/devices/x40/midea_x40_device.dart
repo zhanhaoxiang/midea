@@ -13,10 +13,10 @@ const int directionMaxValue = 100;
 const int ventilationFanSpeed = 2;
 
 // ---------------------------------------------------------------------------
-// DeviceAttributes
+// X40DeviceAttributes
 // ---------------------------------------------------------------------------
 
-class DeviceAttributes {
+class X40DeviceAttributes {
   static const String light = 'light';
   static const String fanSpeed = 'fan_speed';
   static const String direction = 'direction';
@@ -54,7 +54,7 @@ class MideaX40Device extends MideaDevice {
          deviceProtocol: deviceProtocol,
          model: model,
          subtype: subtype,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     _fields = {};
     if (customize != null && customize.isNotEmpty) {
@@ -71,13 +71,13 @@ class MideaX40Device extends MideaDevice {
     'Oscillate',
   ];
 
-  static const Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.light: false,
-    DeviceAttributes.fanSpeed: 0,
-    DeviceAttributes.direction: false,
-    DeviceAttributes.ventilation: false,
-    DeviceAttributes.smellySensor: false,
-    DeviceAttributes.currentTemperature: null,
+  static final Map<String, dynamic> _defaultAttributes = {
+    X40DeviceAttributes.light: false,
+    X40DeviceAttributes.fanSpeed: 0,
+    X40DeviceAttributes.direction: false,
+    X40DeviceAttributes.ventilation: false,
+    X40DeviceAttributes.smellySensor: false,
+    X40DeviceAttributes.currentTemperature: null,
   };
 
   final ProtocolVersion _deviceProtocolVersion;
@@ -116,10 +116,10 @@ class MideaX40Device extends MideaDevice {
       final statusStr = status.toString();
       if (_hasAttr(message, statusStr)) {
         dynamic value = _getAttr(message, statusStr);
-        if (_precisionHalves && status == DeviceAttributes.currentTemperature) {
+        if (_precisionHalves && status == X40DeviceAttributes.currentTemperature) {
           value = (value as int) / 2;
         }
-        if (status == DeviceAttributes.direction) {
+        if (status == X40DeviceAttributes.direction) {
           attrs[status] = _directions[_convertFromMideaDirection(value as int)];
         } else {
           attrs[status] = value;
@@ -132,12 +132,12 @@ class MideaX40Device extends MideaDevice {
 
   bool _hasAttr(MessageX40Response message, String attr) {
     switch (attr) {
-      case DeviceAttributes.light:
-      case DeviceAttributes.fanSpeed:
-      case DeviceAttributes.direction:
-      case DeviceAttributes.ventilation:
-      case DeviceAttributes.smellySensor:
-      case DeviceAttributes.currentTemperature:
+      case X40DeviceAttributes.light:
+      case X40DeviceAttributes.fanSpeed:
+      case X40DeviceAttributes.direction:
+      case X40DeviceAttributes.ventilation:
+      case X40DeviceAttributes.smellySensor:
+      case X40DeviceAttributes.currentTemperature:
         return true;
       default:
         return false;
@@ -146,17 +146,17 @@ class MideaX40Device extends MideaDevice {
 
   dynamic _getAttr(MessageX40Response message, String attr) {
     switch (attr) {
-      case DeviceAttributes.light:
+      case X40DeviceAttributes.light:
         return message.light;
-      case DeviceAttributes.fanSpeed:
+      case X40DeviceAttributes.fanSpeed:
         return message.fanSpeed;
-      case DeviceAttributes.direction:
+      case X40DeviceAttributes.direction:
         return message.direction;
-      case DeviceAttributes.ventilation:
+      case X40DeviceAttributes.ventilation:
         return message.ventilation;
-      case DeviceAttributes.smellySensor:
+      case X40DeviceAttributes.smellySensor:
         return message.smellySensor;
-      case DeviceAttributes.currentTemperature:
+      case X40DeviceAttributes.currentTemperature:
         return message.currentTemperature;
       default:
         return null;
@@ -165,38 +165,38 @@ class MideaX40Device extends MideaDevice {
 
   @override
   void setAttribute(String attr, dynamic value) {
-    if (attr == DeviceAttributes.light ||
-        attr == DeviceAttributes.fanSpeed ||
-        attr == DeviceAttributes.direction ||
-        attr == DeviceAttributes.ventilation ||
-        attr == DeviceAttributes.smellySensor) {
+    if (attr == X40DeviceAttributes.light ||
+        attr == X40DeviceAttributes.fanSpeed ||
+        attr == X40DeviceAttributes.direction ||
+        attr == X40DeviceAttributes.ventilation ||
+        attr == X40DeviceAttributes.smellySensor) {
       final message = MessageSet(_deviceProtocolVersion.value);
       message.fields = Map<String, int>.from(_fields);
-      message.light = attrs[DeviceAttributes.light] as bool;
-      message.ventilation = attrs[DeviceAttributes.ventilation] as bool;
-      message.smellySensor = attrs[DeviceAttributes.smellySensor] as bool;
-      message.fanSpeed = attrs[DeviceAttributes.fanSpeed] as int;
+      message.light = attrs[X40DeviceAttributes.light] as bool;
+      message.ventilation = attrs[X40DeviceAttributes.ventilation] as bool;
+      message.smellySensor = attrs[X40DeviceAttributes.smellySensor] as bool;
+      message.fanSpeed = attrs[X40DeviceAttributes.fanSpeed] as int;
       message.direction = _convertToMideaDirection(
-        attrs[DeviceAttributes.direction].toString(),
+        attrs[X40DeviceAttributes.direction].toString(),
       );
-      if (attr == DeviceAttributes.direction) {
+      if (attr == X40DeviceAttributes.direction) {
         message.direction = _convertToMideaDirection(value.toString());
-      } else if (attr == DeviceAttributes.ventilation &&
+      } else if (attr == X40DeviceAttributes.ventilation &&
           message.fanSpeed == ventilationFanSpeed) {
         message.fanSpeed = 1;
         message.ventilation = value as bool;
       } else {
         switch (attr) {
-          case DeviceAttributes.light:
+          case X40DeviceAttributes.light:
             message.light = value as bool;
             break;
-          case DeviceAttributes.fanSpeed:
+          case X40DeviceAttributes.fanSpeed:
             message.fanSpeed = value as int;
             break;
-          case DeviceAttributes.ventilation:
+          case X40DeviceAttributes.ventilation:
             message.ventilation = value as bool;
             break;
-          case DeviceAttributes.smellySensor:
+          case X40DeviceAttributes.smellySensor:
             message.smellySensor = value as bool;
             break;
         }

@@ -222,7 +222,7 @@ class MessageNewSet extends MessageEDBase {
   @override
   Uint8List buildBody() {
     var packCount = 0;
-    final payload = Uint8List.fromList([0x01, 0x00]);
+    final payload = <int>[0x01, 0x00];
     if (power != null) {
       packCount++;
       payload.addAll(
@@ -236,7 +236,7 @@ class MessageNewSet extends MessageEDBase {
       );
     }
     payload[1] = packCount;
-    return payload;
+    return Uint8List.fromList(payload);
   }
 }
 

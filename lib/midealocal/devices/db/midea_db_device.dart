@@ -9,10 +9,10 @@ import '../../message.dart';
 import 'message.dart';
 
 // ---------------------------------------------------------------------------
-// DeviceAttributes
+// DbDeviceAttributes
 // ---------------------------------------------------------------------------
 
-class DeviceAttributes {
+class DbDeviceAttributes {
   static const String power = 'power';
   static const String start = 'start';
   static const String status = 'status';
@@ -142,29 +142,29 @@ class MideaDBDevice extends MideaDevice {
   }) : super(
          deviceType: DeviceType.db,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.power: false,
-    DeviceAttributes.start: false,
-    DeviceAttributes.status: null,
-    DeviceAttributes.mode: null,
-    DeviceAttributes.program: null,
-    DeviceAttributes.waterLevel: null,
-    DeviceAttributes.temperature: null,
-    DeviceAttributes.dehydrationSpeed: null,
-    DeviceAttributes.washTime: null,
-    DeviceAttributes.washTimeValue: null,
-    DeviceAttributes.dehydrationTime: null,
-    DeviceAttributes.dehydrationTimeValue: null,
-    DeviceAttributes.detergent: null,
-    DeviceAttributes.softener: null,
-    DeviceAttributes.washingData: Uint8List(0),
-    DeviceAttributes.progress: null,
-    DeviceAttributes.stains: null,
-    DeviceAttributes.timeRemaining: null,
-    DeviceAttributes.dirtyDegree: null,
+    DbDeviceAttributes.power: false,
+    DbDeviceAttributes.start: false,
+    DbDeviceAttributes.status: null,
+    DbDeviceAttributes.mode: null,
+    DbDeviceAttributes.program: null,
+    DbDeviceAttributes.waterLevel: null,
+    DbDeviceAttributes.temperature: null,
+    DbDeviceAttributes.dehydrationSpeed: null,
+    DbDeviceAttributes.washTime: null,
+    DbDeviceAttributes.washTimeValue: null,
+    DbDeviceAttributes.dehydrationTime: null,
+    DbDeviceAttributes.dehydrationTimeValue: null,
+    DbDeviceAttributes.detergent: null,
+    DbDeviceAttributes.softener: null,
+    DbDeviceAttributes.washingData: Uint8List(0),
+    DbDeviceAttributes.progress: null,
+    DbDeviceAttributes.stains: null,
+    DbDeviceAttributes.timeRemaining: null,
+    DbDeviceAttributes.dirtyDegree: null,
   };
 
   @override
@@ -180,19 +180,19 @@ class MideaDBDevice extends MideaDevice {
     for (final attr in attrs.keys) {
       if (_hasAttribute(message, attr)) {
         var value = _getAttribute(message, attr);
-        if (attr == DeviceAttributes.mode) {
+        if (attr == DbDeviceAttributes.mode) {
           value = _modeMap[value] ?? value;
-        } else if (attr == DeviceAttributes.status) {
+        } else if (attr == DbDeviceAttributes.status) {
           value = _statusMap[value] ?? value;
-        } else if (attr == DeviceAttributes.dehydrationSpeed) {
+        } else if (attr == DbDeviceAttributes.dehydrationSpeed) {
           value = _dehydrationSpeedMap[value] ?? value;
-        } else if (attr == DeviceAttributes.waterLevel) {
+        } else if (attr == DbDeviceAttributes.waterLevel) {
           value = _waterLevelMap[value] ?? value;
-        } else if (attr == DeviceAttributes.program) {
+        } else if (attr == DbDeviceAttributes.program) {
           value = _programMap[value] ?? value;
-        } else if (attr == DeviceAttributes.temperature) {
+        } else if (attr == DbDeviceAttributes.temperature) {
           value = _temperatureMap[value] ?? value;
-        } else if (attr == DeviceAttributes.progress && value != null) {
+        } else if (attr == DbDeviceAttributes.progress && value != null) {
           final idx = value as int;
           value = idx >= 0 && idx < _progressList.length
               ? _progressList[idx]
@@ -207,43 +207,43 @@ class MideaDBDevice extends MideaDevice {
 
   bool _hasAttribute(MessageDBResponse msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case DbDeviceAttributes.power:
         return msg.power != null;
-      case DeviceAttributes.start:
+      case DbDeviceAttributes.start:
         return msg.start != null;
-      case DeviceAttributes.status:
+      case DbDeviceAttributes.status:
         return msg.status != null;
-      case DeviceAttributes.mode:
+      case DbDeviceAttributes.mode:
         return msg.mode != null;
-      case DeviceAttributes.program:
+      case DbDeviceAttributes.program:
         return msg.program != null;
-      case DeviceAttributes.waterLevel:
+      case DbDeviceAttributes.waterLevel:
         return msg.waterLevel != null;
-      case DeviceAttributes.temperature:
+      case DbDeviceAttributes.temperature:
         return msg.temperature != null;
-      case DeviceAttributes.dehydrationSpeed:
+      case DbDeviceAttributes.dehydrationSpeed:
         return msg.dehydrationSpeed != null;
-      case DeviceAttributes.washTime:
+      case DbDeviceAttributes.washTime:
         return msg.washTime != null;
-      case DeviceAttributes.dehydrationTime:
+      case DbDeviceAttributes.dehydrationTime:
         return msg.dehydrationTime != null;
-      case DeviceAttributes.detergent:
+      case DbDeviceAttributes.detergent:
         return msg.detergent != null;
-      case DeviceAttributes.softener:
+      case DbDeviceAttributes.softener:
         return msg.softener != null;
-      case DeviceAttributes.washingData:
+      case DbDeviceAttributes.washingData:
         return msg.washingData != null;
-      case DeviceAttributes.progress:
+      case DbDeviceAttributes.progress:
         return msg.progress != null;
-      case DeviceAttributes.stains:
+      case DbDeviceAttributes.stains:
         return msg.stains != null;
-      case DeviceAttributes.timeRemaining:
+      case DbDeviceAttributes.timeRemaining:
         return msg.timeRemaining != null;
-      case DeviceAttributes.washTimeValue:
+      case DbDeviceAttributes.washTimeValue:
         return msg.washTimeValue != null;
-      case DeviceAttributes.dehydrationTimeValue:
+      case DbDeviceAttributes.dehydrationTimeValue:
         return msg.dehydrationTimeValue != null;
-      case DeviceAttributes.dirtyDegree:
+      case DbDeviceAttributes.dirtyDegree:
         return msg.dirtyDegree != null;
       default:
         return false;
@@ -252,43 +252,43 @@ class MideaDBDevice extends MideaDevice {
 
   dynamic _getAttribute(MessageDBResponse msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case DbDeviceAttributes.power:
         return msg.power;
-      case DeviceAttributes.start:
+      case DbDeviceAttributes.start:
         return msg.start;
-      case DeviceAttributes.status:
+      case DbDeviceAttributes.status:
         return msg.status;
-      case DeviceAttributes.mode:
+      case DbDeviceAttributes.mode:
         return msg.mode;
-      case DeviceAttributes.program:
+      case DbDeviceAttributes.program:
         return msg.program;
-      case DeviceAttributes.waterLevel:
+      case DbDeviceAttributes.waterLevel:
         return msg.waterLevel;
-      case DeviceAttributes.temperature:
+      case DbDeviceAttributes.temperature:
         return msg.temperature;
-      case DeviceAttributes.dehydrationSpeed:
+      case DbDeviceAttributes.dehydrationSpeed:
         return msg.dehydrationSpeed;
-      case DeviceAttributes.washTime:
+      case DbDeviceAttributes.washTime:
         return msg.washTime;
-      case DeviceAttributes.dehydrationTime:
+      case DbDeviceAttributes.dehydrationTime:
         return msg.dehydrationTime;
-      case DeviceAttributes.detergent:
+      case DbDeviceAttributes.detergent:
         return msg.detergent;
-      case DeviceAttributes.softener:
+      case DbDeviceAttributes.softener:
         return msg.softener;
-      case DeviceAttributes.washingData:
+      case DbDeviceAttributes.washingData:
         return msg.washingData;
-      case DeviceAttributes.progress:
+      case DbDeviceAttributes.progress:
         return msg.progress;
-      case DeviceAttributes.stains:
+      case DbDeviceAttributes.stains:
         return msg.stains;
-      case DeviceAttributes.timeRemaining:
+      case DbDeviceAttributes.timeRemaining:
         return msg.timeRemaining;
-      case DeviceAttributes.washTimeValue:
+      case DbDeviceAttributes.washTimeValue:
         return msg.washTimeValue;
-      case DeviceAttributes.dehydrationTimeValue:
+      case DbDeviceAttributes.dehydrationTimeValue:
         return msg.dehydrationTimeValue;
-      case DeviceAttributes.dirtyDegree:
+      case DbDeviceAttributes.dirtyDegree:
         return msg.dirtyDegree;
       default:
         return null;
@@ -297,21 +297,21 @@ class MideaDBDevice extends MideaDevice {
 
   @override
   void setAttribute(String attr, dynamic value) {
-    if (attr == DeviceAttributes.power) {
+    if (attr == DbDeviceAttributes.power) {
       if (value is! bool) {
         throw MideaLocalError('[db] Expected bool');
       }
       final message = MessagePower(messageProtocolVersion);
       message.power = value;
       buildSend(message);
-    } else if (attr == DeviceAttributes.start) {
+    } else if (attr == DbDeviceAttributes.start) {
       if (value is! bool) {
         throw MideaLocalError('[db] Expected bool');
       }
       final message = MessageStart(messageProtocolVersion);
       message.start = value;
       message.washingData =
-          attrs[DeviceAttributes.washingData] as Uint8List? ?? Uint8List(0);
+          attrs[DbDeviceAttributes.washingData] as Uint8List? ?? Uint8List(0);
       buildSend(message);
     }
   }

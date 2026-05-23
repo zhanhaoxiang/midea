@@ -9,10 +9,10 @@ import '../../message.dart';
 import 'message.dart';
 
 // ---------------------------------------------------------------------------
-// DeviceAttributes
+// AcDeviceAttributes
 // ---------------------------------------------------------------------------
 
-class DeviceAttributes {
+class AcDeviceAttributes {
   static const String promptTone = 'prompt_tone';
   static const String power = 'power';
   static const String mode = 'mode';
@@ -69,7 +69,7 @@ class MideaACDevice extends MideaDevice {
   }) : super(
          deviceType: DeviceType.ac,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     _temperatureStep = _defaultTemperatureStep;
     _powerAnalysisMethod = _defaultPowerAnalysisMethod;
@@ -106,41 +106,41 @@ class MideaACDevice extends MideaDevice {
   };
 
   static const Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.promptTone: true,
-    DeviceAttributes.power: false,
-    DeviceAttributes.mode: 0,
-    DeviceAttributes.targetTemperature: 24.0,
-    DeviceAttributes.fanSpeed: 102,
-    DeviceAttributes.swingVertical: false,
-    DeviceAttributes.swingHorizontal: false,
-    DeviceAttributes.smartEye: false,
-    DeviceAttributes.dry: false,
-    DeviceAttributes.auxHeating: false,
-    DeviceAttributes.boostMode: false,
-    DeviceAttributes.sleepMode: false,
-    DeviceAttributes.frostProtect: false,
-    DeviceAttributes.comfortMode: false,
-    DeviceAttributes.ecoMode: false,
-    DeviceAttributes.naturalWind: false,
-    DeviceAttributes.tempFahrenheit: false,
-    DeviceAttributes.screenDisplay: false,
-    DeviceAttributes.screenDisplayAlternate: false,
-    DeviceAttributes.fullDust: false,
-    DeviceAttributes.indoorTemperature: null,
-    DeviceAttributes.outdoorTemperature: null,
-    DeviceAttributes.indirectWind: false,
-    DeviceAttributes.indoorHumidity: null,
-    DeviceAttributes.breezeless: false,
-    DeviceAttributes.totalEnergyConsumption: null,
-    DeviceAttributes.currentEnergyConsumption: null,
-    DeviceAttributes.realtimePower: null,
-    DeviceAttributes.freshAirPower: false,
-    DeviceAttributes.freshAirFanSpeed: 0,
-    DeviceAttributes.freshAirMode: null,
-    DeviceAttributes.freshAir1: null,
-    DeviceAttributes.freshAir2: null,
-    DeviceAttributes.windLrAngle: null,
-    DeviceAttributes.windUdAngle: null,
+    AcDeviceAttributes.promptTone: true,
+    AcDeviceAttributes.power: false,
+    AcDeviceAttributes.mode: 0,
+    AcDeviceAttributes.targetTemperature: 24.0,
+    AcDeviceAttributes.fanSpeed: 102,
+    AcDeviceAttributes.swingVertical: false,
+    AcDeviceAttributes.swingHorizontal: false,
+    AcDeviceAttributes.smartEye: false,
+    AcDeviceAttributes.dry: false,
+    AcDeviceAttributes.auxHeating: false,
+    AcDeviceAttributes.boostMode: false,
+    AcDeviceAttributes.sleepMode: false,
+    AcDeviceAttributes.frostProtect: false,
+    AcDeviceAttributes.comfortMode: false,
+    AcDeviceAttributes.ecoMode: false,
+    AcDeviceAttributes.naturalWind: false,
+    AcDeviceAttributes.tempFahrenheit: false,
+    AcDeviceAttributes.screenDisplay: false,
+    AcDeviceAttributes.screenDisplayAlternate: false,
+    AcDeviceAttributes.fullDust: false,
+    AcDeviceAttributes.indoorTemperature: null,
+    AcDeviceAttributes.outdoorTemperature: null,
+    AcDeviceAttributes.indirectWind: false,
+    AcDeviceAttributes.indoorHumidity: null,
+    AcDeviceAttributes.breezeless: false,
+    AcDeviceAttributes.totalEnergyConsumption: null,
+    AcDeviceAttributes.currentEnergyConsumption: null,
+    AcDeviceAttributes.realtimePower: null,
+    AcDeviceAttributes.freshAirPower: false,
+    AcDeviceAttributes.freshAirFanSpeed: 0,
+    AcDeviceAttributes.freshAirMode: null,
+    AcDeviceAttributes.freshAir1: null,
+    AcDeviceAttributes.freshAir2: null,
+    AcDeviceAttributes.windLrAngle: null,
+    AcDeviceAttributes.windUdAngle: null,
   };
 
   static const double _defaultTemperatureStep = 0.5;
@@ -149,6 +149,8 @@ class MideaACDevice extends MideaDevice {
   double _temperatureStep = _defaultTemperatureStep;
   int _powerAnalysisMethod = _defaultPowerAnalysisMethod;
   bool _usedSubprotocol = false;
+  bool _bbSn8Flag = false;
+  bool _bbTimer = false;
   String? _freshAirVersion;
 
   double? get temperatureStep => _temperatureStep;
@@ -182,22 +184,29 @@ class MideaACDevice extends MideaDevice {
   @override
   Map<String, dynamic> processMessage(Uint8List msg) {
     final message = MessageACResponse(msg, _powerAnalysisMethod);
+    print('$deviceId Received: $message');
     final newStatus = <String, dynamic>{};
     var hasFreshAir = false;
 
-    if (message.usedSubprotocol != null) {
-      _usedSubprotocol = message.usedSubprotocol!;
+    if (message.usedSubprotocol == true) {
+      _usedSubprotocol = true;
+      if (message.sn8Flag != null) {
+        _bbSn8Flag = message.sn8Flag!;
+      }
+      if (message.timer != null) {
+        _bbTimer = message.timer!;
+      }
     }
 
     for (final attr in attrs.keys) {
       if (message.hasAttribute(attr)) {
         var value = message.getAttribute(attr);
-        if (attr == DeviceAttributes.freshAirPower) {
+        if (attr == AcDeviceAttributes.freshAirPower) {
           hasFreshAir = true;
         }
-        if (attr == DeviceAttributes.windLrAngle && value != null) {
+        if (attr == AcDeviceAttributes.windLrAngle && value != null) {
           value = _windLrAngles[value] ?? value;
-        } else if (attr == DeviceAttributes.windUdAngle && value != null) {
+        } else if (attr == AcDeviceAttributes.windUdAngle && value != null) {
           value = _windUdAngles[value] ?? value;
         }
         attrs[attr] = value;
@@ -206,37 +215,37 @@ class MideaACDevice extends MideaDevice {
     }
 
     if (hasFreshAir) {
-      if (attrs[DeviceAttributes.freshAirPower] == true) {
-        final fanSpeed = attrs[DeviceAttributes.freshAirFanSpeed] as int? ?? 0;
+      if (attrs[AcDeviceAttributes.freshAirPower] == true) {
+        final fanSpeed = attrs[AcDeviceAttributes.freshAirFanSpeed] as int? ?? 0;
         String mode = 'off';
         for (final entry in _freshAirFanSpeeds.entries) {
           if (fanSpeed < entry.key) break;
           mode = entry.value;
         }
-        attrs[DeviceAttributes.freshAirMode] = mode;
+        attrs[AcDeviceAttributes.freshAirMode] = mode;
       } else {
-        attrs[DeviceAttributes.freshAirMode] = 'off';
+        attrs[AcDeviceAttributes.freshAirMode] = 'off';
       }
-      newStatus[DeviceAttributes.freshAirMode] =
-          attrs[DeviceAttributes.freshAirMode];
+      newStatus[AcDeviceAttributes.freshAirMode] =
+          attrs[AcDeviceAttributes.freshAirMode];
     }
 
-    final power = attrs[DeviceAttributes.power] as bool? ?? false;
+    final power = attrs[AcDeviceAttributes.power] as bool? ?? false;
     if (!power ||
-        (newStatus.containsKey(DeviceAttributes.swingVertical) &&
-            attrs[DeviceAttributes.swingVertical] == true)) {
-      attrs[DeviceAttributes.indirectWind] = false;
-      newStatus[DeviceAttributes.indirectWind] = false;
+        (newStatus.containsKey(AcDeviceAttributes.swingVertical) &&
+            attrs[AcDeviceAttributes.swingVertical] == true)) {
+      attrs[AcDeviceAttributes.indirectWind] = false;
+      newStatus[AcDeviceAttributes.indirectWind] = false;
     }
     if (!power) {
-      attrs[DeviceAttributes.screenDisplay] = false;
-      newStatus[DeviceAttributes.screenDisplay] = false;
+      attrs[AcDeviceAttributes.screenDisplay] = false;
+      newStatus[AcDeviceAttributes.screenDisplay] = false;
     }
 
-    if (attrs[DeviceAttributes.freshAir1] != null) {
-      _freshAirVersion = DeviceAttributes.freshAir1;
-    } else if (attrs[DeviceAttributes.freshAir2] != null) {
-      _freshAirVersion = DeviceAttributes.freshAir2;
+    if (attrs[AcDeviceAttributes.freshAir1] != null) {
+      _freshAirVersion = AcDeviceAttributes.freshAir1;
+    } else if (attrs[AcDeviceAttributes.freshAir2] != null) {
+      _freshAirVersion = AcDeviceAttributes.freshAir2;
     }
 
     return newStatus;
@@ -244,103 +253,105 @@ class MideaACDevice extends MideaDevice {
 
   MessageGeneralSet makeMessageSet() {
     final message = MessageGeneralSet(messageProtocolVersion);
-    message.power = attrs[DeviceAttributes.power] as bool? ?? false;
-    message.promptTone = attrs[DeviceAttributes.promptTone] as bool? ?? true;
-    message.mode = attrs[DeviceAttributes.mode] as int? ?? 0;
+    message.power = attrs[AcDeviceAttributes.power] as bool? ?? false;
+    message.promptTone = attrs[AcDeviceAttributes.promptTone] as bool? ?? true;
+    message.mode = attrs[AcDeviceAttributes.mode] as int? ?? 0;
     message.targetTemperature =
-        (attrs[DeviceAttributes.targetTemperature] as num?)?.toDouble() ?? 24.0;
-    message.fanSpeed = attrs[DeviceAttributes.fanSpeed] as int? ?? 102;
+        (attrs[AcDeviceAttributes.targetTemperature] as num?)?.toDouble() ?? 24.0;
+    message.fanSpeed = attrs[AcDeviceAttributes.fanSpeed] as int? ?? 102;
     message.swingVertical =
-        attrs[DeviceAttributes.swingVertical] as bool? ?? false;
+        attrs[AcDeviceAttributes.swingVertical] as bool? ?? false;
     message.swingHorizontal =
-        attrs[DeviceAttributes.swingHorizontal] as bool? ?? false;
-    message.boostMode = attrs[DeviceAttributes.boostMode] as bool? ?? false;
-    message.smartEye = attrs[DeviceAttributes.smartEye] as bool? ?? false;
-    message.dry = attrs[DeviceAttributes.dry] as bool? ?? false;
-    message.ecoMode = attrs[DeviceAttributes.ecoMode] as bool? ?? false;
-    message.auxHeating = attrs[DeviceAttributes.auxHeating] as bool? ?? false;
-    message.sleepMode = attrs[DeviceAttributes.sleepMode] as bool? ?? false;
-    message.naturalWind = attrs[DeviceAttributes.naturalWind] as bool? ?? false;
+        attrs[AcDeviceAttributes.swingHorizontal] as bool? ?? false;
+    message.boostMode = attrs[AcDeviceAttributes.boostMode] as bool? ?? false;
+    message.smartEye = attrs[AcDeviceAttributes.smartEye] as bool? ?? false;
+    message.dry = attrs[AcDeviceAttributes.dry] as bool? ?? false;
+    message.ecoMode = attrs[AcDeviceAttributes.ecoMode] as bool? ?? false;
+    message.auxHeating = attrs[AcDeviceAttributes.auxHeating] as bool? ?? false;
+    message.sleepMode = attrs[AcDeviceAttributes.sleepMode] as bool? ?? false;
+    message.naturalWind = attrs[AcDeviceAttributes.naturalWind] as bool? ?? false;
     message.tempFahrenheit =
-        attrs[DeviceAttributes.tempFahrenheit] as bool? ?? false;
+        attrs[AcDeviceAttributes.tempFahrenheit] as bool? ?? false;
     message.frostProtect =
-        attrs[DeviceAttributes.frostProtect] as bool? ?? false;
-    message.comfortMode = attrs[DeviceAttributes.comfortMode] as bool? ?? false;
+        attrs[AcDeviceAttributes.frostProtect] as bool? ?? false;
+    message.comfortMode = attrs[AcDeviceAttributes.comfortMode] as bool? ?? false;
     return message;
   }
 
   MessageSubProtocolSet makeSubprotocolMessageSet() {
     final message = MessageSubProtocolSet(messageProtocolVersion);
-    message.power = attrs[DeviceAttributes.power] as bool? ?? false;
-    message.promptTone = attrs[DeviceAttributes.promptTone] as bool? ?? false;
-    message.auxHeating = attrs[DeviceAttributes.auxHeating] as bool? ?? false;
-    message.mode = attrs[DeviceAttributes.mode] as int? ?? 0;
+    message.power = attrs[AcDeviceAttributes.power] as bool? ?? false;
+    message.promptTone = attrs[AcDeviceAttributes.promptTone] as bool? ?? false;
+    message.auxHeating = attrs[AcDeviceAttributes.auxHeating] as bool? ?? false;
+    message.mode = attrs[AcDeviceAttributes.mode] as int? ?? 0;
     message.targetTemperature =
-        (attrs[DeviceAttributes.targetTemperature] as num?)?.toDouble() ?? 20.0;
-    message.fanSpeed = attrs[DeviceAttributes.fanSpeed] as int? ?? 102;
-    message.boostMode = attrs[DeviceAttributes.boostMode] as bool? ?? false;
-    message.dry = attrs[DeviceAttributes.dry] as bool? ?? false;
-    message.ecoMode = attrs[DeviceAttributes.ecoMode] as bool? ?? false;
-    message.sleepMode = attrs[DeviceAttributes.sleepMode] as bool? ?? false;
+        (attrs[AcDeviceAttributes.targetTemperature] as num?)?.toDouble() ?? 20.0;
+    message.fanSpeed = attrs[AcDeviceAttributes.fanSpeed] as int? ?? 102;
+    message.boostMode = attrs[AcDeviceAttributes.boostMode] as bool? ?? false;
+    message.dry = attrs[AcDeviceAttributes.dry] as bool? ?? false;
+    message.ecoMode = attrs[AcDeviceAttributes.ecoMode] as bool? ?? false;
+    message.sleepMode = attrs[AcDeviceAttributes.sleepMode] as bool? ?? false;
+    message.sn8Flag = _bbSn8Flag;
+    message.timer = _bbTimer;
     return message;
   }
 
   @override
   void setAttribute(String attr, dynamic value) {
     final readOnlyAttrs = <String>[
-      DeviceAttributes.indoorTemperature,
-      DeviceAttributes.outdoorTemperature,
-      DeviceAttributes.indoorHumidity,
-      DeviceAttributes.fullDust,
-      DeviceAttributes.totalEnergyConsumption,
-      DeviceAttributes.currentEnergyConsumption,
-      DeviceAttributes.realtimePower,
+      AcDeviceAttributes.indoorTemperature,
+      AcDeviceAttributes.outdoorTemperature,
+      AcDeviceAttributes.indoorHumidity,
+      AcDeviceAttributes.fullDust,
+      AcDeviceAttributes.totalEnergyConsumption,
+      AcDeviceAttributes.currentEnergyConsumption,
+      AcDeviceAttributes.realtimePower,
     ];
     if (readOnlyAttrs.contains(attr)) {
       return;
     }
 
-    if (attr == DeviceAttributes.promptTone) {
-      attrs[DeviceAttributes.promptTone] = value;
-      updateAll({DeviceAttributes.promptTone: value});
+    if (attr == AcDeviceAttributes.promptTone) {
+      attrs[AcDeviceAttributes.promptTone] = value;
+      updateAll({AcDeviceAttributes.promptTone: value});
       return;
     }
 
-    if (attr == DeviceAttributes.screenDisplay) {
+    if (attr == AcDeviceAttributes.screenDisplay) {
       final msg = MessageToggleDisplay(messageProtocolVersion);
-      msg.promptTone = attrs[DeviceAttributes.promptTone] as bool? ?? true;
+      msg.promptTone = attrs[AcDeviceAttributes.promptTone] as bool? ?? true;
       buildSend(msg);
       return;
     }
 
     final newProtocolAttrs = <String>[
-      DeviceAttributes.indirectWind,
-      DeviceAttributes.breezeless,
-      DeviceAttributes.screenDisplayAlternate,
-      DeviceAttributes.freshAirPower,
-      DeviceAttributes.freshAirFanSpeed,
-      DeviceAttributes.freshAirMode,
-      DeviceAttributes.windLrAngle,
-      DeviceAttributes.windUdAngle,
+      AcDeviceAttributes.indirectWind,
+      AcDeviceAttributes.breezeless,
+      AcDeviceAttributes.screenDisplayAlternate,
+      AcDeviceAttributes.freshAirPower,
+      AcDeviceAttributes.freshAirFanSpeed,
+      AcDeviceAttributes.freshAirMode,
+      AcDeviceAttributes.windLrAngle,
+      AcDeviceAttributes.windUdAngle,
     ];
     if (newProtocolAttrs.contains(attr)) {
       final msg = MessageNewProtocolSet(messageProtocolVersion);
-      if (attr == DeviceAttributes.windLrAngle) {
+      if (attr == AcDeviceAttributes.windLrAngle) {
         final key = _getMapKey(_windLrAngles, value as String);
         msg.windLrAngle = key;
-      } else if (attr == DeviceAttributes.windUdAngle) {
+      } else if (attr == AcDeviceAttributes.windUdAngle) {
         final key = _getMapKey(_windUdAngles, value as String);
         msg.windUdAngle = key;
-      } else if (attr == DeviceAttributes.freshAirPower) {
+      } else if (attr == AcDeviceAttributes.freshAirPower) {
         _setFreshAirAttribute(msg, attr, value);
-      } else if (attr == DeviceAttributes.freshAirMode) {
+      } else if (attr == AcDeviceAttributes.freshAirMode) {
         _setFreshAirAttribute(msg, attr, value);
-      } else if (attr == DeviceAttributes.freshAirFanSpeed) {
+      } else if (attr == AcDeviceAttributes.freshAirFanSpeed) {
         _setFreshAirAttribute(msg, attr, value);
       } else {
         _setNewProtocolAttr(msg, attr, value);
       }
-      msg.promptTone = attrs[DeviceAttributes.promptTone] as bool?;
+      msg.promptTone = attrs[AcDeviceAttributes.promptTone] as bool?;
       buildSend(msg);
       return;
     }
@@ -350,12 +361,12 @@ class MideaACDevice extends MideaDevice {
           ? makeSubprotocolMessageSet()
           : makeMessageSet();
       _setMessageAttrs(message, attr, value);
-      if (attr == DeviceAttributes.mode) {
-        _setMessageAttrs(message, DeviceAttributes.power, true);
+      if (attr == AcDeviceAttributes.mode) {
+        _setMessageAttrs(message, AcDeviceAttributes.power, true);
         if (message is MessageGeneralSet) {
           message.dry = false;
         }
-        final currentMode = attrs[DeviceAttributes.mode] as int? ?? 0;
+        final currentMode = attrs[AcDeviceAttributes.mode] as int? ?? 0;
         if (currentMode == dryMode && message is MessageSubProtocolSet) {
           message.fanSpeed = 102;
         }
@@ -377,22 +388,23 @@ class MideaACDevice extends MideaDevice {
     dynamic value,
   ) {
     if (_freshAirVersion == null) return;
-    final fanSpeed = attrs[DeviceAttributes.freshAirFanSpeed] as int? ?? 0;
+    final fanSpeed = attrs[AcDeviceAttributes.freshAirFanSpeed] as int? ?? 0;
     List<int>? freshAir;
 
-    if (attr == DeviceAttributes.freshAirPower) {
+    if (attr == AcDeviceAttributes.freshAirPower) {
       freshAir = value == true ? [1, fanSpeed] : [0, fanSpeed];
-    } else if (attr == DeviceAttributes.freshAirMode) {
+    } else if (attr == AcDeviceAttributes.freshAirMode) {
       final speed = _getMapKey(_freshAirFanSpeeds, value as String);
       if (speed != null) {
         freshAir = speed > 0 ? [1, speed] : [0, speed];
       }
-    } else if (attr == DeviceAttributes.freshAirFanSpeed) {
-      freshAir = (value as int) > 0 ? [1, value as int] : [0, value as int];
+    } else if (attr == AcDeviceAttributes.freshAirFanSpeed) {
+      final speed = value as int;
+      freshAir = speed > 0 ? [1, speed] : [0, speed];
     }
 
     if (freshAir != null) {
-      if (_freshAirVersion == DeviceAttributes.freshAir1) {
+      if (_freshAirVersion == AcDeviceAttributes.freshAir1) {
         msg.freshAir1 = freshAir;
       } else {
         msg.freshAir2 = freshAir;
@@ -405,54 +417,59 @@ class MideaACDevice extends MideaDevice {
     String attr,
     dynamic value,
   ) {
-    if (attr == DeviceAttributes.breezeless) {
+    if (attr == AcDeviceAttributes.breezeless) {
       msg.breezeless = value as bool?;
-    } else if (attr == DeviceAttributes.indirectWind) {
+    } else if (attr == AcDeviceAttributes.indirectWind) {
       msg.indirectWind = value as bool?;
-    } else if (attr == DeviceAttributes.screenDisplayAlternate) {
+    } else if (attr == AcDeviceAttributes.screenDisplayAlternate) {
       msg.screenDisplayAlternate = value as bool?;
     }
   }
 
   void _setMessageAttrs(dynamic message, String attr, dynamic value) {
-    final boolValue = value as bool;
-    final intValue = value as int;
-    final doubleValue = (value as num).toDouble();
-
-    if (attr == DeviceAttributes.power) {
+    if (attr == AcDeviceAttributes.power) {
+      final boolValue = value as bool;
       if (message is MessageGeneralSet) message.power = boolValue;
       if (message is MessageSubProtocolSet) message.power = boolValue;
-    } else if (attr == DeviceAttributes.mode) {
+    } else if (attr == AcDeviceAttributes.mode) {
+      final intValue = value as int;
       if (message is MessageGeneralSet) message.mode = intValue;
       if (message is MessageSubProtocolSet) message.mode = intValue;
-    } else if (attr == DeviceAttributes.targetTemperature) {
+    } else if (attr == AcDeviceAttributes.targetTemperature) {
+      final doubleValue = (value as num).toDouble();
       if (message is MessageGeneralSet) message.targetTemperature = doubleValue;
-      if (message is MessageSubProtocolSet)
+      if (message is MessageSubProtocolSet) {
         message.targetTemperature = doubleValue;
-    } else if (attr == DeviceAttributes.fanSpeed) {
+      }
+    } else if (attr == AcDeviceAttributes.fanSpeed) {
+      final intValue = value as int;
       if (message is MessageGeneralSet) message.fanSpeed = intValue;
       if (message is MessageSubProtocolSet) message.fanSpeed = intValue;
-    } else if (attr == DeviceAttributes.swingVertical) {
+    } else if (attr == AcDeviceAttributes.swingVertical) {
+      final boolValue = value as bool;
       if (message is MessageGeneralSet) message.swingVertical = boolValue;
-    } else if (attr == DeviceAttributes.swingHorizontal) {
+    } else if (attr == AcDeviceAttributes.swingHorizontal) {
+      final boolValue = value as bool;
       if (message is MessageGeneralSet) message.swingHorizontal = boolValue;
-    } else if (attr == DeviceAttributes.boostMode) {
+    } else if (attr == AcDeviceAttributes.boostMode) {
+      final boolValue = value as bool;
       if (message is MessageGeneralSet) message.boostMode = boolValue;
       if (message is MessageSubProtocolSet) message.boostMode = boolValue;
-    } else if (attr == DeviceAttributes.dry) {
+    } else if (attr == AcDeviceAttributes.dry) {
+      final boolValue = value as bool;
       if (message is MessageGeneralSet) message.dry = boolValue;
       if (message is MessageSubProtocolSet) message.dry = boolValue;
-    } else if (attr == DeviceAttributes.ecoMode) {
+    } else if (attr == AcDeviceAttributes.ecoMode) {
+      final boolValue = value as bool;
       if (message is MessageGeneralSet) message.ecoMode = boolValue;
       if (message is MessageSubProtocolSet) message.ecoMode = boolValue;
-    } else if (attr == DeviceAttributes.sleepMode) {
+    } else if (attr == AcDeviceAttributes.sleepMode) {
+      final boolValue = value as bool;
       if (message is MessageGeneralSet) message.sleepMode = boolValue;
       if (message is MessageSubProtocolSet) message.sleepMode = boolValue;
     }
   }
 
-  @override
-  @override
   void setTargetTemperature(double targetTemperature, {int? mode, int? zone}) {
     final message = _usedSubprotocol
         ? makeSubprotocolMessageSet()
@@ -474,7 +491,6 @@ class MideaACDevice extends MideaDevice {
     buildSend(message);
   }
 
-  @override
   void setSwing(bool swingVertical, bool swingHorizontal) {
     final message = _usedSubprotocol
         ? makeSubprotocolMessageSet()
@@ -513,10 +529,39 @@ class MideaACDevice extends MideaDevice {
 // ---------------------------------------------------------------------------
 
 class MessageACResponse {
-  MessageACResponse(Uint8List message, [this._powerAnalysisMethod = 1]);
+  MessageACResponse(Uint8List message, [int powerAnalysisMethod = 1]) {
+    final response = MessageResponse(message);
+    _messageType = response.messageType;
+    _protocolVersion = response.protocolVersion;
+    _bodyType = response.bodyType;
+    final body = response.body;
+    _body = Uint8List.fromList(body);
+    if (body.isEmpty) return;
 
-  final int _powerAnalysisMethod;
+    if (response.bodyType == 0xBB &&
+        (response.messageType == MessageType.set ||
+            response.messageType == MessageType.query ||
+            response.messageType == MessageType.notify2) &&
+        body.length >= 21) {
+      usedSubprotocol = true;
+      _parseXbb(body);
+    } else if (response.bodyType == 0xC0 &&
+        (response.messageType == MessageType.set ||
+            response.messageType == MessageType.query) &&
+        body.length >= 16) {
+      _parseC0(body);
+    } else if (response.bodyType == 0xA0 &&
+        response.messageType == MessageType.notify2 &&
+        body.length >= 15) {
+      _parseA0(body);
+    }
+  }
+
   final Map<String, dynamic> _attributes = {};
+  MessageType? _messageType;
+  int? _protocolVersion;
+  int? _bodyType;
+  Uint8List? _body;
 
   bool? usedSubprotocol;
   bool? promptTone;
@@ -565,6 +610,24 @@ class MessageACResponse {
     _attributes[attr] = value;
   }
 
+  @override
+  String toString() {
+    final attrs = <String, dynamic>{
+      if (usedSubprotocol != null) 'used_subprotocol': usedSubprotocol,
+      if (sn8Flag != null) 'sn8_flag': sn8Flag,
+      if (timer != null) 'timer': timer,
+      ..._attributes,
+      'message_type': _messageType?.name,
+      'body_type': _bodyType?.toRadixString(16).padLeft(2, '0'),
+      'protocol_version': _protocolVersion,
+      'body': _body == null ? null : _hex(_body!),
+    };
+    return 'MessageACResponse $attrs';
+  }
+
+  static String _hex(List<int> data) =>
+      data.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+
   static double? _parseTemperature(int? integer, int? decimal) {
     if (integer == null || integer == 255) return null;
     var tempInteger = (integer - 50) / 2;
@@ -573,5 +636,137 @@ class MessageACResponse {
       return tempInteger.floor() - decimal * 0.1;
     }
     return tempInteger.floor() + decimal * 0.1;
+  }
+
+  void _set(String attr, dynamic value) {
+    setAttribute(attr, value);
+  }
+
+  int _signedTempWord(int low, int high) {
+    final value = low + high * 256;
+    if ((high & 0x80) != 0) {
+      return (0 - (~value + 1)) & 0xFFFF;
+    }
+    return value;
+  }
+
+  void _parseXbb(Uint8List body) {
+    final subHead = body.sublist(0, 6);
+    final subBody = body.sublist(6);
+    if (subBody.isEmpty) return;
+    final dataType = subHead.last;
+
+    if (dataType == 0x11 || dataType == 0x20) {
+      if (subBody.length <= 25) return;
+      final modeRaw = subBody[5] + 1;
+      final modeIndex = BBACModes.modes.indexOf(modeRaw);
+      _set(AcDeviceAttributes.power, (subBody[0] & 0x01) > 0);
+      _set(AcDeviceAttributes.dry, (subBody[0] & 0x10) > 0);
+      _set(AcDeviceAttributes.boostMode, (subBody[0] & 0x20) > 0);
+      _set(AcDeviceAttributes.auxHeating, (subBody[1] & 0x40) > 0);
+      _set(AcDeviceAttributes.sleepMode, (subBody[2] & 0x80) > 0);
+      _set(AcDeviceAttributes.mode, modeIndex >= 0 ? modeIndex : 0);
+      _set(AcDeviceAttributes.targetTemperature, (subBody[6] - 30) / 2);
+      _set(AcDeviceAttributes.fanSpeed, subBody[7]);
+      timer = (subBody[25] & 0x04) > 0;
+      _set(AcDeviceAttributes.ecoMode, (subBody[25] & 0x40) > 0);
+    } else if (dataType == 0x10) {
+      if (subBody.length <= 80) return;
+      _set(
+        AcDeviceAttributes.indoorTemperature,
+        _signedTempWord(subBody[7], subBody[8]) / 100,
+      );
+      _set(
+        AcDeviceAttributes.indoorHumidity,
+        subBody[30] != 0 ? subBody[30] : null,
+      );
+      sn8Flag = subBody[80] == 0x31;
+    } else if (dataType == 0x30) {
+      if (subBody.length <= 6) return;
+      _set(
+        AcDeviceAttributes.outdoorTemperature,
+        _signedTempWord(subBody[5], subBody[6]) / 100,
+      );
+    }
+  }
+
+  void _parseC0(Uint8List body) {
+    _set(AcDeviceAttributes.power, (body[1] & 0x01) > 0);
+    _set(AcDeviceAttributes.mode, (body[2] & 0xE0) >> 5);
+    _set(
+      AcDeviceAttributes.targetTemperature,
+      (body[2] & 0x0F) + 16.0 + ((body[2] & 0x10) > 0 ? 0.5 : 0.0),
+    );
+    _set(AcDeviceAttributes.fanSpeed, body[3] & 0x7F);
+    _set(AcDeviceAttributes.swingVertical, (body[7] & 0x0C) > 0);
+    _set(AcDeviceAttributes.swingHorizontal, (body[7] & 0x03) > 0);
+    _set(
+      AcDeviceAttributes.boostMode,
+      (body[8] & 0x20) > 0 || (body[10] & 0x02) > 0,
+    );
+    _set(AcDeviceAttributes.smartEye, (body[8] & 0x40) > 0);
+    _set(AcDeviceAttributes.naturalWind, (body[9] & 0x02) > 0);
+    _set(AcDeviceAttributes.dry, (body[9] & 0x04) > 0);
+    _set(AcDeviceAttributes.auxHeating, (body[9] & 0x08) > 0);
+    _set(AcDeviceAttributes.ecoMode, (body[9] & 0x10) > 0);
+    _set(AcDeviceAttributes.tempFahrenheit, (body[10] & 0x04) > 0);
+    _set(AcDeviceAttributes.sleepMode, (body[10] & 0x01) > 0);
+    final decimal = body.length > 20 ? body[15] : 0;
+    _set(
+      AcDeviceAttributes.indoorTemperature,
+      _parseTemperature(body[11], decimal & 0x0F),
+    );
+    _set(
+      AcDeviceAttributes.outdoorTemperature,
+      _parseTemperature(body[12], decimal >> 4),
+    );
+    _set(AcDeviceAttributes.fullDust, (body[13] & 0x20) > 0);
+    _set(
+      AcDeviceAttributes.screenDisplay,
+      (((body[14] >> 4) & 0x07) != 0x07) && ((body[1] & 0x01) > 0),
+    );
+    _set(
+      AcDeviceAttributes.frostProtect,
+      body.length >= 22 ? (body[21] & 0x80) > 0 : false,
+    );
+    _set(
+      AcDeviceAttributes.comfortMode,
+      body.length >= 23 ? (body[22] & 0x01) > 0 : false,
+    );
+  }
+
+  void _parseA0(Uint8List body) {
+    _set(AcDeviceAttributes.power, (body[1] & 0x01) > 0);
+    _set(
+      AcDeviceAttributes.targetTemperature,
+      ((body[1] & 0x3E) >> 1) - 4 + 16.0 + ((body[1] & 0x40) > 0 ? 0.5 : 0.0),
+    );
+    _set(AcDeviceAttributes.mode, (body[2] & 0xE0) >> 5);
+    _set(AcDeviceAttributes.fanSpeed, body[3] & 0x7F);
+    _set(AcDeviceAttributes.swingVertical, (body[7] & 0x0C) > 0);
+    _set(AcDeviceAttributes.swingHorizontal, (body[7] & 0x03) > 0);
+    _set(
+      AcDeviceAttributes.boostMode,
+      (body[8] & 0x20) > 0 || (body[10] & 0x02) > 0,
+    );
+    _set(AcDeviceAttributes.smartEye, (body[9] & 0x01) > 0);
+    _set(AcDeviceAttributes.dry, (body[9] & 0x04) > 0);
+    _set(AcDeviceAttributes.auxHeating, (body[9] & 0x08) > 0);
+    _set(AcDeviceAttributes.ecoMode, (body[9] & 0x10) > 0);
+    _set(AcDeviceAttributes.sleepMode, (body[10] & 0x01) > 0);
+    _set(AcDeviceAttributes.naturalWind, (body[10] & 0x40) > 0);
+    _set(AcDeviceAttributes.fullDust, (body[13] & 0x20) > 0);
+    _set(
+      AcDeviceAttributes.comfortMode,
+      body.length > 16 ? (body[14] & 0x01) > 0 : false,
+    );
+    _set(
+      AcDeviceAttributes.screenDisplay,
+      (((body[14] >> 4) & 0x07) != 0x07) && ((body[1] & 0x01) > 0),
+    );
+    _set(
+      AcDeviceAttributes.frostProtect,
+      body.length >= 22 ? (body[21] & 0x80) > 0 : false,
+    );
   }
 }

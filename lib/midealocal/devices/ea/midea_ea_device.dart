@@ -7,7 +7,7 @@ import '../../device.dart';
 import '../../message.dart';
 import 'message.dart';
 
-class DeviceAttributes {
+class EaDeviceAttributes {
   static const String cooking = 'cooking';
   static const String keepWarm = 'keep_warm';
   static const String mode = 'mode';
@@ -137,18 +137,18 @@ class MideaEADevice extends MideaDevice {
   }) : super(
          deviceType: DeviceType.ea,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.cooking: false,
-    DeviceAttributes.keepWarm: false,
-    DeviceAttributes.mode: 0,
-    DeviceAttributes.timeRemaining: null,
-    DeviceAttributes.topTemperature: null,
-    DeviceAttributes.bottomTemperature: null,
-    DeviceAttributes.keepWarmTime: null,
-    DeviceAttributes.progress: 'Unknown',
+    EaDeviceAttributes.cooking: false,
+    EaDeviceAttributes.keepWarm: false,
+    EaDeviceAttributes.mode: 0,
+    EaDeviceAttributes.timeRemaining: null,
+    EaDeviceAttributes.topTemperature: null,
+    EaDeviceAttributes.bottomTemperature: null,
+    EaDeviceAttributes.keepWarmTime: null,
+    EaDeviceAttributes.progress: 'Unknown',
   };
 
   @override
@@ -164,13 +164,13 @@ class MideaEADevice extends MideaDevice {
     for (final attr in attrs.keys) {
       if (_hasAttribute(message, attr)) {
         var value = _getAttribute(message, attr);
-        if (attr == DeviceAttributes.progress && value != null) {
+        if (attr == EaDeviceAttributes.progress && value != null) {
           if (value is int && value < progressList.length) {
             value = progressList[value];
           } else {
             value = 'Unknown';
           }
-        } else if (attr == DeviceAttributes.mode && value != null) {
+        } else if (attr == EaDeviceAttributes.mode && value != null) {
           if (value is int) {
             final modeListWithExtra = [
               ...modeList,
@@ -195,21 +195,21 @@ class MideaEADevice extends MideaDevice {
 
   bool _hasAttribute(MessageEAResponse msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.cooking:
+      case EaDeviceAttributes.cooking:
         return msg.cooking != null;
-      case DeviceAttributes.keepWarm:
+      case EaDeviceAttributes.keepWarm:
         return msg.keepWarm != null;
-      case DeviceAttributes.mode:
+      case EaDeviceAttributes.mode:
         return msg.mode != null;
-      case DeviceAttributes.timeRemaining:
+      case EaDeviceAttributes.timeRemaining:
         return msg.timeRemaining != null;
-      case DeviceAttributes.keepWarmTime:
+      case EaDeviceAttributes.keepWarmTime:
         return msg.keepWarmTime != null;
-      case DeviceAttributes.topTemperature:
+      case EaDeviceAttributes.topTemperature:
         return msg.topTemperature != null;
-      case DeviceAttributes.bottomTemperature:
+      case EaDeviceAttributes.bottomTemperature:
         return msg.bottomTemperature != null;
-      case DeviceAttributes.progress:
+      case EaDeviceAttributes.progress:
         return msg.progress != null;
       default:
         return false;
@@ -218,21 +218,21 @@ class MideaEADevice extends MideaDevice {
 
   dynamic _getAttribute(MessageEAResponse msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.cooking:
+      case EaDeviceAttributes.cooking:
         return msg.cooking;
-      case DeviceAttributes.keepWarm:
+      case EaDeviceAttributes.keepWarm:
         return msg.keepWarm;
-      case DeviceAttributes.mode:
+      case EaDeviceAttributes.mode:
         return msg.mode;
-      case DeviceAttributes.timeRemaining:
+      case EaDeviceAttributes.timeRemaining:
         return msg.timeRemaining;
-      case DeviceAttributes.keepWarmTime:
+      case EaDeviceAttributes.keepWarmTime:
         return msg.keepWarmTime;
-      case DeviceAttributes.topTemperature:
+      case EaDeviceAttributes.topTemperature:
         return msg.topTemperature;
-      case DeviceAttributes.bottomTemperature:
+      case EaDeviceAttributes.bottomTemperature:
         return msg.bottomTemperature;
-      case DeviceAttributes.progress:
+      case EaDeviceAttributes.progress:
         return msg.progress;
       default:
         return null;

@@ -7,7 +7,7 @@ import '../../device.dart';
 import '../../message.dart';
 import 'message.dart';
 
-class DeviceAttributes {
+class CaDeviceAttributes {
   static const String mode = 'mode';
   static const String energyConsumption = 'energy_consumption';
   static const String refrigeratorActualTemp = 'refrigerator_actual_temp';
@@ -61,31 +61,31 @@ class MideaCADevice extends MideaDevice {
   }) : super(
          deviceType: DeviceType.ca,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.energyConsumption: null,
-    DeviceAttributes.refrigeratorActualTemp: null,
-    DeviceAttributes.freezerActualTemp: null,
-    DeviceAttributes.flexZoneActualTemp: null,
-    DeviceAttributes.rightFlexZoneActualTemp: null,
-    DeviceAttributes.refrigeratorSettingTemp: null,
-    DeviceAttributes.freezerSettingTemp: null,
-    DeviceAttributes.flexZoneSettingTemp: null,
-    DeviceAttributes.rightFlexZoneSettingTemp: null,
-    DeviceAttributes.refrigeratorDoorOvertime: false,
-    DeviceAttributes.freezerDoorOvertime: false,
-    DeviceAttributes.barDoorOvertime: false,
-    DeviceAttributes.flexZoneDoorOvertime: false,
-    DeviceAttributes.refrigeratorDoor: false,
-    DeviceAttributes.freezerDoor: false,
-    DeviceAttributes.barDoor: false,
-    DeviceAttributes.flexZoneDoor: false,
-    DeviceAttributes.microcrystalFresh: false,
-    DeviceAttributes.electronicSmell: false,
-    DeviceAttributes.humidity: null,
-    DeviceAttributes.variableMode: null,
+    CaDeviceAttributes.energyConsumption: null,
+    CaDeviceAttributes.refrigeratorActualTemp: null,
+    CaDeviceAttributes.freezerActualTemp: null,
+    CaDeviceAttributes.flexZoneActualTemp: null,
+    CaDeviceAttributes.rightFlexZoneActualTemp: null,
+    CaDeviceAttributes.refrigeratorSettingTemp: null,
+    CaDeviceAttributes.freezerSettingTemp: null,
+    CaDeviceAttributes.flexZoneSettingTemp: null,
+    CaDeviceAttributes.rightFlexZoneSettingTemp: null,
+    CaDeviceAttributes.refrigeratorDoorOvertime: false,
+    CaDeviceAttributes.freezerDoorOvertime: false,
+    CaDeviceAttributes.barDoorOvertime: false,
+    CaDeviceAttributes.flexZoneDoorOvertime: false,
+    CaDeviceAttributes.refrigeratorDoor: false,
+    CaDeviceAttributes.freezerDoor: false,
+    CaDeviceAttributes.barDoor: false,
+    CaDeviceAttributes.flexZoneDoor: false,
+    CaDeviceAttributes.microcrystalFresh: false,
+    CaDeviceAttributes.electronicSmell: false,
+    CaDeviceAttributes.humidity: null,
+    CaDeviceAttributes.variableMode: null,
   };
 
   @override
@@ -101,9 +101,9 @@ class MideaCADevice extends MideaDevice {
     for (final attr in attrs.keys) {
       if (_hasAttribute(message, attr)) {
         var value = _getAttribute(message, attr);
-        if (attr == DeviceAttributes.variableMode && value != null) {
+        if (attr == CaDeviceAttributes.variableMode && value != null) {
           value = variableModeMap[value] ?? value;
-        } else if (attr == DeviceAttributes.humidity && value != null) {
+        } else if (attr == CaDeviceAttributes.humidity && value != null) {
           value = humidityMap[value] ?? value;
         }
         attrs[attr] = value;
@@ -115,49 +115,49 @@ class MideaCADevice extends MideaDevice {
 
   bool _hasAttribute(MessageCAResponse msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.mode:
+      case CaDeviceAttributes.mode:
         return msg.codeMode != null;
-      case DeviceAttributes.energyConsumption:
+      case CaDeviceAttributes.energyConsumption:
         return msg.energyConsumption != null;
-      case DeviceAttributes.refrigeratorActualTemp:
+      case CaDeviceAttributes.refrigeratorActualTemp:
         return msg.refrigeratorActualTemp != null;
-      case DeviceAttributes.freezerActualTemp:
+      case CaDeviceAttributes.freezerActualTemp:
         return msg.freezerActualTemp != null;
-      case DeviceAttributes.flexZoneActualTemp:
+      case CaDeviceAttributes.flexZoneActualTemp:
         return msg.flexZoneActualTemp != null;
-      case DeviceAttributes.rightFlexZoneActualTemp:
+      case CaDeviceAttributes.rightFlexZoneActualTemp:
         return msg.rightFlexZoneActualTemp != null;
-      case DeviceAttributes.refrigeratorSettingTemp:
+      case CaDeviceAttributes.refrigeratorSettingTemp:
         return msg.refrigeratorSettingTemp != null;
-      case DeviceAttributes.freezerSettingTemp:
+      case CaDeviceAttributes.freezerSettingTemp:
         return msg.freezerSettingTemp != null;
-      case DeviceAttributes.flexZoneSettingTemp:
+      case CaDeviceAttributes.flexZoneSettingTemp:
         return msg.flexZoneSettingTemp != null;
-      case DeviceAttributes.rightFlexZoneSettingTemp:
+      case CaDeviceAttributes.rightFlexZoneSettingTemp:
         return msg.rightFlexZoneSettingTemp != null;
-      case DeviceAttributes.refrigeratorDoorOvertime:
+      case CaDeviceAttributes.refrigeratorDoorOvertime:
         return msg.refrigeratorDoorOvertime != null;
-      case DeviceAttributes.freezerDoorOvertime:
+      case CaDeviceAttributes.freezerDoorOvertime:
         return msg.freezerDoorOvertime != null;
-      case DeviceAttributes.barDoorOvertime:
+      case CaDeviceAttributes.barDoorOvertime:
         return msg.barDoorOvertime != null;
-      case DeviceAttributes.flexZoneDoorOvertime:
+      case CaDeviceAttributes.flexZoneDoorOvertime:
         return msg.flexZoneDoorOvertime != null;
-      case DeviceAttributes.refrigeratorDoor:
+      case CaDeviceAttributes.refrigeratorDoor:
         return msg.refrigeratorDoor != null;
-      case DeviceAttributes.freezerDoor:
+      case CaDeviceAttributes.freezerDoor:
         return msg.freezerDoor != null;
-      case DeviceAttributes.barDoor:
+      case CaDeviceAttributes.barDoor:
         return msg.barDoor != null;
-      case DeviceAttributes.flexZoneDoor:
+      case CaDeviceAttributes.flexZoneDoor:
         return msg.flexZoneDoor != null;
-      case DeviceAttributes.microcrystalFresh:
+      case CaDeviceAttributes.microcrystalFresh:
         return msg.microcrystalFresh != null;
-      case DeviceAttributes.electronicSmell:
+      case CaDeviceAttributes.electronicSmell:
         return msg.electronicSmell != null;
-      case DeviceAttributes.humidity:
+      case CaDeviceAttributes.humidity:
         return msg.humidity != null;
-      case DeviceAttributes.variableMode:
+      case CaDeviceAttributes.variableMode:
         return msg.variableMode != null;
       default:
         return false;
@@ -166,49 +166,49 @@ class MideaCADevice extends MideaDevice {
 
   dynamic _getAttribute(MessageCAResponse msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.mode:
+      case CaDeviceAttributes.mode:
         return msg.codeMode;
-      case DeviceAttributes.energyConsumption:
+      case CaDeviceAttributes.energyConsumption:
         return msg.energyConsumption;
-      case DeviceAttributes.refrigeratorActualTemp:
+      case CaDeviceAttributes.refrigeratorActualTemp:
         return msg.refrigeratorActualTemp;
-      case DeviceAttributes.freezerActualTemp:
+      case CaDeviceAttributes.freezerActualTemp:
         return msg.freezerActualTemp;
-      case DeviceAttributes.flexZoneActualTemp:
+      case CaDeviceAttributes.flexZoneActualTemp:
         return msg.flexZoneActualTemp;
-      case DeviceAttributes.rightFlexZoneActualTemp:
+      case CaDeviceAttributes.rightFlexZoneActualTemp:
         return msg.rightFlexZoneActualTemp;
-      case DeviceAttributes.refrigeratorSettingTemp:
+      case CaDeviceAttributes.refrigeratorSettingTemp:
         return msg.refrigeratorSettingTemp;
-      case DeviceAttributes.freezerSettingTemp:
+      case CaDeviceAttributes.freezerSettingTemp:
         return msg.freezerSettingTemp;
-      case DeviceAttributes.flexZoneSettingTemp:
+      case CaDeviceAttributes.flexZoneSettingTemp:
         return msg.flexZoneSettingTemp;
-      case DeviceAttributes.rightFlexZoneSettingTemp:
+      case CaDeviceAttributes.rightFlexZoneSettingTemp:
         return msg.rightFlexZoneSettingTemp;
-      case DeviceAttributes.refrigeratorDoorOvertime:
+      case CaDeviceAttributes.refrigeratorDoorOvertime:
         return msg.refrigeratorDoorOvertime;
-      case DeviceAttributes.freezerDoorOvertime:
+      case CaDeviceAttributes.freezerDoorOvertime:
         return msg.freezerDoorOvertime;
-      case DeviceAttributes.barDoorOvertime:
+      case CaDeviceAttributes.barDoorOvertime:
         return msg.barDoorOvertime;
-      case DeviceAttributes.flexZoneDoorOvertime:
+      case CaDeviceAttributes.flexZoneDoorOvertime:
         return msg.flexZoneDoorOvertime;
-      case DeviceAttributes.refrigeratorDoor:
+      case CaDeviceAttributes.refrigeratorDoor:
         return msg.refrigeratorDoor;
-      case DeviceAttributes.freezerDoor:
+      case CaDeviceAttributes.freezerDoor:
         return msg.freezerDoor;
-      case DeviceAttributes.barDoor:
+      case CaDeviceAttributes.barDoor:
         return msg.barDoor;
-      case DeviceAttributes.flexZoneDoor:
+      case CaDeviceAttributes.flexZoneDoor:
         return msg.flexZoneDoor;
-      case DeviceAttributes.microcrystalFresh:
+      case CaDeviceAttributes.microcrystalFresh:
         return msg.microcrystalFresh;
-      case DeviceAttributes.electronicSmell:
+      case CaDeviceAttributes.electronicSmell:
         return msg.electronicSmell;
-      case DeviceAttributes.humidity:
+      case CaDeviceAttributes.humidity:
         return msg.humidity;
-      case DeviceAttributes.variableMode:
+      case CaDeviceAttributes.variableMode:
         return msg.variableMode;
       default:
         return null;

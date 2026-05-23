@@ -9,7 +9,7 @@ import '../../exceptions.dart';
 import '../../message.dart';
 import 'message.dart';
 
-class DeviceAttributes {
+class A1DeviceAttributes {
   static const String power = 'power';
   static const String promptTone = 'prompt_tone';
   static const String childLock = 'child_lock';
@@ -60,7 +60,7 @@ class MideaA1Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.a1,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     _speeds = _defaultSpeeds;
     _modes = _defaultModes;
@@ -79,20 +79,20 @@ class MideaA1Device extends MideaDevice {
   List<String> get waterLevelSets => _waterLevelSets;
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.power: false,
-    DeviceAttributes.promptTone: true,
-    DeviceAttributes.childLock: false,
-    DeviceAttributes.mode: null,
-    DeviceAttributes.fanSpeed: 'Medium',
-    DeviceAttributes.swing: false,
-    DeviceAttributes.targetHumidity: 35,
-    DeviceAttributes.anion: false,
-    DeviceAttributes.tank: 0,
-    DeviceAttributes.waterLevelSet: 50,
-    DeviceAttributes.tankFull: null,
-    DeviceAttributes.currentHumidity: null,
-    DeviceAttributes.currentTemperature: null,
-    DeviceAttributes.filterCleaningReminder: false,
+    A1DeviceAttributes.power: false,
+    A1DeviceAttributes.promptTone: true,
+    A1DeviceAttributes.childLock: false,
+    A1DeviceAttributes.mode: null,
+    A1DeviceAttributes.fanSpeed: 'Medium',
+    A1DeviceAttributes.swing: false,
+    A1DeviceAttributes.targetHumidity: 35,
+    A1DeviceAttributes.anion: false,
+    A1DeviceAttributes.tank: 0,
+    A1DeviceAttributes.waterLevelSet: 50,
+    A1DeviceAttributes.tankFull: null,
+    A1DeviceAttributes.currentHumidity: null,
+    A1DeviceAttributes.currentTemperature: null,
+    A1DeviceAttributes.filterCleaningReminder: false,
   };
 
   @override
@@ -108,17 +108,17 @@ class MideaA1Device extends MideaDevice {
     for (final attr in attrs.keys) {
       if (_hasAttribute(message, attr)) {
         var value = _getAttribute(message, attr);
-        if (attr == DeviceAttributes.mode) {
+        if (attr == A1DeviceAttributes.mode) {
           value = _modes[value] ?? value;
-        } else if (attr == DeviceAttributes.fanSpeed) {
+        } else if (attr == A1DeviceAttributes.fanSpeed) {
           value = _speeds[value] ?? value;
-        } else if (attr == DeviceAttributes.waterLevelSet) {
+        } else if (attr == A1DeviceAttributes.waterLevelSet) {
           value = value != null ? value.toString() : null;
         }
-        if (attr == DeviceAttributes.tankFull) {
-          final tank = attrs[DeviceAttributes.tank] as int? ?? 0;
+        if (attr == A1DeviceAttributes.tankFull) {
+          final tank = attrs[A1DeviceAttributes.tank] as int? ?? 0;
           final waterLevel =
-              int.tryParse(attrs[DeviceAttributes.waterLevelSet].toString()) ??
+              int.tryParse(attrs[A1DeviceAttributes.waterLevelSet].toString()) ??
               50;
           final tankFullCalculated = tank > 0 ? tank >= waterLevel : false;
           if (value == null || value != tankFullCalculated) {
@@ -134,33 +134,33 @@ class MideaA1Device extends MideaDevice {
 
   bool _hasAttribute(MessageA1Response msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case A1DeviceAttributes.power:
         return msg.power != null;
-      case DeviceAttributes.promptTone:
+      case A1DeviceAttributes.promptTone:
         return msg.promptTone != null;
-      case DeviceAttributes.childLock:
+      case A1DeviceAttributes.childLock:
         return msg.childLock != null;
-      case DeviceAttributes.mode:
+      case A1DeviceAttributes.mode:
         return msg.mode != null;
-      case DeviceAttributes.fanSpeed:
+      case A1DeviceAttributes.fanSpeed:
         return msg.fanSpeed != null;
-      case DeviceAttributes.swing:
+      case A1DeviceAttributes.swing:
         return msg.swing != null;
-      case DeviceAttributes.targetHumidity:
+      case A1DeviceAttributes.targetHumidity:
         return msg.targetHumidity != null;
-      case DeviceAttributes.anion:
+      case A1DeviceAttributes.anion:
         return msg.anion != null;
-      case DeviceAttributes.tank:
+      case A1DeviceAttributes.tank:
         return msg.tank != null;
-      case DeviceAttributes.waterLevelSet:
+      case A1DeviceAttributes.waterLevelSet:
         return msg.waterLevelSet != null;
-      case DeviceAttributes.tankFull:
+      case A1DeviceAttributes.tankFull:
         return msg.tank != null;
-      case DeviceAttributes.currentHumidity:
+      case A1DeviceAttributes.currentHumidity:
         return msg.currentHumidity != null;
-      case DeviceAttributes.currentTemperature:
+      case A1DeviceAttributes.currentTemperature:
         return msg.currentTemperature != null;
-      case DeviceAttributes.filterCleaningReminder:
+      case A1DeviceAttributes.filterCleaningReminder:
         return msg.filterCleaningReminder != null;
       default:
         return false;
@@ -169,33 +169,33 @@ class MideaA1Device extends MideaDevice {
 
   dynamic _getAttribute(MessageA1Response msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case A1DeviceAttributes.power:
         return msg.power;
-      case DeviceAttributes.promptTone:
+      case A1DeviceAttributes.promptTone:
         return msg.promptTone;
-      case DeviceAttributes.childLock:
+      case A1DeviceAttributes.childLock:
         return msg.childLock;
-      case DeviceAttributes.mode:
+      case A1DeviceAttributes.mode:
         return msg.mode;
-      case DeviceAttributes.fanSpeed:
+      case A1DeviceAttributes.fanSpeed:
         return msg.fanSpeed;
-      case DeviceAttributes.swing:
+      case A1DeviceAttributes.swing:
         return msg.swing;
-      case DeviceAttributes.targetHumidity:
+      case A1DeviceAttributes.targetHumidity:
         return msg.targetHumidity;
-      case DeviceAttributes.anion:
+      case A1DeviceAttributes.anion:
         return msg.anion;
-      case DeviceAttributes.tank:
+      case A1DeviceAttributes.tank:
         return msg.tank;
-      case DeviceAttributes.waterLevelSet:
+      case A1DeviceAttributes.waterLevelSet:
         return msg.waterLevelSet;
-      case DeviceAttributes.tankFull:
+      case A1DeviceAttributes.tankFull:
         return msg.tank;
-      case DeviceAttributes.currentHumidity:
+      case A1DeviceAttributes.currentHumidity:
         return msg.currentHumidity;
-      case DeviceAttributes.currentTemperature:
+      case A1DeviceAttributes.currentTemperature:
         return msg.currentTemperature;
-      case DeviceAttributes.filterCleaningReminder:
+      case A1DeviceAttributes.filterCleaningReminder:
         return msg.filterCleaningReminder;
       default:
         return null;
@@ -204,21 +204,21 @@ class MideaA1Device extends MideaDevice {
 
   @override
   void setAttribute(String attr, dynamic value) {
-    if (attr == DeviceAttributes.promptTone) {
+    if (attr == A1DeviceAttributes.promptTone) {
       if (value is! bool) {
         throw MideaLocalError('[a1] Expected bool');
       }
-      attrs[DeviceAttributes.promptTone] = value;
-      updateAll({DeviceAttributes.promptTone: value});
+      attrs[A1DeviceAttributes.promptTone] = value;
+      updateAll({A1DeviceAttributes.promptTone: value});
       return;
     }
 
     final message = MessageSet(messageProtocolVersion);
-    message.power = attrs[DeviceAttributes.power] as bool? ?? false;
-    message.promptTone = attrs[DeviceAttributes.promptTone] as bool? ?? true;
-    message.childLock = attrs[DeviceAttributes.childLock] as bool? ?? false;
+    message.power = attrs[A1DeviceAttributes.power] as bool? ?? false;
+    message.promptTone = attrs[A1DeviceAttributes.promptTone] as bool? ?? true;
+    message.childLock = attrs[A1DeviceAttributes.childLock] as bool? ?? false;
 
-    final mode = attrs[DeviceAttributes.mode];
+    final mode = attrs[A1DeviceAttributes.mode];
     if (mode != null && _modes.containsValue(mode.toString())) {
       for (final entry in _modes.entries) {
         if (entry.value == mode) {
@@ -230,7 +230,7 @@ class MideaA1Device extends MideaDevice {
       message.mode = 1;
     }
 
-    final fanSpeed = attrs[DeviceAttributes.fanSpeed];
+    final fanSpeed = attrs[A1DeviceAttributes.fanSpeed];
     if (fanSpeed != null && _speeds.containsValue(fanSpeed.toString())) {
       for (final entry in _speeds.entries) {
         if (entry.value == fanSpeed) {
@@ -243,18 +243,18 @@ class MideaA1Device extends MideaDevice {
     }
 
     message.targetHumidity =
-        attrs[DeviceAttributes.targetHumidity] as int? ?? 35;
-    message.swing = attrs[DeviceAttributes.swing] as bool? ?? false;
-    message.anion = attrs[DeviceAttributes.anion] as bool? ?? false;
+        attrs[A1DeviceAttributes.targetHumidity] as int? ?? 35;
+    message.swing = attrs[A1DeviceAttributes.swing] as bool? ?? false;
+    message.anion = attrs[A1DeviceAttributes.anion] as bool? ?? false;
 
-    final waterLevelStr = attrs[DeviceAttributes.waterLevelSet]?.toString();
+    final waterLevelStr = attrs[A1DeviceAttributes.waterLevelSet]?.toString();
     if (waterLevelStr != null && _waterLevelSets.contains(waterLevelStr)) {
       message.waterLevelSet = int.tryParse(waterLevelStr) ?? 50;
     } else {
       message.waterLevelSet = 50;
     }
 
-    if (attr == DeviceAttributes.mode && value != null) {
+    if (attr == A1DeviceAttributes.mode && value != null) {
       if (_modes.containsValue(value.toString())) {
         for (final entry in _modes.entries) {
           if (entry.value == value) {
@@ -263,7 +263,7 @@ class MideaA1Device extends MideaDevice {
           }
         }
       }
-    } else if (attr == DeviceAttributes.fanSpeed && value != null) {
+    } else if (attr == A1DeviceAttributes.fanSpeed && value != null) {
       if (_speeds.containsValue(value.toString())) {
         for (final entry in _speeds.entries) {
           if (entry.value == value) {
@@ -272,28 +272,28 @@ class MideaA1Device extends MideaDevice {
           }
         }
       }
-    } else if (attr == DeviceAttributes.waterLevelSet && value != null) {
+    } else if (attr == A1DeviceAttributes.waterLevelSet && value != null) {
       if (_waterLevelSets.contains(value.toString())) {
         message.waterLevelSet = int.tryParse(value.toString()) ?? 50;
       }
     } else {
       switch (attr) {
-        case DeviceAttributes.power:
+        case A1DeviceAttributes.power:
           if (value is bool) message.power = value;
           break;
-        case DeviceAttributes.promptTone:
+        case A1DeviceAttributes.promptTone:
           if (value is bool) message.promptTone = value;
           break;
-        case DeviceAttributes.childLock:
+        case A1DeviceAttributes.childLock:
           if (value is bool) message.childLock = value;
           break;
-        case DeviceAttributes.targetHumidity:
+        case A1DeviceAttributes.targetHumidity:
           if (value is int) message.targetHumidity = value;
           break;
-        case DeviceAttributes.swing:
+        case A1DeviceAttributes.swing:
           if (value is bool) message.swing = value;
           break;
-        case DeviceAttributes.anion:
+        case A1DeviceAttributes.anion:
           if (value is bool) message.anion = value;
           break;
       }

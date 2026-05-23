@@ -6,7 +6,7 @@ import '../../device.dart';
 import '../../message.dart';
 import 'message.dart';
 
-class DeviceAttributes {
+class B0DeviceAttributes {
   static const String door = 'door';
   static const String status = 'status';
   static const String timeRemaining = 'time_remaining';
@@ -35,16 +35,16 @@ class MideaB0Device extends MideaDevice {
          deviceType: DeviceType.b0,
          deviceProtocol: deviceProtocol,
          attributes: {
-           DeviceAttributes.door: false,
-           DeviceAttributes.status: null,
-           DeviceAttributes.timeRemaining: null,
-           DeviceAttributes.currentTemperature: null,
-           DeviceAttributes.tankEjected: false,
-           DeviceAttributes.waterChangeReminder: false,
-           DeviceAttributes.waterShortage: false,
-           DeviceAttributes.mode: null,
-           DeviceAttributes.firePower: null,
-           DeviceAttributes.childLock: false,
+           B0DeviceAttributes.door: false,
+           B0DeviceAttributes.status: null,
+           B0DeviceAttributes.timeRemaining: null,
+           B0DeviceAttributes.currentTemperature: null,
+           B0DeviceAttributes.tankEjected: false,
+           B0DeviceAttributes.waterChangeReminder: false,
+           B0DeviceAttributes.waterShortage: false,
+           B0DeviceAttributes.mode: null,
+           B0DeviceAttributes.firePower: null,
+           B0DeviceAttributes.childLock: false,
          },
        );
 
@@ -180,12 +180,12 @@ class MideaB0Device extends MideaDevice {
     final message = MessageB0Response(msg);
     final newStatus = <String, dynamic>{};
     for (final attr in attributes.keys) {
-      if (attr == DeviceAttributes.door) {
+      if (attr == B0DeviceAttributes.door) {
         if (message.door != null) {
           attributes[attr] = message.door;
           newStatus[attr] = message.door;
         }
-      } else if (attr == DeviceAttributes.status) {
+      } else if (attr == B0DeviceAttributes.status) {
         if (message.status != null) {
           if (subtype > 0) {
             attributes[attr] = _status31[message.status];
@@ -194,32 +194,32 @@ class MideaB0Device extends MideaDevice {
           }
           newStatus[attr] = attributes[attr];
         }
-      } else if (attr == DeviceAttributes.timeRemaining) {
+      } else if (attr == B0DeviceAttributes.timeRemaining) {
         if (message.timeRemaining != null) {
           attributes[attr] = message.timeRemaining;
           newStatus[attr] = message.timeRemaining;
         }
-      } else if (attr == DeviceAttributes.currentTemperature) {
+      } else if (attr == B0DeviceAttributes.currentTemperature) {
         if (message.currentTemperature != null) {
           attributes[attr] = message.currentTemperature;
           newStatus[attr] = message.currentTemperature;
         }
-      } else if (attr == DeviceAttributes.tankEjected) {
+      } else if (attr == B0DeviceAttributes.tankEjected) {
         if (message.tankEjected != null) {
           attributes[attr] = message.tankEjected;
           newStatus[attr] = message.tankEjected;
         }
-      } else if (attr == DeviceAttributes.waterChangeReminder) {
+      } else if (attr == B0DeviceAttributes.waterChangeReminder) {
         if (message.waterChangeReminder != null) {
           attributes[attr] = message.waterChangeReminder;
           newStatus[attr] = message.waterChangeReminder;
         }
-      } else if (attr == DeviceAttributes.waterShortage) {
+      } else if (attr == B0DeviceAttributes.waterShortage) {
         if (message.waterShortage != null) {
           attributes[attr] = message.waterShortage;
           newStatus[attr] = message.waterShortage;
         }
-      } else if (attr == DeviceAttributes.mode) {
+      } else if (attr == B0DeviceAttributes.mode) {
         if (message.mode != null) {
           if (subtype > 0) {
             attributes[attr] = _mode31[message.mode];
@@ -228,7 +228,7 @@ class MideaB0Device extends MideaDevice {
           }
           newStatus[attr] = attributes[attr];
         }
-      } else if (attr == DeviceAttributes.firePower) {
+      } else if (attr == B0DeviceAttributes.firePower) {
         if (message.firePower != null) {
           if (subtype > 0) {
             attributes[attr] = _firePower31[message.firePower];
@@ -237,7 +237,7 @@ class MideaB0Device extends MideaDevice {
           }
           newStatus[attr] = attributes[attr];
         }
-      } else if (attr == DeviceAttributes.childLock) {
+      } else if (attr == B0DeviceAttributes.childLock) {
         if (message.childLock != null) {
           attributes[attr] = message.childLock;
           newStatus[attr] = message.childLock;

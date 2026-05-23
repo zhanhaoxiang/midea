@@ -9,10 +9,10 @@ import '../../message.dart';
 import 'message.dart';
 
 // ---------------------------------------------------------------------------
-// DeviceAttributes
+// DaDeviceAttributes
 // ---------------------------------------------------------------------------
 
-class DeviceAttributes {
+class DaDeviceAttributes {
   static const String power = 'power';
   static const String start = 'start';
   static const String washingData = 'washing_data';
@@ -108,27 +108,27 @@ class MideaDADevice extends MideaDevice {
   }) : super(
          deviceType: DeviceType.da,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.power: false,
-    DeviceAttributes.start: false,
-    DeviceAttributes.errorCode: null,
-    DeviceAttributes.washingData: Uint8List(0),
-    DeviceAttributes.program: null,
-    DeviceAttributes.progress: 'Unknown',
-    DeviceAttributes.timeRemaining: null,
-    DeviceAttributes.washTime: null,
-    DeviceAttributes.soakTime: null,
-    DeviceAttributes.dehydrationTime: null,
-    DeviceAttributes.dehydrationSpeed: null,
-    DeviceAttributes.rinseCount: null,
-    DeviceAttributes.rinseLevel: null,
-    DeviceAttributes.washLevel: null,
-    DeviceAttributes.washStrength: null,
-    DeviceAttributes.softener: null,
-    DeviceAttributes.detergent: null,
+    DaDeviceAttributes.power: false,
+    DaDeviceAttributes.start: false,
+    DaDeviceAttributes.errorCode: null,
+    DaDeviceAttributes.washingData: Uint8List(0),
+    DaDeviceAttributes.program: null,
+    DaDeviceAttributes.progress: 'Unknown',
+    DaDeviceAttributes.timeRemaining: null,
+    DaDeviceAttributes.washTime: null,
+    DaDeviceAttributes.soakTime: null,
+    DaDeviceAttributes.dehydrationTime: null,
+    DaDeviceAttributes.dehydrationSpeed: null,
+    DaDeviceAttributes.rinseCount: null,
+    DaDeviceAttributes.rinseLevel: null,
+    DaDeviceAttributes.washLevel: null,
+    DaDeviceAttributes.washStrength: null,
+    DaDeviceAttributes.softener: null,
+    DaDeviceAttributes.detergent: null,
   };
 
   @override
@@ -144,47 +144,47 @@ class MideaDADevice extends MideaDevice {
     for (final attr in attrs.keys) {
       if (_hasAttribute(message, attr)) {
         var value = _getAttribute(message, attr);
-        if (attr == DeviceAttributes.progress) {
+        if (attr == DaDeviceAttributes.progress) {
           if (value != null) {
             final idx = value as int;
             value = idx >= 0 && idx < _progressList.length
                 ? _progressList[idx]
                 : _progressList[5];
           }
-        } else if (attr == DeviceAttributes.program) {
+        } else if (attr == DaDeviceAttributes.program) {
           if (value != null) {
             final idx = value as int;
             value = idx >= 0 && idx < _programList.length
                 ? _programList[idx]
                 : null;
           }
-        } else if (attr == DeviceAttributes.rinseLevel) {
+        } else if (attr == DaDeviceAttributes.rinseLevel) {
           if (value != null) {
             final idx = value as int;
             value = idx == _minTemp ? '-' : idx;
           }
-        } else if (attr == DeviceAttributes.dehydrationSpeed) {
+        } else if (attr == DaDeviceAttributes.dehydrationSpeed) {
           if (value != null) {
             final idx = value as int;
             value = idx >= 0 && idx < _speedList.length
                 ? _speedList[idx]
                 : null;
           }
-        } else if (attr == DeviceAttributes.detergent) {
+        } else if (attr == DaDeviceAttributes.detergent) {
           if (value != null) {
             final idx = value as int;
             value = idx >= 0 && idx < _detergentList.length
                 ? _detergentList[idx]
                 : null;
           }
-        } else if (attr == DeviceAttributes.softener) {
+        } else if (attr == DaDeviceAttributes.softener) {
           if (value != null) {
             final idx = value as int;
             value = idx >= 0 && idx < _softenerList.length
                 ? _softenerList[idx]
                 : null;
           }
-        } else if (attr == DeviceAttributes.washStrength) {
+        } else if (attr == DaDeviceAttributes.washStrength) {
           if (value != null) {
             final idx = value as int;
             value = idx >= 0 && idx < _strengthList.length
@@ -201,39 +201,39 @@ class MideaDADevice extends MideaDevice {
 
   bool _hasAttribute(MessageDAResponse msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case DaDeviceAttributes.power:
         return msg.power != null;
-      case DeviceAttributes.start:
+      case DaDeviceAttributes.start:
         return msg.start != null;
-      case DeviceAttributes.errorCode:
+      case DaDeviceAttributes.errorCode:
         return msg.errorCode != null;
-      case DeviceAttributes.washingData:
+      case DaDeviceAttributes.washingData:
         return msg.washingData != null;
-      case DeviceAttributes.program:
+      case DaDeviceAttributes.program:
         return msg.program != null;
-      case DeviceAttributes.progress:
+      case DaDeviceAttributes.progress:
         return msg.progress != null;
-      case DeviceAttributes.timeRemaining:
+      case DaDeviceAttributes.timeRemaining:
         return msg.timeRemaining != null;
-      case DeviceAttributes.washTime:
+      case DaDeviceAttributes.washTime:
         return msg.washTime != null;
-      case DeviceAttributes.soakTime:
+      case DaDeviceAttributes.soakTime:
         return msg.soakTime != null;
-      case DeviceAttributes.dehydrationTime:
+      case DaDeviceAttributes.dehydrationTime:
         return msg.dehydrationTime != null;
-      case DeviceAttributes.dehydrationSpeed:
+      case DaDeviceAttributes.dehydrationSpeed:
         return msg.dehydrationSpeed != null;
-      case DeviceAttributes.rinseCount:
+      case DaDeviceAttributes.rinseCount:
         return msg.rinseCount != null;
-      case DeviceAttributes.rinseLevel:
+      case DaDeviceAttributes.rinseLevel:
         return msg.rinseLevel != null;
-      case DeviceAttributes.washLevel:
+      case DaDeviceAttributes.washLevel:
         return msg.washLevel != null;
-      case DeviceAttributes.washStrength:
+      case DaDeviceAttributes.washStrength:
         return msg.washStrength != null;
-      case DeviceAttributes.softener:
+      case DaDeviceAttributes.softener:
         return msg.softener != null;
-      case DeviceAttributes.detergent:
+      case DaDeviceAttributes.detergent:
         return msg.detergent != null;
       default:
         return false;
@@ -242,39 +242,39 @@ class MideaDADevice extends MideaDevice {
 
   dynamic _getAttribute(MessageDAResponse msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case DaDeviceAttributes.power:
         return msg.power;
-      case DeviceAttributes.start:
+      case DaDeviceAttributes.start:
         return msg.start;
-      case DeviceAttributes.errorCode:
+      case DaDeviceAttributes.errorCode:
         return msg.errorCode;
-      case DeviceAttributes.washingData:
+      case DaDeviceAttributes.washingData:
         return msg.washingData;
-      case DeviceAttributes.program:
+      case DaDeviceAttributes.program:
         return msg.program;
-      case DeviceAttributes.progress:
+      case DaDeviceAttributes.progress:
         return msg.progress;
-      case DeviceAttributes.timeRemaining:
+      case DaDeviceAttributes.timeRemaining:
         return msg.timeRemaining;
-      case DeviceAttributes.washTime:
+      case DaDeviceAttributes.washTime:
         return msg.washTime;
-      case DeviceAttributes.soakTime:
+      case DaDeviceAttributes.soakTime:
         return msg.soakTime;
-      case DeviceAttributes.dehydrationTime:
+      case DaDeviceAttributes.dehydrationTime:
         return msg.dehydrationTime;
-      case DeviceAttributes.dehydrationSpeed:
+      case DaDeviceAttributes.dehydrationSpeed:
         return msg.dehydrationSpeed;
-      case DeviceAttributes.rinseCount:
+      case DaDeviceAttributes.rinseCount:
         return msg.rinseCount;
-      case DeviceAttributes.rinseLevel:
+      case DaDeviceAttributes.rinseLevel:
         return msg.rinseLevel;
-      case DeviceAttributes.washLevel:
+      case DaDeviceAttributes.washLevel:
         return msg.washLevel;
-      case DeviceAttributes.washStrength:
+      case DaDeviceAttributes.washStrength:
         return msg.washStrength;
-      case DeviceAttributes.softener:
+      case DaDeviceAttributes.softener:
         return msg.softener;
-      case DeviceAttributes.detergent:
+      case DaDeviceAttributes.detergent:
         return msg.detergent;
       default:
         return null;
@@ -283,21 +283,21 @@ class MideaDADevice extends MideaDevice {
 
   @override
   void setAttribute(String attr, dynamic value) {
-    if (attr == DeviceAttributes.power) {
+    if (attr == DaDeviceAttributes.power) {
       if (value is! bool) {
         throw MideaLocalError('[da] Expected bool');
       }
       final message = MessagePower(messageProtocolVersion);
       message.power = value;
       buildSend(message);
-    } else if (attr == DeviceAttributes.start) {
+    } else if (attr == DaDeviceAttributes.start) {
       if (value is! bool) {
         throw MideaLocalError('[da] Expected bool');
       }
       final message = MessageStart(messageProtocolVersion);
       message.start = value;
       message.washingData =
-          attrs[DeviceAttributes.washingData] as Uint8List? ?? Uint8List(0);
+          attrs[DaDeviceAttributes.washingData] as Uint8List? ?? Uint8List(0);
       buildSend(message);
     }
   }

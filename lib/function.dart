@@ -6,7 +6,7 @@ import 'midealocal/const.dart';
 import 'midealocal/discover.dart';
 
 // 扫描所有设备
-Future scanDevices() async {
+Future<Map<int, dynamic>> scanDevices() async {
   print('开始扫描设备...');
 
   final found = await discover();
@@ -15,6 +15,8 @@ Future scanDevices() async {
     print('未发现任何设备');
     exit(0);
   }
+
+  Map<int, dynamic> devices = {};
 
   for (final entry in found.entries) {
     final deviceId = entry.key;
@@ -29,7 +31,11 @@ Future scanDevices() async {
     print('  SN: ${info['sn']}');
     print('  Json格式化： ${jsonEncode(info)}');
     print('-' * 40);
+
+    devices[deviceId] = info;
   }
+
+  return found;
 }
 
 Future<void> listDevices() async {
@@ -67,7 +73,7 @@ Future<void> listDevices() async {
   }
 }
 
-Future<void> getCloudKey(int deviceId) async {
+Future<List<Map<String, String>>> getCloudKey(int deviceId) async {
   final preset = getPresetAccountCloud();
   final cloudName = preset['cloud_name']!;
   final account = preset['username']!;
@@ -85,10 +91,9 @@ Future<void> getCloudKey(int deviceId) async {
   }
   print('$cloudName 云端登录成功！');
 
-  const applianceId = 210006722801783;
-  print('获取设备 token (appliance_id: $applianceId)...');
+  print('获取设备 token (appliance_id: $deviceId)...');
 
-  final keys = await cloud.getCloudKeys(applianceId);
+  final keys = await cloud.getCloudKeys(deviceId);
   if (keys.isEmpty) {
     print('无法获取 token');
     exit(0);
@@ -100,4 +105,5 @@ Future<void> getCloudKey(int deviceId) async {
   }
 
   print('Token列表： ${jsonEncode(tokenList)}');
+  return tokenList;
 }

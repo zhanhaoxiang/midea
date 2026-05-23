@@ -7,7 +7,7 @@ import '../../device.dart';
 import '../../message.dart';
 import 'message.dart';
 
-class DeviceAttributes {
+class E6DeviceAttributes {
   static const String mainPower = 'main_power';
   static const String heatingPower = 'heating_power';
   static const String heatingWorking = 'heating_working';
@@ -38,7 +38,7 @@ class MideaE6Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.e6,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        ) {
     _temperatureStep = _defaultTemperatureStep;
     if (customize != null && customize.isNotEmpty) {
@@ -56,19 +56,19 @@ class MideaE6Device extends MideaDevice {
   static const double _defaultTemperatureStep = 1.0;
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.mainPower: false,
-    DeviceAttributes.heatingPower: true,
-    DeviceAttributes.heatingWorking: null,
-    DeviceAttributes.bathingWorking: null,
-    DeviceAttributes.minTemperature: [30.0, 35.0],
-    DeviceAttributes.maxTemperature: [80.0, 60.0],
-    DeviceAttributes.heatingTemperature: 50.0,
-    DeviceAttributes.bathingTemperature: 40.0,
-    DeviceAttributes.heatingLeavingTemperature: null,
-    DeviceAttributes.bathingLeavingTemperature: null,
-    DeviceAttributes.coldWaterSingle: null,
-    DeviceAttributes.coldWaterDot: null,
-    DeviceAttributes.heatingModes: null,
+    E6DeviceAttributes.mainPower: false,
+    E6DeviceAttributes.heatingPower: true,
+    E6DeviceAttributes.heatingWorking: null,
+    E6DeviceAttributes.bathingWorking: null,
+    E6DeviceAttributes.minTemperature: [30.0, 35.0],
+    E6DeviceAttributes.maxTemperature: [80.0, 60.0],
+    E6DeviceAttributes.heatingTemperature: 50.0,
+    E6DeviceAttributes.bathingTemperature: 40.0,
+    E6DeviceAttributes.heatingLeavingTemperature: null,
+    E6DeviceAttributes.bathingLeavingTemperature: null,
+    E6DeviceAttributes.coldWaterSingle: null,
+    E6DeviceAttributes.coldWaterDot: null,
+    E6DeviceAttributes.heatingModes: null,
   };
 
   double? _temperatureStep;
@@ -96,34 +96,34 @@ class MideaE6Device extends MideaDevice {
 
   @override
   void setAttribute(String attr, dynamic value) {
-    if (attr == DeviceAttributes.mainPower ||
-        attr == DeviceAttributes.heatingPower ||
-        attr == DeviceAttributes.heatingTemperature ||
-        attr == DeviceAttributes.bathingTemperature ||
-        attr == DeviceAttributes.heatingModes ||
-        attr == DeviceAttributes.coldWaterSingle ||
-        attr == DeviceAttributes.coldWaterDot) {
+    if (attr == E6DeviceAttributes.mainPower ||
+        attr == E6DeviceAttributes.heatingPower ||
+        attr == E6DeviceAttributes.heatingTemperature ||
+        attr == E6DeviceAttributes.bathingTemperature ||
+        attr == E6DeviceAttributes.heatingModes ||
+        attr == E6DeviceAttributes.coldWaterSingle ||
+        attr == E6DeviceAttributes.coldWaterDot) {
       final message = MessageSet(messageProtocolVersion);
       switch (attr) {
-        case DeviceAttributes.mainPower:
+        case E6DeviceAttributes.mainPower:
           message.mainPower = value as bool;
           break;
-        case DeviceAttributes.heatingPower:
+        case E6DeviceAttributes.heatingPower:
           message.heatingPower = value as bool;
           break;
-        case DeviceAttributes.heatingTemperature:
+        case E6DeviceAttributes.heatingTemperature:
           message.heatingTemperature = (value as num).toDouble();
           break;
-        case DeviceAttributes.bathingTemperature:
+        case E6DeviceAttributes.bathingTemperature:
           message.bathingTemperature = (value as num).toDouble();
           break;
-        case DeviceAttributes.heatingModes:
+        case E6DeviceAttributes.heatingModes:
           message.heatingModes = value as String;
           break;
-        case DeviceAttributes.coldWaterSingle:
+        case E6DeviceAttributes.coldWaterSingle:
           message.coldWaterSingle = value as bool;
           break;
-        case DeviceAttributes.coldWaterDot:
+        case E6DeviceAttributes.coldWaterDot:
           message.coldWaterDot = value as bool;
           break;
       }

@@ -10,7 +10,7 @@ import 'message.dart';
 const int directionMinValue = 60;
 const int directionMaxValue = 120;
 
-class DeviceAttributes {
+class X26DeviceAttributes {
   static const String mainLight = 'main_light';
   static const String nightLight = 'night_light';
   static const String mode = 'mode';
@@ -35,7 +35,7 @@ class Midea26Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.x26,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static const List<String> modes = [
@@ -60,13 +60,13 @@ class Midea26Device extends MideaDevice {
   ];
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.mainLight: false,
-    DeviceAttributes.nightLight: false,
-    DeviceAttributes.mode: null,
-    DeviceAttributes.direction: null,
-    DeviceAttributes.currentHumidity: null,
-    DeviceAttributes.currentRadar: null,
-    DeviceAttributes.currentTemperature: null,
+    X26DeviceAttributes.mainLight: false,
+    X26DeviceAttributes.nightLight: false,
+    X26DeviceAttributes.mode: null,
+    X26DeviceAttributes.direction: null,
+    X26DeviceAttributes.currentHumidity: null,
+    X26DeviceAttributes.currentRadar: null,
+    X26DeviceAttributes.currentTemperature: null,
   };
 
   Map<String, dynamic> _fields = {};
@@ -103,38 +103,38 @@ class Midea26Device extends MideaDevice {
     _fields = Map<String, dynamic>.from(message.fields);
 
     if (message.mainLight != null) {
-      attrs[DeviceAttributes.mainLight] = message.mainLight;
-      newStatus[DeviceAttributes.mainLight] = message.mainLight;
+      attrs[X26DeviceAttributes.mainLight] = message.mainLight;
+      newStatus[X26DeviceAttributes.mainLight] = message.mainLight;
     }
     if (message.nightLight != null) {
-      attrs[DeviceAttributes.nightLight] = message.nightLight;
-      newStatus[DeviceAttributes.nightLight] = message.nightLight;
+      attrs[X26DeviceAttributes.nightLight] = message.nightLight;
+      newStatus[X26DeviceAttributes.nightLight] = message.nightLight;
     }
     if (message.mode != null) {
       final modeIndex = message.mode!;
       if (modeIndex >= 0 && modeIndex < modes.length) {
-        attrs[DeviceAttributes.mode] = modes[modeIndex];
-        newStatus[DeviceAttributes.mode] = modes[modeIndex];
+        attrs[X26DeviceAttributes.mode] = modes[modeIndex];
+        newStatus[X26DeviceAttributes.mode] = modes[modeIndex];
       }
     }
     if (message.direction != null) {
       final dirIndex = _convertFromMideaDirection(message.direction!);
       if (dirIndex >= 0 && dirIndex < directions.length) {
-        attrs[DeviceAttributes.direction] = directions[dirIndex];
-        newStatus[DeviceAttributes.direction] = directions[dirIndex];
+        attrs[X26DeviceAttributes.direction] = directions[dirIndex];
+        newStatus[X26DeviceAttributes.direction] = directions[dirIndex];
       }
     }
     if (message.currentHumidity != null) {
-      attrs[DeviceAttributes.currentHumidity] = message.currentHumidity;
-      newStatus[DeviceAttributes.currentHumidity] = message.currentHumidity;
+      attrs[X26DeviceAttributes.currentHumidity] = message.currentHumidity;
+      newStatus[X26DeviceAttributes.currentHumidity] = message.currentHumidity;
     }
     if (message.currentRadar != null) {
-      attrs[DeviceAttributes.currentRadar] = message.currentRadar;
-      newStatus[DeviceAttributes.currentRadar] = message.currentRadar;
+      attrs[X26DeviceAttributes.currentRadar] = message.currentRadar;
+      newStatus[X26DeviceAttributes.currentRadar] = message.currentRadar;
     }
     if (message.currentTemperature != null) {
-      attrs[DeviceAttributes.currentTemperature] = message.currentTemperature;
-      newStatus[DeviceAttributes.currentTemperature] =
+      attrs[X26DeviceAttributes.currentTemperature] = message.currentTemperature;
+      newStatus[X26DeviceAttributes.currentTemperature] =
           message.currentTemperature;
     }
 
@@ -144,10 +144,10 @@ class Midea26Device extends MideaDevice {
   @override
   void setAttribute(String attr, dynamic value) {
     final settableAttrs = <String>[
-      DeviceAttributes.mainLight,
-      DeviceAttributes.nightLight,
-      DeviceAttributes.mode,
-      DeviceAttributes.direction,
+      X26DeviceAttributes.mainLight,
+      X26DeviceAttributes.nightLight,
+      X26DeviceAttributes.mode,
+      X26DeviceAttributes.direction,
     ];
     if (!settableAttrs.contains(attr)) {
       return;
@@ -157,11 +157,11 @@ class Midea26Device extends MideaDevice {
     message.fields = _fields.map((k, v) => MapEntry(k, v as int));
 
     final currentMainLight =
-        attrs[DeviceAttributes.mainLight] as bool? ?? false;
+        attrs[X26DeviceAttributes.mainLight] as bool? ?? false;
     final currentNightLight =
-        attrs[DeviceAttributes.nightLight] as bool? ?? false;
-    final currentMode = attrs[DeviceAttributes.mode];
-    final currentDirection = attrs[DeviceAttributes.direction];
+        attrs[X26DeviceAttributes.nightLight] as bool? ?? false;
+    final currentMode = attrs[X26DeviceAttributes.mode];
+    final currentDirection = attrs[X26DeviceAttributes.direction];
 
     message.mainLight = currentMainLight;
     message.nightLight = currentNightLight;
@@ -173,19 +173,19 @@ class Midea26Device extends MideaDevice {
       message.direction = _convertToMideaDirection(currentDirection as String);
     }
 
-    if (attr == DeviceAttributes.mainLight ||
-        attr == DeviceAttributes.nightLight) {
+    if (attr == X26DeviceAttributes.mainLight ||
+        attr == X26DeviceAttributes.nightLight) {
       message.mainLight = false;
       message.nightLight = false;
-      if (attr == DeviceAttributes.mainLight) {
+      if (attr == X26DeviceAttributes.mainLight) {
         message.mainLight = value as bool;
-      } else if (attr == DeviceAttributes.nightLight) {
+      } else if (attr == X26DeviceAttributes.nightLight) {
         message.nightLight = value as bool;
       }
-    } else if (attr == DeviceAttributes.mode) {
+    } else if (attr == X26DeviceAttributes.mode) {
       final modeIndex = modes.indexOf(value as String);
       if (modeIndex >= 0) message.mode = modeIndex;
-    } else if (attr == DeviceAttributes.direction) {
+    } else if (attr == X26DeviceAttributes.direction) {
       message.direction = _convertToMideaDirection(value as String);
     }
 

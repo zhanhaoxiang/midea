@@ -328,7 +328,7 @@ class CloudSecurity {
     if (_hmacKey == null) return null;
     final dataStr = data is String ? data : '';
     final msg = (_iotKey ?? '') + dataStr + random;
-    return Hmac(sha256, utf8.encode(_hmacKey!))
+    return Hmac(sha256, utf8.encode(_hmacKey))
         .convert(utf8.encode(msg))
         .toString();
   }

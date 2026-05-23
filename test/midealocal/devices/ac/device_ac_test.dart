@@ -24,13 +24,13 @@ void main() {
     });
 
     test('test initial attributes', () {
-      expect(device.attributes[DeviceAttributes.promptTone], true);
-      expect(device.attributes[DeviceAttributes.power], false);
-      expect(device.attributes[DeviceAttributes.mode], 0);
-      expect(device.attributes[DeviceAttributes.targetTemperature], 24.0);
-      expect(device.attributes[DeviceAttributes.fanSpeed], 102);
-      expect(device.attributes[DeviceAttributes.swingVertical], false);
-      expect(device.attributes[DeviceAttributes.swingHorizontal], false);
+      expect(device.attributes[AcDeviceAttributes.promptTone], true);
+      expect(device.attributes[AcDeviceAttributes.power], false);
+      expect(device.attributes[AcDeviceAttributes.mode], 0);
+      expect(device.attributes[AcDeviceAttributes.targetTemperature], 24.0);
+      expect(device.attributes[AcDeviceAttributes.fanSpeed], 102);
+      expect(device.attributes[AcDeviceAttributes.swingVertical], false);
+      expect(device.attributes[AcDeviceAttributes.swingHorizontal], false);
       expect(device.temperatureStep, 0.5);
     });
 
@@ -57,8 +57,8 @@ void main() {
 
     test('test target temperature getter', () {
       final attrs = device.attributes;
-      expect(attrs.containsKey(DeviceAttributes.targetTemperature), true);
-      expect(attrs[DeviceAttributes.targetTemperature], 24.0);
+      expect(attrs.containsKey(AcDeviceAttributes.targetTemperature), true);
+      expect(attrs[AcDeviceAttributes.targetTemperature], 24.0);
     });
 
     test('test set customize', () {

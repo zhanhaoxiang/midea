@@ -9,10 +9,10 @@ import '../../message.dart';
 import 'message.dart';
 
 // ---------------------------------------------------------------------------
-// DeviceAttributes
+// X34DeviceAttributes
 // ---------------------------------------------------------------------------
 
-class DeviceAttributes {
+class X34DeviceAttributes {
   static const String power = 'power';
   static const String status = 'status';
   static const String mode = 'mode';
@@ -99,34 +99,34 @@ class Midea34Device extends MideaDevice {
   }) : super(
          deviceType: DeviceType.x34,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.power: false,
-    DeviceAttributes.status: null,
-    DeviceAttributes.mode: 0,
-    DeviceAttributes.additional: 0,
-    DeviceAttributes.uv: false,
-    DeviceAttributes.dry: false,
-    DeviceAttributes.dryStatus: false,
-    DeviceAttributes.door: false,
-    DeviceAttributes.rinseAid: false,
-    DeviceAttributes.salt: false,
-    DeviceAttributes.childLock: false,
-    DeviceAttributes.storage: false,
-    DeviceAttributes.storageStatus: false,
-    DeviceAttributes.timeRemaining: null,
-    DeviceAttributes.progress: null,
-    DeviceAttributes.storageRemaining: null,
-    DeviceAttributes.temperature: null,
-    DeviceAttributes.humidity: null,
-    DeviceAttributes.waterswitch: false,
-    DeviceAttributes.waterLack: false,
-    DeviceAttributes.errorCode: null,
-    DeviceAttributes.softwater: 0,
-    DeviceAttributes.wrongOperation: null,
-    DeviceAttributes.bright: 0,
+    X34DeviceAttributes.power: false,
+    X34DeviceAttributes.status: null,
+    X34DeviceAttributes.mode: 0,
+    X34DeviceAttributes.additional: 0,
+    X34DeviceAttributes.uv: false,
+    X34DeviceAttributes.dry: false,
+    X34DeviceAttributes.dryStatus: false,
+    X34DeviceAttributes.door: false,
+    X34DeviceAttributes.rinseAid: false,
+    X34DeviceAttributes.salt: false,
+    X34DeviceAttributes.childLock: false,
+    X34DeviceAttributes.storage: false,
+    X34DeviceAttributes.storageStatus: false,
+    X34DeviceAttributes.timeRemaining: null,
+    X34DeviceAttributes.progress: null,
+    X34DeviceAttributes.storageRemaining: null,
+    X34DeviceAttributes.temperature: null,
+    X34DeviceAttributes.humidity: null,
+    X34DeviceAttributes.waterswitch: false,
+    X34DeviceAttributes.waterLack: false,
+    X34DeviceAttributes.errorCode: null,
+    X34DeviceAttributes.softwater: 0,
+    X34DeviceAttributes.wrongOperation: null,
+    X34DeviceAttributes.bright: 0,
   };
 
   @override
@@ -142,21 +142,21 @@ class Midea34Device extends MideaDevice {
     for (final attr in attrs.keys) {
       if (_hasAttribute(message, attr)) {
         var value = _getAttribute(message, attr);
-        if (attr == DeviceAttributes.status) {
+        if (attr == X34DeviceAttributes.status) {
           if (value != null) {
             final idx = value as int;
             value = idx >= 0 && idx < _statusList.length
                 ? _statusList[idx]
                 : null;
           }
-        } else if (attr == DeviceAttributes.progress) {
+        } else if (attr == X34DeviceAttributes.progress) {
           if (value != null) {
             final idx = value as int;
             value = idx >= 0 && idx < _progressList.length
                 ? _progressList[idx]
                 : null;
           }
-        } else if (attr == DeviceAttributes.mode) {
+        } else if (attr == X34DeviceAttributes.mode) {
           value = _modeMap[value] ?? value;
         }
         attrs[attr] = value;
@@ -168,53 +168,53 @@ class Midea34Device extends MideaDevice {
 
   bool _hasAttribute(Message34Response msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case X34DeviceAttributes.power:
         return msg.power != null;
-      case DeviceAttributes.status:
+      case X34DeviceAttributes.status:
         return msg.status != null;
-      case DeviceAttributes.mode:
+      case X34DeviceAttributes.mode:
         return msg.mode != null;
-      case DeviceAttributes.additional:
+      case X34DeviceAttributes.additional:
         return msg.additional != null;
-      case DeviceAttributes.door:
+      case X34DeviceAttributes.door:
         return msg.door != null;
-      case DeviceAttributes.rinseAid:
+      case X34DeviceAttributes.rinseAid:
         return msg.rinseAid != null;
-      case DeviceAttributes.salt:
+      case X34DeviceAttributes.salt:
         return msg.salt != null;
-      case DeviceAttributes.childLock:
+      case X34DeviceAttributes.childLock:
         return msg.childLock != null;
-      case DeviceAttributes.uv:
+      case X34DeviceAttributes.uv:
         return msg.uv != null;
-      case DeviceAttributes.dry:
+      case X34DeviceAttributes.dry:
         return msg.dry != null;
-      case DeviceAttributes.dryStatus:
+      case X34DeviceAttributes.dryStatus:
         return msg.dryStatus != null;
-      case DeviceAttributes.storage:
+      case X34DeviceAttributes.storage:
         return msg.storage != null;
-      case DeviceAttributes.storageStatus:
+      case X34DeviceAttributes.storageStatus:
         return msg.storageStatus != null;
-      case DeviceAttributes.timeRemaining:
+      case X34DeviceAttributes.timeRemaining:
         return msg.timeRemaining != null;
-      case DeviceAttributes.progress:
+      case X34DeviceAttributes.progress:
         return msg.progress != null;
-      case DeviceAttributes.storageRemaining:
+      case X34DeviceAttributes.storageRemaining:
         return msg.storageRemaining != null;
-      case DeviceAttributes.temperature:
+      case X34DeviceAttributes.temperature:
         return msg.temperature != null;
-      case DeviceAttributes.humidity:
+      case X34DeviceAttributes.humidity:
         return msg.humidity != null;
-      case DeviceAttributes.waterswitch:
+      case X34DeviceAttributes.waterswitch:
         return msg.waterswitch != null;
-      case DeviceAttributes.waterLack:
+      case X34DeviceAttributes.waterLack:
         return msg.waterLack != null;
-      case DeviceAttributes.errorCode:
+      case X34DeviceAttributes.errorCode:
         return msg.errorCode != null;
-      case DeviceAttributes.softwater:
+      case X34DeviceAttributes.softwater:
         return msg.softwater != null;
-      case DeviceAttributes.wrongOperation:
+      case X34DeviceAttributes.wrongOperation:
         return msg.wrongOperation != null;
-      case DeviceAttributes.bright:
+      case X34DeviceAttributes.bright:
         return msg.bright != null;
       default:
         return false;
@@ -223,53 +223,53 @@ class Midea34Device extends MideaDevice {
 
   dynamic _getAttribute(Message34Response msg, String attr) {
     switch (attr) {
-      case DeviceAttributes.power:
+      case X34DeviceAttributes.power:
         return msg.power;
-      case DeviceAttributes.status:
+      case X34DeviceAttributes.status:
         return msg.status;
-      case DeviceAttributes.mode:
+      case X34DeviceAttributes.mode:
         return msg.mode;
-      case DeviceAttributes.additional:
+      case X34DeviceAttributes.additional:
         return msg.additional;
-      case DeviceAttributes.door:
+      case X34DeviceAttributes.door:
         return msg.door;
-      case DeviceAttributes.rinseAid:
+      case X34DeviceAttributes.rinseAid:
         return msg.rinseAid;
-      case DeviceAttributes.salt:
+      case X34DeviceAttributes.salt:
         return msg.salt;
-      case DeviceAttributes.childLock:
+      case X34DeviceAttributes.childLock:
         return msg.childLock;
-      case DeviceAttributes.uv:
+      case X34DeviceAttributes.uv:
         return msg.uv;
-      case DeviceAttributes.dry:
+      case X34DeviceAttributes.dry:
         return msg.dry;
-      case DeviceAttributes.dryStatus:
+      case X34DeviceAttributes.dryStatus:
         return msg.dryStatus;
-      case DeviceAttributes.storage:
+      case X34DeviceAttributes.storage:
         return msg.storage;
-      case DeviceAttributes.storageStatus:
+      case X34DeviceAttributes.storageStatus:
         return msg.storageStatus;
-      case DeviceAttributes.timeRemaining:
+      case X34DeviceAttributes.timeRemaining:
         return msg.timeRemaining;
-      case DeviceAttributes.progress:
+      case X34DeviceAttributes.progress:
         return msg.progress;
-      case DeviceAttributes.storageRemaining:
+      case X34DeviceAttributes.storageRemaining:
         return msg.storageRemaining;
-      case DeviceAttributes.temperature:
+      case X34DeviceAttributes.temperature:
         return msg.temperature;
-      case DeviceAttributes.humidity:
+      case X34DeviceAttributes.humidity:
         return msg.humidity;
-      case DeviceAttributes.waterswitch:
+      case X34DeviceAttributes.waterswitch:
         return msg.waterswitch;
-      case DeviceAttributes.waterLack:
+      case X34DeviceAttributes.waterLack:
         return msg.waterLack;
-      case DeviceAttributes.errorCode:
+      case X34DeviceAttributes.errorCode:
         return msg.errorCode;
-      case DeviceAttributes.softwater:
+      case X34DeviceAttributes.softwater:
         return msg.softwater;
-      case DeviceAttributes.wrongOperation:
+      case X34DeviceAttributes.wrongOperation:
         return msg.wrongOperation;
-      case DeviceAttributes.bright:
+      case X34DeviceAttributes.bright:
         return msg.bright;
       default:
         return null;
@@ -278,21 +278,21 @@ class Midea34Device extends MideaDevice {
 
   @override
   void setAttribute(String attr, dynamic value) {
-    if (attr == DeviceAttributes.power) {
+    if (attr == X34DeviceAttributes.power) {
       if (value is! bool) {
         throw MideaLocalError('[x34] Expected bool');
       }
       final message = MessagePower(messageProtocolVersion);
       message.power = value;
       buildSend(message);
-    } else if (attr == DeviceAttributes.childLock) {
+    } else if (attr == X34DeviceAttributes.childLock) {
       if (value is! bool) {
         throw MideaLocalError('[x34] Expected bool');
       }
       final message = MessageLock(messageProtocolVersion);
       message.lock = value;
       buildSend(message);
-    } else if (attr == DeviceAttributes.storage) {
+    } else if (attr == X34DeviceAttributes.storage) {
       if (value is! bool) {
         throw MideaLocalError('[x34] Expected bool');
       }

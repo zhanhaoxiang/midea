@@ -8,10 +8,10 @@ import '../../message.dart';
 import 'message.dart';
 
 // ---------------------------------------------------------------------------
-// DeviceAttributes
+// EcDeviceAttributes
 // ---------------------------------------------------------------------------
 
-class DeviceAttributes {
+class EcDeviceAttributes {
   static const String cooking = 'cooking';
   static const String mode = 'mode';
   static const String timeRemaining = 'time_remaining';
@@ -41,7 +41,7 @@ class MideaECDevice extends MideaDevice {
   }) : super(
          deviceType: DeviceType.ec,
          deviceProtocol: deviceProtocol,
-         attributes: _defaultAttributes,
+         attributes: Map<String, dynamic>.from(_defaultAttributes),
        );
 
   static const List<String> _modeList = [
@@ -266,14 +266,14 @@ class MideaECDevice extends MideaDevice {
   ];
 
   static final Map<String, dynamic> _defaultAttributes = {
-    DeviceAttributes.cooking: false,
-    DeviceAttributes.mode: 0,
-    DeviceAttributes.timeRemaining: null,
-    DeviceAttributes.topTemperature: null,
-    DeviceAttributes.bottomTemperature: null,
-    DeviceAttributes.keepWarmTime: null,
-    DeviceAttributes.progress: 'Unknown',
-    DeviceAttributes.withPressure: null,
+    EcDeviceAttributes.cooking: false,
+    EcDeviceAttributes.mode: 0,
+    EcDeviceAttributes.timeRemaining: null,
+    EcDeviceAttributes.topTemperature: null,
+    EcDeviceAttributes.bottomTemperature: null,
+    EcDeviceAttributes.keepWarmTime: null,
+    EcDeviceAttributes.progress: 'Unknown',
+    EcDeviceAttributes.withPressure: null,
   };
 
   late MessageECResponse _message;
@@ -290,14 +290,14 @@ class MideaECDevice extends MideaDevice {
 
     for (final status in attrs.keys) {
       final fieldName = status;
-      if (fieldName == DeviceAttributes.progress) {
+      if (fieldName == EcDeviceAttributes.progress) {
         final value = _message.progress;
         if (value != null && value < _progress.length) {
           attrs[status] = _progress[value];
         } else {
           attrs[status] = 'Unknown';
         }
-      } else if (fieldName == DeviceAttributes.mode) {
+      } else if (fieldName == EcDeviceAttributes.mode) {
         final value = _message.mode;
         if (value != null && value < _modeList.length) {
           attrs[status] = _modeList[value];
@@ -315,21 +315,21 @@ class MideaECDevice extends MideaDevice {
 
   dynamic _getMessageValue(String fieldName) {
     switch (fieldName) {
-      case DeviceAttributes.cooking:
+      case EcDeviceAttributes.cooking:
         return _message.cooking;
-      case DeviceAttributes.mode:
+      case EcDeviceAttributes.mode:
         return _message.mode;
-      case DeviceAttributes.timeRemaining:
+      case EcDeviceAttributes.timeRemaining:
         return _message.timeRemaining;
-      case DeviceAttributes.keepWarmTime:
+      case EcDeviceAttributes.keepWarmTime:
         return _message.keepWarmTime;
-      case DeviceAttributes.topTemperature:
+      case EcDeviceAttributes.topTemperature:
         return _message.topTemperature;
-      case DeviceAttributes.bottomTemperature:
+      case EcDeviceAttributes.bottomTemperature:
         return _message.bottomTemperature;
-      case DeviceAttributes.progress:
+      case EcDeviceAttributes.progress:
         return _message.progress;
-      case DeviceAttributes.withPressure:
+      case EcDeviceAttributes.withPressure:
         return _message.withPressure;
       default:
         return null;
