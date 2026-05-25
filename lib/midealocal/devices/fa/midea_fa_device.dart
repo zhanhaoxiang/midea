@@ -191,89 +191,79 @@ class MideaFADevice extends MideaDevice {
     if (value == 'Off' || value.isEmpty) {
       message.oscillate = false;
     } else {
+      final oscillationAngle =
+          attrs[FaDeviceAttributes.oscillationAngle] as String?;
+      final tiltingAngle = attrs[FaDeviceAttributes.tiltingAngle] as String?;
       message.oscillate = true;
       message.oscillationMode = oscillationModes.indexOf(value);
       if (value == 'Oscillation') {
-        if (attrs[FaDeviceAttributes.oscillationAngle] == 'Off') {
+        if (oscillationAngle == null || oscillationAngle == 'Off') {
           message.oscillationAngle = 3;
         } else {
-          message.oscillationAngle = oscillationAngles.indexOf(
-            attrs[FaDeviceAttributes.oscillationAngle] as String,
-          );
+          message.oscillationAngle = oscillationAngles.indexOf(oscillationAngle);
         }
       } else if (value == 'Tilting') {
-        if (attrs[FaDeviceAttributes.tiltingAngle] == 'Off') {
+        if (tiltingAngle == null || tiltingAngle == 'Off') {
           message.tiltingAngle = 3;
         } else {
-          message.tiltingAngle = tiltingAngles.indexOf(
-            attrs[FaDeviceAttributes.tiltingAngle] as String,
-          );
+          message.tiltingAngle = tiltingAngles.indexOf(tiltingAngle);
         }
       } else {
-        if (attrs[FaDeviceAttributes.oscillationAngle] == 'Off') {
+        if (oscillationAngle == null || oscillationAngle == 'Off') {
           message.oscillationAngle = 3;
         } else {
-          message.oscillationAngle = oscillationAngles.indexOf(
-            attrs[FaDeviceAttributes.oscillationAngle] as String,
-          );
+          message.oscillationAngle = oscillationAngles.indexOf(oscillationAngle);
         }
-        if (attrs[FaDeviceAttributes.tiltingAngle] == 'Off') {
+        if (tiltingAngle == null || tiltingAngle == 'Off') {
           message.tiltingAngle = 3;
         } else {
-          message.tiltingAngle = tiltingAngles.indexOf(
-            attrs[FaDeviceAttributes.tiltingAngle] as String,
-          );
+          message.tiltingAngle = tiltingAngles.indexOf(tiltingAngle);
         }
       }
     }
   }
 
   void _setOscillationAngle(MessageSet message, String value) {
+    final tiltingAngle = attrs[FaDeviceAttributes.tiltingAngle] as String?;
     if (value == 'Off' || value.isEmpty) {
-      if (attrs[FaDeviceAttributes.tiltingAngle] == 'Off') {
+      if (tiltingAngle == null || tiltingAngle == 'Off') {
         message.oscillate = false;
       } else {
         message.oscillate = true;
         message.oscillationMode = 2;
-        message.tiltingAngle = tiltingAngles.indexOf(
-          attrs[FaDeviceAttributes.tiltingAngle] as String,
-        );
+        message.tiltingAngle = tiltingAngles.indexOf(tiltingAngle);
       }
     } else {
       message.oscillationAngle = oscillationAngles.indexOf(value);
       message.oscillate = true;
-      if (attrs[FaDeviceAttributes.tiltingAngle] == 'Off') {
+      if (tiltingAngle == null || tiltingAngle == 'Off') {
         message.oscillationMode = 1;
       } else if (attrs[FaDeviceAttributes.oscillationMode] == 'Tilting') {
         message.oscillationMode = 6;
-        message.tiltingAngle = tiltingAngles.indexOf(
-          attrs[FaDeviceAttributes.tiltingAngle] as String,
-        );
+        message.tiltingAngle = tiltingAngles.indexOf(tiltingAngle);
       }
     }
   }
 
   void _setTiltingAngle(MessageSet message, String value) {
+    final oscillationAngle =
+        attrs[FaDeviceAttributes.oscillationAngle] as String?;
     if (value == 'Off' || value.isEmpty) {
-      if (attrs[FaDeviceAttributes.oscillationAngle] == 'Off') {
+      if (oscillationAngle == null || oscillationAngle == 'Off') {
         message.oscillate = false;
       } else {
         message.oscillate = true;
         message.oscillationMode = 1;
-        message.oscillationAngle = oscillationAngles.indexOf(
-          attrs[FaDeviceAttributes.oscillationAngle] as String,
-        );
+        message.oscillationAngle = oscillationAngles.indexOf(oscillationAngle);
       }
     } else {
       message.tiltingAngle = tiltingAngles.indexOf(value);
       message.oscillate = true;
-      if (attrs[FaDeviceAttributes.oscillationAngle] == 'Off') {
+      if (oscillationAngle == null || oscillationAngle == 'Off') {
         message.oscillationMode = 2;
       } else if (attrs[FaDeviceAttributes.oscillationMode] == 'Oscillation') {
         message.oscillationMode = 6;
-        message.oscillationAngle = oscillationAngles.indexOf(
-          attrs[FaDeviceAttributes.oscillationAngle] as String,
-        );
+        message.oscillationAngle = oscillationAngles.indexOf(oscillationAngle);
       }
     }
   }
