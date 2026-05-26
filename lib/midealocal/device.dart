@@ -15,7 +15,7 @@ const int minMsgLength = 56;
 const int minV2FactualMsgLength = 6;
 const int responseTimeout = 12;
 const int socketTimeoutSeconds = 10;
-const int queryTimeoutSeconds = 20;
+const int queryTimeoutSeconds = 2;
 
 // ---------------------------------------------------------------------------
 // Exceptions
@@ -235,19 +235,10 @@ abstract class MideaDevice {
   // ── Status polling ────────────────────────────────────────────────────────
 
   Future<void> refreshStatus({bool checkProtocol = false}) async {
-    if (applianceQuery) {
-      buildSend(MessageQueryAppliance(_deviceType), query: true);
-      if (checkProtocol) {
-        await _waitForQueryResponse();
-      } else {
-        await drainIncomingMessages(
-          idleTimeout: const Duration(milliseconds: 500),
-          maxDuration: const Duration(seconds: 3),
-        );
-      }
-    }
-
     final cmds = <MessageRequest>[];
+    if (applianceQuery) {
+      cmds.add(MessageQueryAppliance(_deviceType));
+    }
     cmds.addAll(buildQuery());
 
     var errorCount = 0;
