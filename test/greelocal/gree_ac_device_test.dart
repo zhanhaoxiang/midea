@@ -16,13 +16,13 @@ void main() {
       expect(result.port, 7000);
       expect(result.id, 'abc');
       expect(result.name, 'Bedroom');
-      expect(result.encryption_type, 'ECB');
+      expect(result.encryptionType, 'ECB');
     });
   });
 
   group('request helpers', () {
-    test('create_request builds ECB request exactly like Python', () {
-      final request = create_request('cid-1', 'encrypted-pack');
+    test('createRequest builds ECB request exactly like Python', () {
+      final request = createRequest('cid-1', 'encrypted-pack');
 
       expect(
         request,
@@ -30,15 +30,15 @@ void main() {
       );
     });
 
-    test('create_status_request_pack uses the Python column order', () {
+    test('createStatusRequestPack uses the Python column order', () {
       expect(
-        create_status_request_pack('cid-1'),
+        createStatusRequestPack('cid-1'),
         '{"cols":["Pow","Mod","SetTem","WdSpd","Air","Blo","Health","SwhSlp","Lig","SwingLfRig","SwUpDn","Quiet","Tur","StHt","TemUn","HeatCoolType","TemRec","SvSt"],"mac":"cid-1","t":"status"}',
       );
     });
 
-    test('create_request builds GCM request exactly like Python', () {
-      final request = create_request('cid-1', {
+    test('createRequest builds GCM request exactly like Python', () {
+      final request = createRequest('cid-1', {
         'tag': 'tag-value',
         'pack': 'pack-value',
       });
@@ -51,16 +51,16 @@ void main() {
   });
 
   group('crypto helper parity', () {
-    test('encrypt_generic and decrypt_generic round-trip text', () {
-      final encrypted = encrypt_generic('{"t":"dev"}');
-      final decrypted = decrypt_generic(encrypted);
+    test('encryptGeneric and decryptGeneric round-trip text', () {
+      final encrypted = encryptGeneric('{"t":"dev"}');
+      final decrypted = decryptGeneric(encrypted);
 
       expect(decrypted, '{"t":"dev"}');
     });
 
-    test('encrypt_GCM_generic and decrypt_GCM_generic round-trip text', () {
-      final encrypted = encrypt_GCM_generic('{"t":"dev"}');
-      final decrypted = decrypt_GCM_generic(
+    test('encryptGcmGeneric and decryptGcmGeneric round-trip text', () {
+      final encrypted = encryptGcmGeneric('{"t":"dev"}');
+      final decrypted = decryptGcmGeneric(
         encrypted['pack']!,
         encrypted['tag']!,
       );
@@ -90,8 +90,8 @@ void main() {
       })));
     }
 
-    test('parse_scan_response applies Python fallback defaults', () {
-      final result = parse_scan_response(
+    test('parseScanResponse applies Python fallback defaults', () {
+      final result = parseScanResponse(
         '10.0.0.8',
         7000,
         makeScanResponse(name: null),
@@ -100,7 +100,7 @@ void main() {
       expect(result, isNotNull);
       expect(result!.id, '<unknown-cid>');
       expect(result.name, '<unknown>');
-      expect(result.encryption_type, 'ECB');
+      expect(result.encryptionType, 'ECB');
     });
   });
 
@@ -114,7 +114,7 @@ void main() {
       );
     }
 
-    test('bind_device always sends to port 7000', () async {
+    test('bindDevice always sends to port 7000', () async {
       final server = await RawDatagramSocket.bind(
         InternetAddress.loopbackIPv4,
         7000,
@@ -146,13 +146,13 @@ void main() {
         'ECB',
       );
 
-      final key = await bind_device(result);
+      final key = await bindDevice(result);
 
       expect(key, 'secret-key');
       expect(await requestSeen.future, contains('"tcid":"aabbccddeeff"'));
     });
 
-    test('bind_device keeps GCM after ECB timeout retry fails', () async {
+    test('bindDevice keeps GCM after ECB timeout retry fails', () async {
       final result = ScanResult(
         InternetAddress.loopbackIPv4.address,
         7001,
@@ -161,10 +161,10 @@ void main() {
         'ECB',
       );
 
-      final key = await bind_device(result);
+      final key = await bindDevice(result);
 
       expect(key, isNull);
-      expect(result.encryption_type, 'GCM');
+      expect(result.encryptionType, 'GCM');
     });
   });
 
@@ -182,7 +182,7 @@ void main() {
       );
     }
 
-    test('get_param returns decrypted cols/dat pairs for ECB', () async {
+    test('getParam returns decrypted cols/dat pairs for ECB', () async {
       final server = await RawDatagramSocket.bind(
         InternetAddress.loopbackIPv4,
         7000,
@@ -204,8 +204,8 @@ void main() {
         );
       });
 
-      ENCRYPTION_TYPE = 'ECB';
-      final result = await get_param(
+      encryptionType = 'ECB';
+      final result = await getParam(
         client: InternetAddress.loopbackIPv4.address,
         id: 'cid-1',
         key: 'secret-key-12345',
@@ -216,9 +216,9 @@ void main() {
       expect(result, {'Pow': 1, 'Mod': 4});
     });
 
-    test('set_param rejects malformed key value pairs before sending', () async {
+    test('setParam rejects malformed key value pairs before sending', () async {
       await expectLater(
-        () => set_param(
+        () => setParam(
           client: '127.0.0.1',
           id: 'cid-1',
           key: 'secret-key-12345',
