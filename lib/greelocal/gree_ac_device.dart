@@ -5,457 +5,350 @@ import 'dart:typed_data';
 
 import 'gree_crypto.dart';
 
-const int _greePort = 7000;
+const String GENERIC_KEY = 'a3K8Bx%2r8Y7#xDh';
+String ENCRYPTION_TYPE = 'ECB';
+const String GENERIC_GCM_KEY = '{yxAHAY_Lm6pbC/<';
+const List<int> GCM_IV = <int>[
+  0x54,
+  0x40,
+  0x78,
+  0x44,
+  0x49,
+  0x67,
+  0x5a,
+  0x51,
+  0x6c,
+  0x5e,
+  0x63,
+  0x13,
+];
+const List<int> GCM_ADD = <int>[
+  0x71,
+  0x75,
+  0x61,
+  0x6c,
+  0x63,
+  0x6f,
+  0x6d,
+  0x6d,
+  0x2d,
+  0x74,
+  0x65,
+  0x73,
+  0x74,
+];
+const int GREE_PORT = 7000;
 
-// ---------------------------------------------------------------------------
-// Enums
-// ---------------------------------------------------------------------------
+class ScanResult {
+  ScanResult(
+    this.ip,
+    this.port,
+    this.id, [
+    this.name = '<unknown>',
+    this.encryption_type = 'ECB',
+  ]);
 
-enum GreeEncryptionType { ecb, gcm }
-
-enum GreeMode {
-  auto(0),
-  cool(1),
-  dry(2),
-  fan(3),
-  heat(4);
-
-  const GreeMode(this.value);
-  final int value;
-
-  static GreeMode fromValue(int v) =>
-      GreeMode.values.firstWhere((e) => e.value == v, orElse: () => GreeMode.auto);
+  String ip = '';
+  int port = 0;
+  String id = '';
+  String name = '<unknown>';
+  String encryption_type = 'ECB';
 }
 
-enum GreeFanSpeed {
-  auto(0),
-  low(1),
-  medLow(2),
-  medium(3),
-  medHigh(4),
-  high(5);
-
-  const GreeFanSpeed(this.value);
-  final int value;
-
-  static GreeFanSpeed fromValue(int v) =>
-      GreeFanSpeed.values.firstWhere((e) => e.value == v, orElse: () => GreeFanSpeed.auto);
+String add_pkcs7_padding(String data) {
+  final pad_length = 16 - (data.length % 16);
+  return data + String.fromCharCode(pad_length) * pad_length;
 }
 
-enum GreeTemperatureUnit {
-  celsius(0),
-  fahrenheit(1);
+String decrypt(String pack_encoded, String key) =>
+    GreeCrypto.decryptEcb(pack_encoded, key);
 
-  const GreeTemperatureUnit(this.value);
-  final int value;
+String decrypt_generic(String pack_encoded) =>
+    GreeCrypto.decryptGenericEcb(pack_encoded);
+
+String encrypt(String pack, String key) => GreeCrypto.encryptEcb(pack, key);
+
+String encrypt_generic(String pack) => GreeCrypto.encryptGenericEcb(pack);
+
+String decrypt_GCM(String pack_encoded, String tag_encoded, String key) =>
+    GreeCrypto.decryptGcm(pack_encoded, tag_encoded, key);
+
+String decrypt_GCM_generic(String pack_encoded, String tag_encoded) =>
+    GreeCrypto.decryptGenericGcm(pack_encoded, tag_encoded);
+
+Map<String, String> encrypt_GCM(String pack, String key) {
+  final encrypted = GreeCrypto.encryptGcm(pack, key);
+  return <String, String>{
+    'pack': encrypted.pack,
+    'tag': encrypted.tag,
+  };
 }
 
-// ---------------------------------------------------------------------------
-// GreeParameter – device protocol key constants
-// ---------------------------------------------------------------------------
-
-class GreeParameter {
-  static const String power = 'Pow';
-  static const String mode = 'Mod';
-  static const String temperature = 'SetTem';
-  static const String fanSpeed = 'WdSpd';
-  static const String freshAir = 'Air';
-  static const String xfan = 'Blo';
-  static const String health = 'Health';
-  static const String sleep = 'SwhSlp';
-  static const String light = 'Lig';
-  static const String horizontalSwing = 'SwingLfRig';
-  static const String verticalSwing = 'SwUpDn';
-  static const String quiet = 'Quiet';
-  static const String turbo = 'Tur';
-  static const String antiFreeze = 'StHt';
-  static const String temperatureUnit = 'TemUn';
-  static const String heatCoolType = 'HeatCoolType';
-  static const String temperatureCorrection = 'TemRec';
-  static const String energySaving = 'SvSt';
-
-  static const List<String> all = [
-    power, mode, temperature, fanSpeed, freshAir, xfan, health, sleep,
-    light, horizontalSwing, verticalSwing, quiet, turbo, antiFreeze,
-    temperatureUnit, heatCoolType, temperatureCorrection, energySaving,
-  ];
+Map<String, String> encrypt_GCM_generic(String pack) {
+  final encrypted = GreeCrypto.encryptGenericGcm(pack);
+  return <String, String>{
+    'pack': encrypted.pack,
+    'tag': encrypted.tag,
+  };
 }
 
-// ---------------------------------------------------------------------------
-// GreeDeviceStatus – typed snapshot of device state
-// ---------------------------------------------------------------------------
+Future<Uint8List> send_data(String ip, int port, List<int> data) async {
+  final socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
+  socket.send(Uint8List.fromList(data), InternetAddress(ip), port);
 
-class GreeDeviceStatus {
-  const GreeDeviceStatus({
-    required this.power,
-    required this.mode,
-    required this.temperature,
-    required this.fanSpeed,
-    required this.freshAir,
-    required this.xfan,
-    required this.health,
-    required this.sleep,
-    required this.light,
-    required this.horizontalSwing,
-    required this.verticalSwing,
-    required this.quiet,
-    required this.turbo,
-    required this.antiFreeze,
-    required this.temperatureUnit,
-    required this.energySaving,
+  final completer = Completer<Uint8List>();
+  Timer(const Duration(seconds: 5), () {
+    socket.close();
+    if (!completer.isCompleted) {
+      completer.completeError(TimeoutException('No response from $ip:$port'));
+    }
   });
 
-  final bool power;
-  final GreeMode mode;
-  final int temperature;
-  final GreeFanSpeed fanSpeed;
-  final bool freshAir;
-  final bool xfan;
-  final bool health;
-  final bool sleep;
-  final bool light;
-  final int horizontalSwing;
-  final int verticalSwing;
-  final bool quiet;
-  final bool turbo;
-  final bool antiFreeze;
-  final GreeTemperatureUnit temperatureUnit;
-  final bool energySaving;
-
-  factory GreeDeviceStatus.fromRaw(Map<String, dynamic> raw) {
-    int getInt(String key, [int def = 0]) => (raw[key] as int?) ?? def;
-    bool getBool(String key) => getInt(key) != 0;
-
-    return GreeDeviceStatus(
-      power: getBool(GreeParameter.power),
-      mode: GreeMode.fromValue(getInt(GreeParameter.mode)),
-      temperature: getInt(GreeParameter.temperature, 24),
-      fanSpeed: GreeFanSpeed.fromValue(getInt(GreeParameter.fanSpeed)),
-      freshAir: getBool(GreeParameter.freshAir),
-      xfan: getBool(GreeParameter.xfan),
-      health: getBool(GreeParameter.health),
-      sleep: getBool(GreeParameter.sleep),
-      light: getBool(GreeParameter.light),
-      horizontalSwing: getInt(GreeParameter.horizontalSwing),
-      verticalSwing: getInt(GreeParameter.verticalSwing),
-      quiet: getBool(GreeParameter.quiet),
-      turbo: getBool(GreeParameter.turbo),
-      antiFreeze: getBool(GreeParameter.antiFreeze),
-      temperatureUnit: getInt(GreeParameter.temperatureUnit) == 1
-          ? GreeTemperatureUnit.fahrenheit
-          : GreeTemperatureUnit.celsius,
-      energySaving: getBool(GreeParameter.energySaving),
-    );
-  }
-
-  @override
-  String toString() =>
-      'GreeDeviceStatus(power=$power, mode=$mode, temp=${temperature}°, '
-      'fan=$fanSpeed, health=$health, sleep=$sleep, turbo=$turbo, quiet=$quiet)';
-}
-
-// ---------------------------------------------------------------------------
-// GreeAcDevice
-// ---------------------------------------------------------------------------
-
-class GreeAcDevice {
-  GreeAcDevice({
-    required this.ip,
-    required this.port,
-    required this.deviceId,
-    this.name = '',
-    this.encryptionType = GreeEncryptionType.ecb,
-    this.deviceKey,
+  socket.listen((event) {
+    if (event != RawSocketEvent.read) {
+      return;
+    }
+    final datagram = socket.receive();
+    if (datagram == null || completer.isCompleted) {
+      return;
+    }
+    socket.close();
+    completer.complete(datagram.data);
   });
 
-  final String ip;
-  final int port;
-  final String deviceId;
-  String name;
-  GreeEncryptionType encryptionType;
-  String? deviceKey;
+  return completer.future;
+}
 
-  bool get isBound => deviceKey != null;
-
-  // ---- Scan ---------------------------------------------------------------
-
-  /// Broadcasts a scan packet and collects responding devices for [timeout].
-  static Future<List<GreeAcDevice>> scan({
-    required String broadcastAddress,
-    Duration timeout = const Duration(seconds: 5),
-  }) async {
-    final socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
-    socket.broadcastEnabled = true;
-    socket.send(
-      Uint8List.fromList(utf8.encode('{"t":"scan"}')),
-      InternetAddress(broadcastAddress),
-      _greePort,
-    );
-
-    final results = <GreeAcDevice>[];
-    final completer = Completer<void>();
-
-    Timer(timeout, () => socket.close());
-
-    socket.listen(
-      (event) {
-        if (event == RawSocketEvent.read) {
-          final dg = socket.receive();
-          if (dg != null) {
-            final device = parseScanResponse(dg.address.address, dg.port, dg.data);
-            if (device != null) results.add(device);
-          }
-        }
-      },
-      onDone: () {
-        if (!completer.isCompleted) completer.complete();
-      },
-    );
-
-    await completer.future;
-    return results;
+String create_request(String tcid, dynamic pack_encrypted, [int i = 0]) {
+  var request = '{"cid":"app","i":$i,"t":"pack","uid":0,"tcid":"$tcid",';
+  if (pack_encrypted is Map<String, String>) {
+    request +=
+        '"tag":"${pack_encrypted["tag"]}","pack":"${pack_encrypted["pack"]}"}';
+  } else {
+    request += '"pack":"$pack_encrypted"}';
   }
+  return request;
+}
 
-  /// Parses a raw scan datagram into a [GreeAcDevice]. Returns null on error.
-  static GreeAcDevice? parseScanResponse(String address, int port, Uint8List data) {
-    try {
-      final trimmed = _trimJson(data);
-      if (trimmed == null) return null;
+String create_status_request_pack(String tcid) =>
+    '{"cols":["Pow","Mod","SetTem","WdSpd","Air","Blo","Health","SwhSlp","Lig","SwingLfRig","SwUpDn","Quiet","Tur","StHt","TemUn","HeatCoolType","TemRec","SvSt"],"mac":"$tcid","t":"status"}';
 
-      final resp = jsonDecode(utf8.decode(trimmed)) as Map<String, dynamic>;
-      var encType = resp.containsKey('tag') ? GreeEncryptionType.gcm : GreeEncryptionType.ecb;
+ScanResult? parse_scan_response(String address, int port, Uint8List data) {
+  try {
+    final response = _decode_json(data);
+    if (response == null) {
+      return null;
+    }
 
-      final packDecrypted = encType == GreeEncryptionType.gcm
-          ? GreeCrypto.decryptGenericGcm(resp['pack'] as String, resp['tag'] as String)
-          : GreeCrypto.decryptGenericEcb(resp['pack'] as String);
+    var encryption_type = response.containsKey('tag') ? 'GCM' : 'ECB';
+    final decrypted_pack = _decrypt_generic_pack(response, encryption_type);
+    final pack = jsonDecode(decrypted_pack) as Map<String, dynamic>;
 
-      final pack = jsonDecode(packDecrypted) as Map<String, dynamic>;
+    final pack_cid = pack['cid'] as String?;
+    final response_cid = response['cid'] as String?;
+    final cid = pack_cid != null && pack_cid.isNotEmpty
+        ? pack_cid
+        : response_cid ?? '<unknown-cid>';
 
-      // Upgrade to GCM if firmware version is v2+.
-      if (encType == GreeEncryptionType.ecb && pack.containsKey('ver')) {
-        final verMatch = RegExp(r'V(\d+)').firstMatch(pack['ver'] as String);
-        if (verMatch != null && int.parse(verMatch.group(1)!) >= 2) {
-          encType = GreeEncryptionType.gcm;
-        }
+    if (encryption_type != 'GCM' && pack.containsKey('ver')) {
+      final match = RegExp(r'V(\d+)').firstMatch(pack['ver'] as String);
+      if (match != null && int.parse(match.group(1)!) >= 2) {
+        encryption_type = 'GCM';
       }
+    }
 
-      final cid = _resolveDeviceId(pack, resp);
-      return GreeAcDevice(
-        ip: address,
-        port: port,
-        deviceId: cid,
-        name: pack['name'] as String? ?? '',
-        encryptionType: encType,
+    return ScanResult(
+      address,
+      port,
+      cid,
+      pack['name'] as String? ?? '<unknown>',
+      encryption_type,
+    );
+  } catch (_) {
+    return null;
+  }
+}
+
+Future<List<ScanResult>> search_devices({
+  required String broadcast,
+  Duration timeout = const Duration(seconds: 5),
+}) async {
+  final socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
+  socket.broadcastEnabled = true;
+  socket.send(
+    Uint8List.fromList(utf8.encode('{"t":"scan"}')),
+    InternetAddress(broadcast),
+    GREE_PORT,
+  );
+
+  final results = <ScanResult>[];
+  final completer = Completer<void>();
+  Timer(timeout, socket.close);
+
+  socket.listen(
+    (event) {
+      if (event != RawSocketEvent.read) {
+        return;
+      }
+      final datagram = socket.receive();
+      if (datagram == null) {
+        return;
+      }
+      final result = parse_scan_response(
+        datagram.address.address,
+        datagram.port,
+        datagram.data,
       );
-    } catch (_) {
-      return null;
-    }
-  }
-
-  // ---- Bind ---------------------------------------------------------------
-
-  /// Exchanges a bind request to obtain the device encryption key.
-  /// Automatically retries with GCM if ECB fails.
-  Future<bool> bind() async {
-    final pack = '{"mac":"$deviceId","t":"bind","uid":0}';
-    final request = _buildRequest(pack, useGenericKey: true, i: 1);
-    try {
-      final response = await _sendData(ip, port, utf8.encode(request));
-      final json = _parseJson(response);
-      if (json == null || json['t'] != 'pack') return false;
-
-      final packDecrypted = _decryptGeneric(json);
-      final bindResp = jsonDecode(packDecrypted) as Map<String, dynamic>;
-      if ((bindResp['t'] as String?)?.toLowerCase() == 'bindok') {
-        deviceKey = bindResp['key'] as String;
-        return true;
+      if (result != null) {
+        results.add(result);
       }
-    } catch (_) {}
-
-    if (encryptionType == GreeEncryptionType.ecb) {
-      encryptionType = GreeEncryptionType.gcm;
-      final retried = await bind();
-      if (!retried) encryptionType = GreeEncryptionType.ecb;
-      return retried;
-    }
-    return false;
-  }
-
-  // ---- Get status ---------------------------------------------------------
-
-  /// Returns a raw key→value map for the requested [params] (defaults to all).
-  Future<Map<String, dynamic>?> getRawStatus([List<String>? params]) async {
-    if (deviceKey == null) return null;
-    final cols = params ?? GreeParameter.all;
-    final colsJson = cols.map((c) => '"$c"').join(',');
-    final pack = '{"cols":[$colsJson],"mac":"$deviceId","t":"status"}';
-    final request = _buildRequest(pack, useGenericKey: false);
-    try {
-      final response = await _sendData(ip, port, utf8.encode(request));
-      final json = _parseJson(response);
-      if (json == null || json['t'] != 'pack') return null;
-
-      final pack2 = jsonDecode(_decryptDevice(json)) as Map<String, dynamic>;
-      final keys = (pack2['cols'] as List).cast<String>();
-      final values = (pack2['dat'] as List).cast<int>();
-      return Map.fromIterables(keys, values);
-    } catch (_) {}
-    return null;
-  }
-
-  /// Returns a typed [GreeDeviceStatus], or null on failure.
-  Future<GreeDeviceStatus?> getStatus() async {
-    final raw = await getRawStatus();
-    return raw != null ? GreeDeviceStatus.fromRaw(raw) : null;
-  }
-
-  // ---- Set parameters -----------------------------------------------------
-
-  /// Sends key=value pairs as a CMD packet. Returns true if device responds r=200.
-  Future<bool> setParameters(Map<String, dynamic> params) async {
-    if (deviceKey == null) return false;
-    final opts = params.keys.map((k) => '"$k"').join(',');
-    final ps = params.values.map((v) => v.toString()).join(',');
-    final pack = '{"opt":[$opts],"p":[$ps],"t":"cmd"}';
-    final request = _buildRequest(pack, useGenericKey: false);
-    try {
-      final response = await _sendData(ip, port, utf8.encode(request));
-      final json = _parseJson(response);
-      if (json == null || json['t'] != 'pack') return false;
-      final pack2 = jsonDecode(_decryptDevice(json)) as Map<String, dynamic>;
-      return (pack2['r'] as int?) == 200;
-    } catch (_) {}
-    return false;
-  }
-
-  // ---- Convenience setters ------------------------------------------------
-
-  Future<bool> setPower(bool on) =>
-      setParameters({GreeParameter.power: on ? 1 : 0});
-
-  Future<bool> setMode(GreeMode mode) =>
-      setParameters({GreeParameter.mode: mode.value});
-
-  Future<bool> setTemperature(int celsius) =>
-      setParameters({GreeParameter.temperature: celsius});
-
-  Future<bool> setFanSpeed(GreeFanSpeed speed) =>
-      setParameters({GreeParameter.fanSpeed: speed.value});
-
-  Future<bool> setHealth(bool on) =>
-      setParameters({GreeParameter.health: on ? 1 : 0});
-
-  Future<bool> setSleep(bool on) =>
-      setParameters({GreeParameter.sleep: on ? 1 : 0});
-
-  Future<bool> setLight(bool on) =>
-      setParameters({GreeParameter.light: on ? 1 : 0});
-
-  Future<bool> setQuiet(bool on) =>
-      setParameters({GreeParameter.quiet: on ? 1 : 0});
-
-  Future<bool> setTurbo(bool on) =>
-      setParameters({GreeParameter.turbo: on ? 1 : 0});
-
-  Future<bool> setXfan(bool on) =>
-      setParameters({GreeParameter.xfan: on ? 1 : 0});
-
-  Future<bool> setEnergySaving(bool on) =>
-      setParameters({GreeParameter.energySaving: on ? 1 : 0});
-
-  Future<bool> setVerticalSwing(int mode) =>
-      setParameters({GreeParameter.verticalSwing: mode});
-
-  Future<bool> setHorizontalSwing(int mode) =>
-      setParameters({GreeParameter.horizontalSwing: mode});
-
-  // ---- Private: request building ------------------------------------------
-
-  String _buildRequest(String pack, {required bool useGenericKey, int i = 0}) {
-    final prefix = '{"cid":"app","i":$i,"t":"pack","uid":0,"tcid":"$deviceId",';
-    if (encryptionType == GreeEncryptionType.gcm) {
-      final enc = useGenericKey
-          ? GreeCrypto.encryptGenericGcm(pack)
-          : GreeCrypto.encryptGcm(pack, deviceKey!);
-      return '${prefix}"tag":"${enc.tag}","pack":"${enc.pack}"}';
-    } else {
-      final enc = useGenericKey
-          ? GreeCrypto.encryptGenericEcb(pack)
-          : GreeCrypto.encryptEcb(pack, deviceKey!);
-      return '${prefix}"pack":"$enc"}';
-    }
-  }
-
-  String _decryptGeneric(Map<String, dynamic> json) {
-    if (encryptionType == GreeEncryptionType.gcm) {
-      return GreeCrypto.decryptGenericGcm(
-          json['pack'] as String, json['tag'] as String);
-    }
-    return GreeCrypto.decryptGenericEcb(json['pack'] as String);
-  }
-
-  String _decryptDevice(Map<String, dynamic> json) {
-    if (encryptionType == GreeEncryptionType.gcm) {
-      return GreeCrypto.decryptGcm(
-          json['pack'] as String, json['tag'] as String, deviceKey!);
-    }
-    return GreeCrypto.decryptEcb(json['pack'] as String, deviceKey!);
-  }
-
-  // ---- Private: network ---------------------------------------------------
-
-  static Future<Uint8List> _sendData(String ip, int port, List<int> data) async {
-    final socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
-    socket.send(Uint8List.fromList(data), InternetAddress(ip), port);
-    final completer = Completer<Uint8List>();
-    Timer(const Duration(seconds: 5), () {
-      socket.close();
+    },
+    onDone: () {
       if (!completer.isCompleted) {
-        completer.completeError(TimeoutException('No response from $ip:$port'));
+        completer.complete();
       }
-    });
-    socket.listen((event) {
-      if (event == RawSocketEvent.read) {
-        final dg = socket.receive();
-        if (dg != null && !completer.isCompleted) {
-          socket.close();
-          completer.complete(dg.data);
-        }
-      }
-    });
-    return completer.future;
+    },
+  );
+
+  await completer.future;
+  for (final result in results) {
+    await bind_device(result);
   }
+  return results;
+}
 
-  // ---- Private: JSON helpers ----------------------------------------------
+Future<String?> bind_device(ScanResult search_result) async {
+  final pack = '{"mac":"${search_result.id}","t":"bind","uid":0}';
+  final pack_encrypted = search_result.encryption_type == 'GCM'
+      ? encrypt_GCM_generic(pack)
+      : encrypt_generic(pack);
+  final request = create_request(search_result.id, pack_encrypted, 1);
 
-  static Map<String, dynamic>? _parseJson(Uint8List data) {
-    final trimmed = _trimJson(data);
-    if (trimmed == null) return null;
-    try {
-      return jsonDecode(utf8.decode(trimmed)) as Map<String, dynamic>;
-    } catch (_) {
+  try {
+    final result = await send_data(
+      search_result.ip,
+      GREE_PORT,
+      utf8.encode(request),
+    );
+    final response = _decode_json(result);
+    if (response == null || response['t'] != 'pack') {
       return null;
     }
-  }
 
-  static Uint8List? _trimJson(Uint8List data) {
-    for (var i = data.length - 1; i >= 0; i--) {
-      if (data[i] == 0x7D) return data.sublist(0, i + 1);
+    final decrypted_pack = _decrypt_generic_pack(
+      response,
+      search_result.encryption_type,
+    );
+    final bind_response = jsonDecode(decrypted_pack) as Map<String, dynamic>;
+    if ((bind_response['t'] as String?)?.toLowerCase() == 'bindok') {
+      return bind_response['key'] as String;
     }
+  } on TimeoutException {
+    if (search_result.encryption_type != 'GCM') {
+      search_result.encryption_type = 'GCM';
+      return bind_device(search_result);
+    }
+  } catch (_) {}
+
+  return null;
+}
+
+Future<Map<String, dynamic>?> get_param({
+  required String client,
+  required String id,
+  required String key,
+  required List<String> params,
+}) async {
+  final cols = params.map((value) => '"$value"').join(',');
+  final pack = '{"cols":[$cols],"mac":"$id","t":"status"}';
+  final pack_encrypted = ENCRYPTION_TYPE == 'GCM'
+      ? encrypt_GCM(pack, key)
+      : encrypt(pack, key);
+  final request = create_request(id, pack_encrypted);
+
+  final result = await send_data(client, GREE_PORT, utf8.encode(request));
+  final response = _decode_json(result);
+  if (response == null || response['t'] != 'pack') {
     return null;
   }
 
-  static String _resolveDeviceId(
-      Map<String, dynamic> pack, Map<String, dynamic> resp) {
-    final packCid = pack['cid'] as String?;
-    if (packCid != null && packCid.isNotEmpty) return packCid;
-    final respCid = resp['cid'] as String?;
-    if (respCid != null) return respCid;
-    return '<unknown>';
+  final pack_text = _decrypt_device_pack(response, key);
+  final pack_json = jsonDecode(pack_text) as Map<String, dynamic>;
+  final cols_list = (pack_json['cols'] as List).cast<String>();
+  final dat_list = (pack_json['dat'] as List).cast<dynamic>();
+  return Map<String, dynamic>.fromIterables(cols_list, dat_list);
+}
+
+Future<void> set_param({
+  required String client,
+  required String id,
+  required String key,
+  required List<String> params,
+}) async {
+  final kv_list = params.map((value) => value.split('=')).toList();
+  final errors = kv_list.where((pair) => pair.length != 2).toList();
+  if (errors.isNotEmpty) {
+    throw ArgumentError('Invalid parameters detected: $errors');
   }
 
-  @override
-  String toString() =>
-      'GreeAcDevice(ip=$ip, id=$deviceId, name=$name, '
-      'encryption=$encryptionType, bound=$isBound)';
+  final opts = kv_list.map((pair) => '"${pair[0]}"').join(',');
+  final ps = kv_list.map((pair) => pair[1]).join(',');
+  final pack = '{"opt":[$opts],"p":[$ps],"t":"cmd"}';
+  final pack_encrypted = ENCRYPTION_TYPE == 'GCM'
+      ? encrypt_GCM(pack, key)
+      : encrypt(pack, key);
+  final request = create_request(id, pack_encrypted);
+
+  final result = await send_data(client, GREE_PORT, utf8.encode(request));
+  final response = _decode_json(result);
+  if (response == null || response['t'] != 'pack') {
+    throw StateError('Unexpected response type: ${response?["t"]}');
+  }
+
+  final pack_text = _decrypt_device_pack(response, key);
+  final pack_json = jsonDecode(pack_text) as Map<String, dynamic>;
+  if (pack_json['r'] != 200) {
+    throw StateError('Failed to set parameter');
+  }
+}
+
+Uint8List? _trim_json(Uint8List data) {
+  for (var i = data.length - 1; i >= 0; i--) {
+    if (data[i] == 0x7d) {
+      return data.sublist(0, i + 1);
+    }
+  }
+  return null;
+}
+
+Map<String, dynamic>? _decode_json(Uint8List data) {
+  final trimmed = _trim_json(data);
+  if (trimmed == null) {
+    return null;
+  }
+  return jsonDecode(utf8.decode(trimmed)) as Map<String, dynamic>;
+}
+
+String _decrypt_generic_pack(
+  Map<String, dynamic> response,
+  String encryption_type,
+) {
+  if (encryption_type == 'GCM') {
+    return GreeCrypto.decryptGenericGcm(
+      response['pack'] as String,
+      response['tag'] as String,
+    );
+  }
+  return GreeCrypto.decryptGenericEcb(response['pack'] as String);
+}
+
+String _decrypt_device_pack(Map<String, dynamic> response, String key) {
+  if (ENCRYPTION_TYPE == 'GCM') {
+    return GreeCrypto.decryptGcm(
+      response['pack'] as String,
+      response['tag'] as String,
+      key,
+    );
+  }
+  return GreeCrypto.decryptEcb(response['pack'] as String, key);
 }
