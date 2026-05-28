@@ -48,11 +48,27 @@ class ScanResult {
     this.encryptionType = 'ECB',
   ]);
 
+  factory ScanResult.fromJson(Map<String, dynamic> json) => ScanResult(
+        json['ip'] as String,
+        json['port'] as int,
+        json['id'] as String,
+        json['name'] as String? ?? '<unknown>',
+        json['encryptionType'] as String? ?? 'ECB',
+      );
+
   String ip = '';
   int port = 0;
   String id = '';
   String name = '<unknown>';
   String encryptionType = 'ECB';
+
+  Map<String, dynamic> toJson() => {
+        'ip': ip,
+        'port': port,
+        'id': id,
+        'name': name,
+        'encryptionType': encryptionType,
+      };
 }
 
 String addPkcs7Padding(String data) {
